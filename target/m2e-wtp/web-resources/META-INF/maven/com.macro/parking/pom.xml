@@ -19,15 +19,27 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<spring.version>4.3.5.RELEASE</spring.version>
-		 <hibernate.version>5.2.11.Final</hibernate.version>
-        <hibernate.validator>5.4.1.Final</hibernate.validator>
-		
+		<hibernate.version>5.2.11.Final</hibernate.version>
+		<hibernate.validator>5.4.1.Final</hibernate.validator>
+		<selenium.version>3.141.59</selenium.version>
 		<!-- jackson -->
 		<jackson2.version>2.9.4</jackson2.version>
 	</properties>
 
 	<dependencies>
-	<!-- Hibernate -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium.version}</version>
+		</dependency>
+		<!-- Spring ORM -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
@@ -38,14 +50,14 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-		
-		 <!-- lombok-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.16</version>
-        </dependency>
-		
+
+		<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.16</version>
+		</dependency>
+
 		<!-- 로깅 관련 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

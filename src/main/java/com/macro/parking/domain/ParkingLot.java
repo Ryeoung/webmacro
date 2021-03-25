@@ -1,4 +1,4 @@
-package com.macro.parking.dto;
+package com.macro.parking.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,19 +25,19 @@ public class ParkingLot {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "open_time", nullable = false)
+    @Column(name = "open_time")
     private String openTime;
 
-    @Column(name = "close_time", nullable = false)
+    @Column(name = "close_time")
     private String closeTime;
 
-    @Column(name = "website")
+    @Column(name = "website", nullable = false)
     private String website;
 
-    @Column(name = "web_id")
+    @Column(name = "web_id", nullable = false)
     private String webId;
 
-    @Column(name = "web_pwd")
+    @Column(name = "web_pwd", nullable = false)
     private String webPwd;
 
     @OneToMany(mappedBy = "parkingLot")

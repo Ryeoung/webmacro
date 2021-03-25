@@ -1,4 +1,4 @@
-package com.macro.parking.dto;
+package com.macro.parking.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;

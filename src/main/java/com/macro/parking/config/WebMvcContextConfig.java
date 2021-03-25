@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -10,13 +11,15 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.macro.parking.crawler.WebCrawler;
+
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.macro.parking.controller"})
-public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
-	@Value("${spring.resource.image.location}")
+@PropertySource("classpath:application.properties")
+public class WebMvcContextConfig extends WebMvcConfigurerAdapter {
 	private String imageLocation;
-
+	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);
@@ -42,6 +45,7 @@ public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
 		resolver.setSuffix(".jsp");
 		return resolver;
 	}
+
 
 //	@Override
 //	public void addInterceptors(InterceptorRegistry registry) {

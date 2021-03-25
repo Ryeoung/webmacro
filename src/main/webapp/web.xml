@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app>
 	<display-name>Spring JavaConfig</display-name>
-	<!--<context-param>
+	<context-param>
 		<param-name>contextClass</param-name>
 		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>com.bootcourse.reservation.config.ApplicationConfig
+		<param-value>com.mecro.parking.config.ApplicationConfig
 		</param-value>
 	</context-param>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener
 		</listener-class>
-	</listener> -->
+	</listener>
 
 	<servlet>
 		<servlet-name>dispather</servlet-name>
