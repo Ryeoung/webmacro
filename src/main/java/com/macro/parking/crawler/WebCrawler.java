@@ -15,7 +15,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Component;
 
-import com.macro.parking.dto.ParkingLotDto;
+import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.enums.MessageType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -52,8 +53,8 @@ public class WebCrawler {
         driver = new ChromeDriver(options);
     }
 
-	  public List<ParkingLotDto> getDataFromModu() {
-          List<ParkingLotDto> parkingLotDtos = null;
+	  public List<CarInfoDto> getDataFromModu() {
+          List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 
 	        try {
 	            infoMap = new HashMap<String, By>();
@@ -84,7 +85,7 @@ public class WebCrawler {
 	                    btn = btns.get(idx);
 	                    elements = driver.findElements(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr"));
 	                    for(WebElement e :elements) {
-	                        ParkingLotDto dto = new ParkingLotDto();
+	                        CarInfoDto dto = new CarInfoDto();
 	                        
 	        
 	                    	//날짜
@@ -132,8 +133,8 @@ public class WebCrawler {
 			return parkingLotDtos;
 	    }
 	   
-	    private void addTicketByParkingLot(List<ParkingLotDto> parkingLotDtos, String id, String pwd){
-	        try{
+	    public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
+	    	try{
 	            Map<String, By> infoMap = new HashMap<String, By>();
 	            infoMap.put("id", By.id("id"));
 	            infoMap.put("pw", By.id("password"));
@@ -147,12 +148,14 @@ public class WebCrawler {
 	            String siteId = id;
 	            String sitePw = pwd;
 	            login(siteId, sitePw, infoMap);
-	            for(ParkingLotDto parkingLotDto : parkingLotDtos) {
-	            	
+	            
+	            for(int idx = 0, fin = CarInfoList.size(); idx < fin; idx++) {
+	            
+	            	CarInfoDto carInfo  = CarInfoList.get(idx);
 	            	//popp 제거
 	            	deletePopUp();
 	            
-		            String carNum = parkingLotDto.getCarNum();
+		            String carNum = carInfo.getCarNum();
 		           if(isCarInParkingLot(carNum)) {
 		               //System.out.println("차 있음");
 		               driver.findElement(By.id("next")).click();
@@ -162,6 +165,7 @@ public class WebCrawler {
 		               List<WebElement> buyedTickets = driver.findElements(By.xpath("//*[@id=\"myDcList\"]/tr"));
 		               if(buyedTickets.size() > 0) {
 		                   //System.out.println("이미 구매 했음");
+		            	   carInfo.setMessage(MessageType.TICKET_EXIST_ERROR.getMessage());
 		               } else {
 		                   //주차권 구매
 		                   List<WebElement> saleTickets = driver.findElements(By.xpath("//*[@id=\"productList\"]/tr["));
@@ -176,6 +180,8 @@ public class WebCrawler {
 		                       //최종 확인 pop 승락
 		                       Thread.sleep(1000);
 		                       driver.findElement(By.id("popupOk")).click();
+			            	   carInfo.setMessage(MessageType.SUCCESS.getMessage());
+
 		                       break;
 		                   }
 		               }
@@ -183,7 +189,8 @@ public class WebCrawler {
 		               driver.findElement(By.id("goMain")).click();
 		               Thread.sleep(1000);
 		           } else {
-		               System.out.println("차 없음");
+		        	   //치 없
+	            	   carInfo.setMessage(MessageType.NO_CAR_ERROR.getMessage());
 		               //검색창으로 되돌아 가기
 		               driver.findElement(By.xpath("//*[@id=\"headerTitle\"]")).click();
 		               Thread.sleep(2000);
