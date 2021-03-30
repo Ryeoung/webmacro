@@ -14,6 +14,7 @@ public class CrawlerService {
 	WebCrawler crawler;
 	
 	public List<CarInfoDto> getDataFromModu() {
+		System.out.println(crawler);
 		return crawler.getDataFromModu();
 	}
 }

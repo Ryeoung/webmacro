@@ -7,12 +7,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.dto.CarInfoDto;
@@ -36,7 +40,8 @@ public class WebCrawler {
 	private String moduUrl;
 	
 	private Map<String, By> infoMap;
-			
+    private WebDriverWait wait;
+    
 	public WebCrawler() {
 		System.out.println("askdjfklasjdfklas");
 	}
@@ -47,8 +52,7 @@ public class WebCrawler {
 	
 
 	 public List<CarInfoDto> getDataFromModu() {
-          List<CarInfoDto> parkingLotDtos = new LinkedList<>();
-
+	        List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 	        try {
 	            infoMap = new HashMap<String, By>();
 	            infoMap.put("id", By.xpath("/html/body/form/div[1]/input"));
@@ -56,9 +60,14 @@ public class WebCrawler {
 	            infoMap.put("btn", By.xpath("/html/body/form/button"));
 	            load(moduUrl);
 	            login(moduId, moduPw, infoMap);
+
 	            //오늘 날짜만 보기
-	            driver.findElement(By.xpath("/html/body/div/ui-view/partner/div[1]/div[1]/button[3]")).click();
-	            Thread.sleep(2000);
+	            //driver.findElement(By.xpath("/html/body/div/ui-view/partner/div[1]/div[1]/button[3]")).click();
+	            element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/ui-view/partner/div[1]/div[1]/button[3]")));
+	            Thread.sleep(5000);
+	            element.click();
+	            Thread.sleep(5000);
+
 	            List<WebElement> elements = null;
 	            List<WebElement> btns = null;
 	            WebElement nextBtn = null;
@@ -66,66 +75,73 @@ public class WebCrawler {
 	            String startPage, prePage = "-1";
 	            int cnt = 1;
 	            parkingLotDtos = new LinkedList<>();
+	            btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
+	            // >> 5 페이지 간격으로 보여주는 단위
 	            do{
-	                btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
-	                nextBtn = driver.findElement(By.cssSelector("body > div > ui-view > partner > pagination > nav > ul > li:nth-child(7) > span"));
-	                startPage = btns.get(0).findElement(By.tagName("a")).getText();
-	                if(startPage.equals(prePage)) {
-	                    break;
-	                }
 
-	                for(int idx = 0, fin = btns.size(); idx < fin; idx++) {
-	                    btn = btns.get(idx);
+	                int fin = btns.size();
+	                int idx = 1;
+
+	                do {
+	                    //elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr")));
 	                    elements = driver.findElements(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr"));
+
 	                    for(WebElement e :elements) {
 	                        CarInfoDto dto = new CarInfoDto();
-	                        
-	        
-	                    	//날짜
-	                        String time =e.findElement(By.xpath("td[1]/div/span")).getText().replaceAll("\\n", " ");
-	                        LocalDateTime localDateTime = LocalDateTime.parse(time, 
-	     	                        		DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-	     	                dto.setDate(localDateTime);
-	     	                
-	     	                //장
-	     	                String parkingLotName = e.findElement(By.xpath("td[2]/div/span/a")).getText();
-	     	                dto.setParkingLotName(parkingLotName);
-	                        
-	     	               //차번호
+
+
+	                        //날짜
+	                        String time = e.findElement(By.xpath("td[1]/div/span")).getText().replaceAll("\\n", " ");
+	                        LocalDateTime localDateTime = LocalDateTime.parse(time,
+	                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+	                        dto.setDate(localDateTime);
+
+	                        //장
+	                        String parkingLotName = e.findElement(By.xpath("td[2]/div/span/a")).getText();
+	                        dto.setParkingLotName(parkingLotName);
+
+	                        //차번호
 	                        String[] carInfo = e.findElement(By.xpath("td[3]/div/span")).getText().split("\\n");
 	                        String carNum = carInfo[0];
 	                        dto.setCarNum(carNum);
-	                        
-	     	                //주차권
-	     	                String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
-	     	                dto.setTicket(ticketName);
-	     	                parkingLotDtos.add(dto);
+
+	                        //주차권
+	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
+	                        dto.setTicket(ticketName);
+	                        parkingLotDtos.add(dto);
 	                    }
-	                    if(idx + 1 < fin ) {
+	                    if(idx < fin ) {
 	                        //next page (idx page -> idx + 1 page)
-	                        btns.get(idx + 1).findElement(By.tagName("a")).click();
+	                        btns.get(idx).findElement(By.tagName("a")).click();
 	                        Thread.sleep(3000);
 	                    }
+	                }while(++idx <= fin);
+
+	                //페이지 5 이
+	                if(btns.size() < 5) {
+	                    break;
 	                }
+	                nextBtn = driver.findElement(By.cssSelector("body > div > ui-view > partner > pagination > nav > ul > li:nth-last-child(1) > span"));
+	                //nextBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("pagination li:nth-last-child(1) > span")));
+	                startPage = btns.get(0).findElement(By.tagName("a")).getText();
+
 	                // >> 버튼 클릭
 	                prePage = startPage;
 	                nextBtn.click();
-	                Thread.sleep(1000);
-
-	                //무한 루프 방지
-	                cnt++;
-	            }while(cnt < 100000);
+	                Thread.sleep(2000);
+	                btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
+	            }while(startPage.equals(prePage));
 
 	        } catch (Exception e) {
 	            e.printStackTrace();
-				return parkingLotDtos;
+	            return parkingLotDtos;
 	        } finally {
-	            driver.close();
+	            driver.quit();
 	        }
-	        
-			return parkingLotDtos;
+
+	        return parkingLotDtos;
 	    }
-	   
+	 
 	    public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
 	    	try{
 	            Map<String, By> infoMap = new HashMap<String, By>();
@@ -233,22 +249,34 @@ public class WebCrawler {
 	    private void login(String id, String pw, Map<String, By> infoMap) throws Exception{
 	        //아이디 입력
 	        // id 값으로도 찾을 수 있습니다.
+            //driver.findElement(infoMap.get("id")).sendKeys(id);
 
-	        element = driver.findElement(infoMap.get("id"));
+	        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("id")));
 	        // 크롤링으로 text를 입력하면 굉장히 빠릅니다, 인식하지 못한 상태에서 이벤트를 발생시키면, 제대로 작동하지 않기 때문에 thread sleep으로 기다려줍니다.
-	        Thread.sleep(500);
 	        element.sendKeys(id);
+	        
 	        // 유저 정보를 담은 객체에서 아이디값을 가져와서 넣어주면 되겠죠-
+            //driver.findElement(infoMap.get("pw")).sendKeys(pw + Keys.ENTER);
 
 	        //패스워드 입력 - 아이디와 마찬가지입니다.
-	        element = driver.findElement(infoMap.get("pw"));
-	        element.sendKeys(pw);
-
+	        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("pw")));
+	        element.sendKeys(pw + Keys.ENTER);
+	        sleep(10);
+            //driver.findElement(infoMap.get("btn")).click();
 
 	        //로그인 버튼 클릭
-	        element = driver.findElement(infoMap.get("btn"));
-	        element.click();
-
-	        Thread.sleep(6000);
+	        wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("btn"))).click();
+	       
 	    }
+	    public void sleep(int sec) {
+	    	driver.manage().timeouts().implicitlyWait(sec, TimeUnit.SECONDS);
+	    }
+	    
+		@Override
+		public String toString() {
+			return "WebCrawler [driver=" + driver + ", element=" + element + ", iParkUrl=" + iParkUrl + ", moduId="
+					+ moduId + ", moduPw=" + moduPw + ", moduUrl=" + moduUrl + ", infoMap=" + infoMap + "]";
+		}
+		
+	    
 }

@@ -9,10 +9,12 @@ import org.springframework.context.annotation.PropertySource;
 
 import com.macro.parking.crawler.WebCrawler;
 
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,7 @@ public class SeleniumConfig {
 	@Value("${modu.id}")
 	private String moduId;
 
-	@Value("${modu.pw}")
+	@Value("${modu.password}")
 	private String moduPw;
 
 	@Value("${modu.url}")
@@ -38,12 +40,15 @@ public class SeleniumConfig {
 	@Value("${web.driver.path}")
 	private String path;
 	
-    private WebDriver driver;
+	@Value("${web.explicit.wait}")
+	private int waitTime;
+	
 
 	@Bean
-	public WebCrawler getWebCrawler() {
+	public WebCrawler getWebCrawler(WebDriver driver, WebDriverWait wait) throws Exception {
 		WebCrawler webCrawler = new WebCrawler();
-
+		webCrawler.setDriver(driver);
+		webCrawler.setWait(wait);
 		webCrawler.setIParkUrl(iParkUrl);
 		webCrawler.setModuId(moduId);
 		webCrawler.setModuPw(moduPw);
@@ -51,23 +56,22 @@ public class SeleniumConfig {
 		return webCrawler;
 		
 	}
-	
 	@Bean
-    public WebDriver getDriver() {
-        return driver;
-    }
+	public WebDriverWait webDriverWait(WebDriver driver) throws Exception {
+		return new WebDriverWait(driver, waitTime);
+	}
 
     @Bean
     public WebDriver setupChromeDriver() throws Exception {
         System.setProperty(driverName, path);
-
+        WebDriver driver = null;
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--window-size=1366,768");
-        options.addArguments("--headless");
+//        options.addArguments("--headless");
         options.setProxy(null);
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        capabilities.setCapability("pageLoadStrategy", "none");
 
         try {
             /*
