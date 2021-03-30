@@ -6,12 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import com.macro.parking.crawler.WebCrawler;
+import com.macro.parking.intercepter.LogInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -33,23 +34,23 @@ public class WebMvcContextConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addViewControllers(final ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("mainpage");
+		registry.addViewController("/").setViewName("index");
 	}
 
 	@Bean
 	public InternalResourceViewResolver getInternalResourceViewResolver() {
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
 		resolver.setPrefix("/WEB-INF/views/");
-		resolver.setSuffix(".html");
+		resolver.setSuffix(".jsp");
 		return resolver;
 	}
 
 
-//	@Override
-//	public void addInterceptors(InterceptorRegistry registry) {
-//		registry.addInterceptor(new LogInterceptor());
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new LogInterceptor());
 //		registry.addInterceptor(new AuthenticationInterceptor());
-//	}
+	}
 //
 //	@Bean
 //	public MultipartResolver multipartResolver() {

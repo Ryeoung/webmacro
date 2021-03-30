@@ -21,7 +21,6 @@ import com.macro.parking.enums.MessageType;
 import lombok.Getter;
 import lombok.Setter;
 
-@Component
 @Getter
 @Setter
 public class WebCrawler {
@@ -37,23 +36,17 @@ public class WebCrawler {
 	private String moduUrl;
 	
 	private Map<String, By> infoMap;
+			
+	public WebCrawler() {
+		System.out.println("askdjfklasjdfklas");
+	}
 	
-	public  String webDriverId= "webdriver.chrome.driver";
-	public  String webDriverPath = "/usr/local/bin/chromedriver.exe";
-		
+	public WebCrawler(WebDriver driver) {
+		this.driver = driver;
+	}
 	
 
-	public void setting() {
-        //System Property SetUp
-        System.setProperty(webDriverId, webDriverPath);
-
-        //Driver SetUp
-        ChromeOptions options = new ChromeOptions();
-        options.setCapability("ignoreProtectedModeSettings", true);
-        driver = new ChromeDriver(options);
-    }
-
-	  public List<CarInfoDto> getDataFromModu() {
+	 public List<CarInfoDto> getDataFromModu() {
           List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 
 	        try {
