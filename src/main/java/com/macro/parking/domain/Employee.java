@@ -12,10 +12,10 @@ import javax.persistence.*;
 @ToString
 @Table
 public class Employee {
-    @Id
+	@Id
     @GeneratedValue
-    @Column
-    private int id;
+    @Column(name = "employee_id", nullable = false)
+    private int employeeId;
 
     @Column(name = "name", nullable = false)
     private String name;

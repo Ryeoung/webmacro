@@ -79,7 +79,7 @@ public class WebCrawler {
 	}
 
 	public List<CarInfoDto> getDataFromModu() {
-	        List<CarInfoDto> parkingLotDtos = new LinkedList<>();
+		 List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 	        try {
 	            infoMap = new HashMap<String, By>();
 	            infoMap.put("id", By.xpath("/html/body/form/div[1]/input"));
@@ -91,9 +91,9 @@ public class WebCrawler {
 	            //오늘 날짜만 보기
 	            //driver.findElement(By.xpath("/html/body/div/ui-view/partner/div[1]/div[1]/button[3]")).click();
 	            element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/ui-view/partner/div[1]/div[1]/button[3]")));
-	            Thread.sleep(5000);
+	            Thread.sleep(7000);
 	            element.click();
-	            Thread.sleep(5000);
+	            Thread.sleep(7000);
 
 	            List<WebElement> elements = null;
 	            List<WebElement> btns = null;
@@ -104,26 +104,32 @@ public class WebCrawler {
 	            parkingLotDtos = new LinkedList<>();
 	            btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
 	            // >> 5 페이지 간격으로 보여주는 단위
-	            craw:do{
-
+	            do{
 	                int fin = btns.size();
 	                int idx = 0;
 
 	                do {
-	                	if(idx < fin ) {
+	                    if(idx < fin ) {
 	                        //next page (idx page -> idx + 1 page)
-	                    	element = wait.until(ExpectedConditions.elementToBeClickable(btns.get(idx).findElement(By.tagName("a"))));
+	                        element = wait.until(ExpectedConditions.elementToBeClickable(btns.get(idx).findElement(By.tagName("a"))));
 	                        element.click();
 	                        Thread.sleep(3000);
 	                    }
 	                    //elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr")));
 	                    String trXpath = "/html/body/div/ui-view/partner/table[2]/tbody/tr";
-	                	elements = driver.findElements(By.xpath(trXpath));
+	                    elements = driver.findElements(By.xpath(trXpath));
 
-	                    for(WebElement e :elements) {
+	                    for(int rowIdx = 0; rowIdx < elements.size(); rowIdx++) {
+	                        WebElement e = elements.get(rowIdx);
+	                        String state = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath +"["+(rowIdx + 1) +"]"+"/td[7]"))).getText();
+
+
+	                        if(state.equals("결제취소")) {
+	                            continue;
+	                        }
 	                        CarInfoDto dto = new CarInfoDto();
-	                        
-	        	            element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "/td[1]/div/span")));
+
+	                        element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "["+(rowIdx + 1) +"]"+"/td[1]/div/span")));
 	                        //날짜
 	                        String time = element.getText().replaceAll("\\n", " ");
 	                        LocalDateTime localDateTime = LocalDateTime.parse(time,
@@ -142,9 +148,10 @@ public class WebCrawler {
 	                        //주차권
 	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
 	                        dto.setTicket(ticketName);
-	                        dto.setMessage("");
 	                        parkingLotDtos.add(dto);
 	                    }
+
+
 	                }while(++idx < fin);
 
 	                //페이지 5 이
@@ -153,25 +160,20 @@ public class WebCrawler {
 	                }
 	                nextBtn = driver.findElement(By.cssSelector("body > div > ui-view > partner > pagination > nav > ul > li:nth-last-child(1) > span"));
 	                //nextBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("pagination li:nth-last-child(1) > span")));
-	                startPage = btns.get(0).findElement(By.tagName("a")).getText();
+	                prePage = startPage;
 
 	                // >> 버튼 클릭
-	                prePage = startPage;
 	                nextBtn.click();
-	                Thread.sleep(2000);
+	                Thread.sleep(3000);
 	                btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
-	            }while(startPage.equals(prePage));
+	                startPage = btns.get(0).findElement(By.tagName("a")).getText();
+	            }while(!startPage.equals(prePage));
 
-	        } catch(NoSuchSessionException e) {
-//	        	this.setWebDriver();
-//	        	return getDataFromModu();
-	        	e.printStackTrace();
-	        	
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	            return parkingLotDtos;
 	        } finally {
-	            driver.close();
+	            driver.quit();
 	        }
 
 	        return parkingLotDtos;

@@ -6,7 +6,9 @@ const template = {
 						                <div class="carNum">{{carNum}}</div>
 						                <div class="ticket">{{ticket}}</div>
 						                <div class="state">{{message}}</div>
-						                <button class="ticketCheck">주차확인</button>
+						                <div class="btnArea">
+    										<button class="ticketCheck">주차확인</button>
+    									</div>
 						            </div>
                             {{/each}}`
 }

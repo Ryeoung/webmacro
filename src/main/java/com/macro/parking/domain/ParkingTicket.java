@@ -16,8 +16,8 @@ import java.util.List;
 public class ParkingTicket {
     @Id
     @GeneratedValue
-    @Column(name = "id", nullable = false)
-    private int id;
+    @Column(name = "parking_ticket_id", nullable = false)
+    private int parkingTicketId;
 
     @Column(name = "name", nullable = false)
     private String name;

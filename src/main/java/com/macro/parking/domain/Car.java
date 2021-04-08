@@ -9,8 +9,8 @@ import java.util.List;
 public class Car {
     @Id
     @GeneratedValue
-    @Column(name = "id", nullable = false)
-    private int id;
+    @Column(name = "car_id", nullable = false)
+    private int carId;
 
     @Column(name = "number", nullable = false)
     private String number;

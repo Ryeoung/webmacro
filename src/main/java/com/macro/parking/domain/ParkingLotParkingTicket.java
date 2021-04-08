@@ -12,18 +12,19 @@ import javax.persistence.*;
 @ToString
 @Table(name = "parking_lot_parking_ticket")
 public class ParkingLotParkingTicket {
-    @Id
+	@Id
     @GeneratedValue
-    private int id;
-
-    @ManyToOne
-    @JoinColumn(name = "id", insertable=false, updatable = false)
+    @Column(name = "parking_lot_parking_ticket_id", nullable = false)
+    private int parkingLotParkingTicketId;
+    
+	@ManyToOne
+    @JoinColumn(name = "parking_lot_id", insertable=false, updatable = false)
     private ParkingLot parkingLot;
 
     @ManyToOne
-    @JoinColumn(name = "id", insertable=false, updatable = false)
+    @JoinColumn(name = "parking_ticket_id", insertable=false, updatable = false)
     private ParkingTicket parkingTicket;
 
-
+    
 
 }
