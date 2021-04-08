@@ -6,12 +6,12 @@ import templateParser from "./templateParser.js";
 
 class App {
     constructor() {
-        this.cardList = document.getElementsByClassName("cardList");
+        this.cardList = document.getElementById("check");
         this.requestAllCarInfo();
     }
     requestAllCarInfo() {
         ajax({
-            url : "https://localhost:8080/api/cars",
+            url : "/parking/api/cars",
             method : "GET",
             contentType : "application/json; charset=utf-8",
         }, this.makeCardOfCar.bind(this));
@@ -20,7 +20,7 @@ class App {
 
     makeCardOfCar(data) {
         let carInfos = data;
-        let resultHTML = templateParser.getResultHTML(template.categoryListTemplate, categories);
+        let resultHTML = templateParser.getResultHTML(template.categoryListTemplate, carInfos);
         let cards = document.createRange().createContextualFragment(resultHTML);
         this.cardList.appendChild(cards);
 

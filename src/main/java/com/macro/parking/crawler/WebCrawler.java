@@ -11,10 +11,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
@@ -41,6 +44,8 @@ public class WebCrawler {
 	
 	private Map<String, By> infoMap;
     private WebDriverWait wait;
+    private String driverName;
+    private String path;
     
 	public WebCrawler() {
 		System.out.println("askdjfklasjdfklas");
@@ -50,8 +55,30 @@ public class WebCrawler {
 		this.driver = driver;
 	}
 	
+	public void setWebDriver() {
+		System.setProperty(driverName, path);
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--window-size=1366,768");
+//        options.addArguments("--headless");
+        options.setProxy(null);
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
-	 public List<CarInfoDto> getDataFromModu() {
+        try {
+            /*
+             *
+             * @ params
+             * option : headless
+             *
+             */
+            driver = new ChromeDriver(capabilities);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+	}
+
+	public List<CarInfoDto> getDataFromModu() {
 	        List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 	        try {
 	            infoMap = new HashMap<String, By>();
@@ -72,26 +99,33 @@ public class WebCrawler {
 	            List<WebElement> btns = null;
 	            WebElement nextBtn = null;
 	            WebElement btn = null;
-	            String startPage, prePage = "-1";
+	            String startPage = "1", prePage = "-1";
 	            int cnt = 1;
 	            parkingLotDtos = new LinkedList<>();
 	            btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
 	            // >> 5 페이지 간격으로 보여주는 단위
-	            do{
+	            craw:do{
 
 	                int fin = btns.size();
-	                int idx = 1;
+	                int idx = 0;
 
 	                do {
+	                	if(idx < fin ) {
+	                        //next page (idx page -> idx + 1 page)
+	                    	element = wait.until(ExpectedConditions.elementToBeClickable(btns.get(idx).findElement(By.tagName("a"))));
+	                        element.click();
+	                        Thread.sleep(3000);
+	                    }
 	                    //elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr")));
-	                    elements = driver.findElements(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr"));
+	                    String trXpath = "/html/body/div/ui-view/partner/table[2]/tbody/tr";
+	                	elements = driver.findElements(By.xpath(trXpath));
 
 	                    for(WebElement e :elements) {
 	                        CarInfoDto dto = new CarInfoDto();
-
-
+	                        
+	        	            element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "/td[1]/div/span")));
 	                        //날짜
-	                        String time = e.findElement(By.xpath("td[1]/div/span")).getText().replaceAll("\\n", " ");
+	                        String time = element.getText().replaceAll("\\n", " ");
 	                        LocalDateTime localDateTime = LocalDateTime.parse(time,
 	                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 	                        dto.setDate(localDateTime);
@@ -108,14 +142,10 @@ public class WebCrawler {
 	                        //주차권
 	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
 	                        dto.setTicket(ticketName);
+	                        dto.setMessage("");
 	                        parkingLotDtos.add(dto);
 	                    }
-	                    if(idx < fin ) {
-	                        //next page (idx page -> idx + 1 page)
-	                        btns.get(idx).findElement(By.tagName("a")).click();
-	                        Thread.sleep(3000);
-	                    }
-	                }while(++idx <= fin);
+	                }while(++idx < fin);
 
 	                //페이지 5 이
 	                if(btns.size() < 5) {
@@ -132,11 +162,16 @@ public class WebCrawler {
 	                btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
 	            }while(startPage.equals(prePage));
 
+	        } catch(NoSuchSessionException e) {
+//	        	this.setWebDriver();
+//	        	return getDataFromModu();
+	        	e.printStackTrace();
+	        	
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	            return parkingLotDtos;
 	        } finally {
-	            driver.quit();
+	            driver.close();
 	        }
 
 	        return parkingLotDtos;
@@ -261,16 +296,13 @@ public class WebCrawler {
 	        //패스워드 입력 - 아이디와 마찬가지입니다.
 	        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("pw")));
 	        element.sendKeys(pw + Keys.ENTER);
-	        sleep(10);
             //driver.findElement(infoMap.get("btn")).click();
 
 	        //로그인 버튼 클릭
 	        wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("btn"))).click();
 	       
 	    }
-	    public void sleep(int sec) {
-	    	driver.manage().timeouts().implicitlyWait(sec, TimeUnit.SECONDS);
-	    }
+	    
 	    
 		@Override
 		public String toString() {

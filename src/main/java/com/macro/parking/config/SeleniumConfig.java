@@ -48,6 +48,8 @@ public class SeleniumConfig {
 	public WebCrawler getWebCrawler(WebDriver driver, WebDriverWait wait) throws Exception {
 		WebCrawler webCrawler = new WebCrawler();
 		webCrawler.setDriver(driver);
+		webCrawler.setDriverName(driverName);
+		webCrawler.setPath(path);
 		webCrawler.setWait(wait);
 		webCrawler.setIParkUrl(iParkUrl);
 		webCrawler.setModuId(moduId);
@@ -67,7 +69,7 @@ public class SeleniumConfig {
         WebDriver driver = null;
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--window-size=1366,768");
-//        options.addArguments("--headless");
+        options.addArguments("--headless");
         options.setProxy(null);
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
