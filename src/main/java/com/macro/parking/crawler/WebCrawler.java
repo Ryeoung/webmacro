@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PageLoadStrategy;
@@ -18,6 +19,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
@@ -73,6 +75,7 @@ public class WebCrawler {
              *
              */
             driver = new ChromeDriver(capabilities);
+            wait = new WebDriverWait(driver, 100);
         } catch (Exception e) {
         	e.printStackTrace();
         }
@@ -171,7 +174,6 @@ public class WebCrawler {
 
 	        } catch (Exception e) {
 	            e.printStackTrace();
-	            return parkingLotDtos;
 	        } finally {
 	            driver.quit();
 	        }
@@ -179,129 +181,153 @@ public class WebCrawler {
 	        return parkingLotDtos;
 	    }
 	 
-	    public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
-	    	try{
-	            Map<String, By> infoMap = new HashMap<String, By>();
-	            infoMap.put("id", By.id("id"));
-	            infoMap.put("pw", By.id("password"));
-	            infoMap.put("btn", By.id("login"));
-	            load(iParkUrl);
+	private void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
+        try{
+            Map<String, By> infoMap = new HashMap<String, By>();
+            infoMap.put("id", By.id("id"));
+            infoMap.put("pw", By.id("password"));
+            infoMap.put("btn", By.id("login"));
+            load(iParkUrl);
 
-	            driver.findElement(By.className("btn-skip")).click();
-	            Thread.sleep(500);
-	            driver.findElement(By.className("btn-menu-close")).click();
-	            Thread.sleep(500);
-	            String siteId = id;
-	            String sitePw = pwd;
-	            login(siteId, sitePw, infoMap);
-	            
-	            for(int idx = 0, fin = CarInfoList.size(); idx < fin; idx++) {
-	            
-	            	CarInfoDto carInfo  = CarInfoList.get(idx);
-	            	//popp 제거
-	            	deletePopUp();
-	            
-		            String carNum = carInfo.getCarNum();
-		           if(isCarInParkingLot(carNum)) {
-		               //System.out.println("차 있음");
-		               driver.findElement(By.id("next")).click();
-		               Thread.sleep(10000);
+            driver.findElement(By.className("btn-skip")).click();
+            Thread.sleep(500);
+            driver.findElement(By.className("btn-menu-close")).click();
+            Thread.sleep(500);
+            String siteId = id;
+            String sitePw = pwd;
+            login(siteId, sitePw, infoMap);
 
-		               //주차권 구매 페이지
-		               List<WebElement> buyedTickets = driver.findElements(By.xpath("//*[@id=\"myDcList\"]/tr"));
-		               if(buyedTickets.size() > 0) {
-		                   //System.out.println("이미 구매 했음");
-		            	   carInfo.setMessage(MessageType.TICKET_EXIST_ERROR.getMessage());
-		               } else {
-		                   //주차권 구매
-		                   List<WebElement> saleTickets = driver.findElements(By.xpath("//*[@id=\"productList\"]/tr["));
-		                   for(WebElement ticket :saleTickets) {
-		                       String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
-		                       System.out.println(ticketName);
+            for(int idx = 0, fin = CarInfoList.size(); idx < fin; idx++) {
 
-		                       //주차권 구입 버튼
-		                       WebElement buyBtn = ticket.findElement(By.xpath("td[3]/button"));
-		                       buyBtn.click();
+                CarInfoDto carInfo  = CarInfoList.get(idx);
+                //popp 제거
+                deletePopUp();
 
-		                       //최종 확인 pop 승락
-		                       Thread.sleep(1000);
-		                       driver.findElement(By.id("popupOk")).click();
-			            	   carInfo.setMessage(MessageType.SUCCESS.getMessage());
+                String carNum = carInfo.getCarNum();
+                if(isCarInParkingLot(carNum)) {
+                    driver.findElement(By.id("next")).click();
+                    
+                    readyPageLoad();
+                    
+                    //주차권 구매 페이지
+                    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("myDcList")));
+                    Thread.sleep(1000);
+                    List<WebElement> emptyCheck = driver.findElements(By.cssSelector("#myDcList > tr > .empty"));
+                    if(emptyCheck.size() == 0) {
+                        //구매했을 경
+                        carInfo.setMessage(MessageType.TICKET_EXIST_ERROR.getMessage());
+                    } else {
+                        //주차권 구매
+                        String ticketXpath = "//*[@id=\"productList\"]/tr";
+                        List<WebElement> saleTickets = driver.findElements(By.xpath(ticketXpath));
+                        for(WebElement ticket :saleTickets) {
+                            String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
+                            System.out.println(ticketName);
 
-		                       break;
-		                   }
-		               }
-		               //검색창 가기
-		               driver.findElement(By.id("goMain")).click();
-		               Thread.sleep(1000);
-		           } else {
-		        	   //치 없
-	            	   carInfo.setMessage(MessageType.NO_CAR_ERROR.getMessage());
-		               //검색창으로 되돌아 가기
-		               driver.findElement(By.xpath("//*[@id=\"headerTitle\"]")).click();
-		               Thread.sleep(2000);
-		           }
-	            }
-	            
+                            //주차권 구입 버튼
+                            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
+//
 
-	        } catch(Exception e ) {
-	            e.printStackTrace();
-	        } finally {
-	        	driver.close();
-	        }
-	    }
+                            //최종 확인 pop 승락 2번
+                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
+                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
+
+                            carInfo.setMessage(MessageType.SUCCESS.getMessage());
+
+                            break;
+                        }
+                    }
+                    //검색창 가기
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("goMain")));
+                    driver.findElement(By.id("goMain")).click();
+                    Thread.sleep(1000);
+                } else {
+                    //치 없
+                    carInfo.setMessage(MessageType.NO_CAR_ERROR.getMessage());
+                    //검색창으로 되돌아 가기
+                    driver.findElement(By.xpath("//*[@id=\"headerTitle\"]")).click();
+                    Thread.sleep(2000);
+                }
+            }
+
+
+        } catch(Exception e ) {
+            e.printStackTrace();
+        } finally {
+            driver.quit();
+        }
+    }
 
 	    private void deletePopUp() throws InterruptedException {
-	    	driver.findElement(By.xpath("//*[@id=\"gohome\"]")).click();
-            Thread.sleep(500);
-
-            driver.findElement(By.id("start")).click();
-            Thread.sleep(500);
-	    }
-
-	    private boolean isCarInParkingLot(String carNum) throws Exception{
-	        boolean flag = false;
-	        //뒤에 번호 4자리만...
-	        String fourNumOfCar = carNum.substring(carNum.length() - 4, carNum.length());
-	        
-	        driver.findElement(By.id("carNumber")).sendKeys(fourNumOfCar);
+	        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"gohome\"]"))).click();
 	        Thread.sleep(500);
-	        driver.findElement(By.xpath("//*[@id=\"container\"]/section[2]/div[2]/div/button")).click();
-	        Thread.sleep(4000);
+
+	        driver.findElement(By.id("start")).click();
+	    }
+	    
+	    private boolean isCarInParkingLot(String carNum) throws Exception{
+	    	boolean flag = false;
+	        String fourNumOfCar = carNum.substring(carNum.length() - 4, carNum.length());
+	        //차번호 4자리 검색칸에 넣기
+	        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("carNumber"))).sendKeys(fourNumOfCar);
+
+	        //검색 버튼 클릭
+	        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"container\"]/section[2]/div[2]/div/button"))).click();
 	        
-	        List<WebElement> trTags = driver.findElements(By.xpath("//*[@id=\"carList\"]/tr"));
+	        readyPageLoad();
+	        
+	        //다음 페이지에서 겁색된 차량 리스트를 받아오기
+	        List<WebElement> trTags = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id=\"carList\"]/tr")));
 	        for(WebElement trTag :trTags) {
 	            String parkingCarNum = trTag.findElement(By.xpath("td[2]")).getText();
 	            if(carNum.equals(parkingCarNum)) {
+	                trTag.click();
 	                flag = true;
 	                break;
 	            }
 	        }
+	        
 	        return flag;
 	    }
-
+	    
+	    private void readyPageLoad() {
+	        wait.until(new ExpectedCondition<Boolean>() {
+	            public Boolean apply(WebDriver wdriver) {
+	                return ((JavascriptExecutor) driver).executeScript(
+	                        "return document.readyState"
+	                ).equals("complete");
+	            }
+	        });
+	    }
+	    
 	    private void load(String url) {
 	        driver.get(url);
 	    }
+	    
 	    private void login(String id, String pw, Map<String, By> infoMap) throws Exception{
-	        //아이디 입력
-	        // id 값으로도 찾을 수 있습니다.
-            //driver.findElement(infoMap.get("id")).sendKeys(id);
+	    	try {
+	    		   //아이디 입력
+		        // id 값으로도 찾을 수 있습니다.
+	            //driver.findElement(infoMap.get("id")).sendKeys(id);
 
-	        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("id")));
-	        // 크롤링으로 text를 입력하면 굉장히 빠릅니다, 인식하지 못한 상태에서 이벤트를 발생시키면, 제대로 작동하지 않기 때문에 thread sleep으로 기다려줍니다.
-	        element.sendKeys(id);
-	        
-	        // 유저 정보를 담은 객체에서 아이디값을 가져와서 넣어주면 되겠죠-
-            //driver.findElement(infoMap.get("pw")).sendKeys(pw + Keys.ENTER);
+		        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("id")));
+		        // 크롤링으로 text를 입력하면 굉장히 빠릅니다, 인식하지 못한 상태에서 이벤트를 발생시키면, 제대로 작동하지 않기 때문에 thread sleep으로 기다려줍니다.
+		        element.sendKeys(id);
+		        
+		        // 유저 정보를 담은 객체에서 아이디값을 가져와서 넣어주면 되겠죠-
+	            //driver.findElement(infoMap.get("pw")).sendKeys(pw + Keys.ENTER);
 
-	        //패스워드 입력 - 아이디와 마찬가지입니다.
-	        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("pw")));
-	        element.sendKeys(pw + Keys.ENTER);
-            //driver.findElement(infoMap.get("btn")).click();
+		        //패스워드 입력 - 아이디와 마찬가지입니다.
+		        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("pw")));
+		        element.sendKeys(pw + Keys.ENTER);
+	            //driver.findElement(infoMap.get("btn")).click();
 
-	        //로그인 버튼 클릭
-	        wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("btn"))).click();
+		        //로그인 버튼 클릭
+		        wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("btn"))).click();
+	    	} catch(Exception e) {
+	    		System.out.println("로그인 에");
+	    		
+	    	}
 	       
 	    }
 	    

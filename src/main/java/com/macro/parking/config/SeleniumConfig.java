@@ -45,49 +45,51 @@ public class SeleniumConfig {
 	
 
 	@Bean
-	public WebCrawler getWebCrawler(WebDriver driver, WebDriverWait wait) throws Exception {
+	public WebCrawler getWebCrawler() throws Exception {
 		WebCrawler webCrawler = new WebCrawler();
-		webCrawler.setDriver(driver);
+		//webCrawler.setDriver(driver);
 		webCrawler.setDriverName(driverName);
 		webCrawler.setPath(path);
-		webCrawler.setWait(wait);
+		//webCrawler.setWait(wait);
 		webCrawler.setIParkUrl(iParkUrl);
 		webCrawler.setModuId(moduId);
 		webCrawler.setModuPw(moduPw);
 		webCrawler.setModuUrl(moduUrl);
+		webCrawler.setDriverName(driverName);
+		webCrawler.setPath(path);
 		return webCrawler;
 		
 	}
-	@Bean
-	public WebDriverWait webDriverWait(WebDriver driver) throws Exception {
-		return new WebDriverWait(driver, waitTime);
-	}
+//	@Bean
+//	public WebDriverWait webDriverWait(WebDriver driver) throws Exception {
+//		return new WebDriverWait(driver, waitTime);
+//	}
 
-    @Bean
-    public WebDriver setupChromeDriver() throws Exception {
-        System.setProperty(driverName, path);
-        WebDriver driver = null;
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--window-size=1366,768");
-        options.addArguments("--headless");
-        options.setProxy(null);
-        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-
-        try {
-            /*
-             *
-             * @ params
-             * option : headless
-             *
-             */
-            driver = new ChromeDriver(capabilities);
-        } catch (Exception e) {
-            logger.error("### [driver error] msg: {}, cause: {}", e.getMessage(), e.getCause());
-        }
-
-        return driver;
-    }
+//    @Bean
+//    public WebDriver setupChromeDriver() throws Exception {
+//        System.setProperty(driverName, path);
+//        WebDriver driver = null;
+//        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--window-size=1366,768");
+//        options.addArguments("--headless");
+//        options.setProxy(null);
+//        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+//        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+//        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+//
+//        try {
+//            /*
+//             *
+//             * @ params
+//             * option : headless
+//             *
+//             */
+//            driver = new ChromeDriver(capabilities);
+//        } catch (Exception e) {
+//            logger.error("### [driver error] msg: {}, cause: {}", e.getMessage(), e.getCause());
+//        }
+//
+//        return driver;
+//    }
 
 }
