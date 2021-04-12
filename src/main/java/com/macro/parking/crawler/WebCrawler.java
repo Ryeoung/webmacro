@@ -130,6 +130,7 @@ public class WebCrawler {
 	                        if(state.equals("결제취소")) {
 	                            continue;
 	                        }
+	                        
 	                        CarInfoDto dto = new CarInfoDto();
 
 	                        element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "["+(rowIdx + 1) +"]"+"/td[1]/div/span")));
