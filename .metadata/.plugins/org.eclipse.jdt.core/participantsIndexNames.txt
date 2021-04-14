@@ -1,3 +1,0 @@
-INDEX VERSION 1.131
-/Users/hong/Documents/eclipseJava/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3092301974.index
-/parking/src/main/java
