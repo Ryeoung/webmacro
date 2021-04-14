@@ -98,7 +98,7 @@ hs_err_pid*
 ### Java-Web ###
 ## ignoring target file
 target/
-
+resources/
 
 # Created by https://www.toptal.com/developers/gitignore/api/maven
 # Edit at https://www.toptal.com/developers/gitignore?templates=maven
