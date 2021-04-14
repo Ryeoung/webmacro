@@ -25,7 +25,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.dto.CarInfoDto;
-import com.macro.parking.enums.MessageType;
+import com.macro.parking.enums.StatusCodeType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -215,7 +215,7 @@ public class WebCrawler {
                     List<WebElement> emptyCheck = driver.findElements(By.cssSelector("#myDcList > tr > .empty"));
                     if(emptyCheck.size() == 0) {
                         //구매했을 경
-                        carInfo.setMessage(MessageType.TICKET_EXIST_ERROR.getMessage());
+                        carInfo.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
                     } else {
                         //주차권 구매
                         String ticketXpath = "//*[@id=\"productList\"]/tr";
@@ -231,7 +231,7 @@ public class WebCrawler {
 //                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
 //                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
 //
-//                            carInfo.setMessage(MessageType.SUCCESS.getMessage());
+//                            carInfo.setCode(StatusCodeType.SUCCESS.getCode());
 //
 //                            break;
                         }
@@ -242,7 +242,7 @@ public class WebCrawler {
                     Thread.sleep(1000);
                 } else {
                     //치 없
-                    carInfo.setMessage(MessageType.NO_CAR_ERROR.getMessage());
+                    carInfo.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
                     //검색창으로 되돌아 가기
                     driver.findElement(By.xpath("//*[@id=\"headerTitle\"]")).click();
                     Thread.sleep(2000);
