@@ -50,7 +50,6 @@ public class WebCrawler {
     private String path;
     
 	public WebCrawler() {
-		System.out.println("askdjfklasjdfklas");
 	}
 	
 	public WebCrawler(WebDriver driver) {
@@ -182,7 +181,7 @@ public class WebCrawler {
 	        return parkingLotDtos;
 	    }
 	 
-	private void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
+	public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
         try{
             Map<String, By> infoMap = new HashMap<String, By>();
             infoMap.put("id", By.id("id"));
@@ -223,7 +222,6 @@ public class WebCrawler {
                         List<WebElement> saleTickets = driver.findElements(By.xpath(ticketXpath));
                         for(WebElement ticket :saleTickets) {
                             String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
-                            System.out.println(ticketName);
 
                             //주차권 구입 버튼
                             wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
@@ -281,7 +279,9 @@ public class WebCrawler {
 	        List<WebElement> trTags = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id=\"carList\"]/tr")));
 	        for(WebElement trTag :trTags) {
 	            String parkingCarNum = trTag.findElement(By.xpath("td[2]")).getText();
-	            if(carNum.equals(parkingCarNum)) {
+	            if(carNum.equals(parkingCarNum) || 
+	            		carNum.indexOf(parkingCarNum) >= 0 || 
+	            		parkingCarNum.indexOf(carNum) >= 0) {
 	                trTag.click();
 	                flag = true;
 	                break;
