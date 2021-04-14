@@ -221,19 +221,19 @@ public class WebCrawler {
                         String ticketXpath = "//*[@id=\"productList\"]/tr";
                         List<WebElement> saleTickets = driver.findElements(By.xpath(ticketXpath));
                         for(WebElement ticket :saleTickets) {
-                            String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
-
-                            //주차권 구입 버튼
-                            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
+//                            String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
 //
-
-                            //최종 확인 pop 승락 2번
-                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
-                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
-
-                            carInfo.setMessage(MessageType.SUCCESS.getMessage());
-
-                            break;
+//                            //주차권 구입 버튼
+//                            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
+////
+//
+//                            //최종 확인 pop 승락 2번
+//                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
+//                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
+//
+//                            carInfo.setMessage(MessageType.SUCCESS.getMessage());
+//
+//                            break;
                         }
                     }
                     //검색창 가기
