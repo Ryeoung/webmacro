@@ -28,6 +28,7 @@ public class MainController {
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo() {
 		List<CarInfoDto> carList = crawlerService.getDataFromModu();
+		System.out.println(carList.size());
 		return carList;
 	}
 	

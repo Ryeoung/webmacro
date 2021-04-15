@@ -115,7 +115,7 @@ public class WebCrawler {
 	                        //next page (idx page -> idx + 1 page)
 	                        element = wait.until(ExpectedConditions.elementToBeClickable(btns.get(idx).findElement(By.tagName("a"))));
 	                        element.click();
-	                        Thread.sleep(3000);
+	                        Thread.sleep(4000);
 	                    }
 	                    //elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr")));
 	                    String trXpath = "/html/body/div/ui-view/partner/table[2]/tbody/tr";
@@ -167,7 +167,7 @@ public class WebCrawler {
 
 	                // >> 버튼 클릭
 	                nextBtn.click();
-	                Thread.sleep(3000);
+	                Thread.sleep(4000);
 	                btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
 	                startPage = btns.get(0).findElement(By.tagName("a")).getText();
 	            }while(!startPage.equals(prePage));
