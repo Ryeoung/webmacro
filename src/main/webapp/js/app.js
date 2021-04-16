@@ -6,16 +6,11 @@ import templateParser from "./templateParser.js";
 
 class App {
     constructor() {
-        const OK = "ok";
-        const LOGIN_ERROR = "fail01";
-        const NO_CAR_ERROR = "fail02";
-        const TICKET_EXIST_ERROR = "fail03";
-
         this.checkList = document.getElementById("check");
         this.checkedList = document.getElementById("checked");
         this.pushTicketBtn = document.getElementById("pushTicket");
         this.checkCards = Array.from(this.checkList.children);
-//        this.requestAllCarInfo();
+        this.requestAllCarInfo();
         this.addClickEventToPushTicketBtn();
 
     }
@@ -44,7 +39,7 @@ class App {
     }
 
     clickEventHandlerAboutPushTicket(event) {
-        let reqData = [];
+    	let reqData = [];
         this.checkCards.forEach(card => {
             let cardData = {};
             
@@ -70,11 +65,17 @@ class App {
     }
 
     clickEventOfPushTicketSuccess(data) {
+    	const OK = "ok";
+        const LOGIN_ERROR = "fail01";
+        const NO_CAR_ERROR = "fail02";
+        const TICKET_EXIST_ERROR = "fail03";
+        
         this.checkList.innerHTML = "";
         let carInfos = data;
         let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);
         let cards = document.createRange().createContextualFragment(resultHTML);
         let div = document.createElement("div");
+        
         div.appendChild(cards);
 
         Array.from(div.children).forEach(card => {
@@ -92,6 +93,8 @@ class App {
             } else if(status === TICKET_EXIST_ERROR) {
                 stateNode.innerHTML = "이미 주차권이 있습니다.";
                 this.checkedList.appendChild(card);
+            } else if(status === NO_CAR_ERROR) {
+            	stateNode.innerHTML = "차가 아직 안 왔습니다.";
             }
         });
     }

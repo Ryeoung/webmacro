@@ -93,9 +93,9 @@ public class WebCrawler {
 	            //오늘 날짜만 보기
 	            //driver.findElement(By.xpath("/html/body/div/ui-view/partner/div[1]/div[1]/button[3]")).click();
 	            element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/ui-view/partner/div[1]/div[1]/button[3]")));
-	            Thread.sleep(7000);
+	            Thread.sleep(5000);
 	            element.click();
-	            Thread.sleep(7000);
+	            Thread.sleep(5000);
 
 	            List<WebElement> elements = null;
 	            List<WebElement> btns = null;
@@ -167,7 +167,7 @@ public class WebCrawler {
 
 	                // >> 버튼 클릭
 	                nextBtn.click();
-	                Thread.sleep(4000);
+	                Thread.sleep(3000);
 	                btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
 	                startPage = btns.get(0).findElement(By.tagName("a")).getText();
 	            }while(!startPage.equals(prePage));
@@ -188,10 +188,14 @@ public class WebCrawler {
             infoMap.put("pw", By.id("password"));
             infoMap.put("btn", By.id("login"));
             load(iParkUrl);
+            
+            Thread.sleep(1000);
+            wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-skip"))).click();
+            //driver.findElement(By.className("btn-skip")).click();
+            Thread.sleep(1000);
+            wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-menu-close"))).click();
 
-            driver.findElement(By.className("btn-skip")).click();
-            Thread.sleep(500);
-            driver.findElement(By.className("btn-menu-close")).click();
+//            driver.findElement(By.className("btn-menu-close")).click();
             Thread.sleep(500);
             String siteId = id;
             String sitePw = pwd;
@@ -205,6 +209,7 @@ public class WebCrawler {
 
                 String carNum = carInfo.getCarNum();
                 if(isCarInParkingLot(carNum)) {
+                	Thread.sleep(1000);
                     driver.findElement(By.id("next")).click();
                     
                     readyPageLoad();
@@ -243,8 +248,10 @@ public class WebCrawler {
                 } else {
                     //치 없
                     carInfo.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
+                    Thread.sleep(500);
                     //검색창으로 되돌아 가기
-                    driver.findElement(By.xpath("//*[@id=\"headerTitle\"]")).click();
+                    wait.until(ExpectedConditions.elementToBeClickable(By.id("headerTitle"))).click();;
+//                    driver.findElement(By.xpath("//*[@id=\"headerTitle\"]")).click();
                     Thread.sleep(2000);
                 }
             }
@@ -321,13 +328,13 @@ public class WebCrawler {
 
 		        //패스워드 입력 - 아이디와 마찬가지입니다.
 		        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("pw")));
-		        element.sendKeys(pw + Keys.ENTER);
+		        element.sendKeys(pw);
 	            //driver.findElement(infoMap.get("btn")).click();
 
 		        //로그인 버튼 클릭
 		        wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("btn"))).click();
 	    	} catch(Exception e) {
-	    		System.out.println("로그인 에");
+	    		e.printStackTrace();
 	    		
 	    	}
 	       
