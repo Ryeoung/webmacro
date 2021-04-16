@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "parking_ticket")
 public class ParkingTicket {
     @Id

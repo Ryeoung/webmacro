@@ -11,7 +11,6 @@ import lombok.ToString;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "car_parking_lot")
 public class CarParkingLot {
 	 @Id

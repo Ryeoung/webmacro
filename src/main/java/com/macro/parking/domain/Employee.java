@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table
 public class Employee {
 	@Id
@@ -36,6 +35,6 @@ public class Employee {
     private int bankAccount;
 
     @ManyToOne
-    @JoinColumn(name = "id", insertable=false, updatable = false)
+    @JoinColumn(name = "parking_lot_id", insertable=false, updatable = false)
     private ParkingLot parkingLot;
 }

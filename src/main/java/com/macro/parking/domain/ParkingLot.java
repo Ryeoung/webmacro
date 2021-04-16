@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "parking_lot")
 public class ParkingLot {
     @Id
@@ -48,4 +47,11 @@ public class ParkingLot {
 
     @OneToMany(mappedBy = "parkingLot")
     private List<Employee> employees = new ArrayList<>();
+
+	@Override
+	public String toString() {
+		return "ParkingLot [parkingLotId=" + parkingLotId + ", name=" + name + ", website=" + website + ", webId="
+				+ webId + ", webPwd=" + webPwd + "]";
+	}
+    
 }

@@ -88,3 +88,7 @@ button:hover{
     background-color: white;
     color: black;
 }
+#checked {
+    margin-top: 20px;
+    background-color: dimgrey;
+}

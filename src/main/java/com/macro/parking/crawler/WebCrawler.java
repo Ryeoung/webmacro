@@ -310,6 +310,7 @@ public class WebCrawler {
 	    		   //아이디 입력
 		        // id 값으로도 찾을 수 있습니다.
 	            //driver.findElement(infoMap.get("id")).sendKeys(id);
+	            Thread.sleep(500);
 
 		        element = wait.until(ExpectedConditions.visibilityOfElementLocated(infoMap.get("id")));
 		        // 크롤링으로 text를 입력하면 굉장히 빠릅니다, 인식하지 못한 상태에서 이벤트를 발생시키면, 제대로 작동하지 않기 때문에 thread sleep으로 기다려줍니다.

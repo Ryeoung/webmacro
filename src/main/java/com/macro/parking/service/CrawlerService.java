@@ -66,6 +66,7 @@ public class CrawlerService {
 	private void addTicketByParkingLot(List<CarInfoDto> list) {
 		CarInfoDto carInfoDto = list.get(0);
 		ParkingLot parkingLot = parkingLotDao.findByName(carInfoDto.getParkingLotName());
+		System.out.println(parkingLot);
 		crawler.setWebDriver();
 		crawler.addTicketByParkingLot(list, parkingLot.getWebId(), parkingLot.getWebPwd());
 		

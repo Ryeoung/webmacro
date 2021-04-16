@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "parking_lot_parking_ticket")
 public class ParkingLotParkingTicket {
 	@Id
