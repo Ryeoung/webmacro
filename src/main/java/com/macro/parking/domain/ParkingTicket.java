@@ -1,26 +1,39 @@
 package com.macro.parking.domain;
 
+import java.util.List;
+
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "parking_ticket")
 public class ParkingTicket {
-    @Id
-    @GeneratedValue
-    @Column(name = "parking_ticket_id", nullable = false)
-    private int parkingTicketId;
+	 @Id
+	 @GeneratedValue
+	 @Column(name = "parking_ticket_id", nullable = false)
+	 private int parkingTicketId;
+	 
+    @ManyToOne
+    @JoinColumn(name = "car_number", insertable=false, updatable = false)
+    private Car car;
 
-    @Column(name = "name", nullable = false)
-    private String name;
 
-    @OneToMany( mappedBy = "parkingTicket")
-    private List<ParkingLotParkingTicket> parkingLotParkingTickets = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "parking_lot_id", insertable=false, updatable = false)
+    private ParkingLot parkingLot;
+
+    @Column(name = "parking_ticket_name")
+    private String parkingTicketName;
+    
+    @Column(name = "parking_time")
+    private String parkingTime;
+
+    @Column(name = "exit_time")
+    private String exitTime;
+    
 }

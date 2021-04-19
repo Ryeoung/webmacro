@@ -40,10 +40,8 @@ public class ParkingLot {
     private String webPwd;
 
     @OneToMany(mappedBy = "parkingLot")
-    private List<CarParkingLot> carParkingLots = new ArrayList<>();
+    private List<ParkingTicket> parkingTicket = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parkingLot")
-    private List<ParkingLotParkingTicket> parkingLotParkingTickets = new ArrayList<>();
 
     @OneToMany(mappedBy = "parkingLot")
     private List<Employee> employees = new ArrayList<>();

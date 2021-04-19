@@ -8,20 +8,11 @@ import java.util.List;
 @Table(name = "car")
 public class Car {
     @Id
-    @GeneratedValue
-    @Column(name = "car_id", nullable = false)
-    private int carId;
-
     @Column(name = "number", nullable = false)
     private String number;
 
-    @Column(name = "visit_count", nullable = false)
-    private int visitCount;
 
     @OneToMany(mappedBy = "car")
-    private List<CarParkingLot> carParkingLots = new ArrayList<>();
-
-    @OneToMany(mappedBy = "car")
-    private List<CarSale> carSales = new ArrayList<>();
+    private List<ParkingTicket> parkingTicket = new ArrayList<>();
 
 }
