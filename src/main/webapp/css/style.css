@@ -1,0 +1,94 @@
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
+
+html {
+    width: 100%;
+}
+
+body {
+    width: 100%;
+
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 800px;
+    padding-top: 100px;
+}
+.cardList{
+    min-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.card{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+}
+.card div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    font-weight: bold;
+    min-height: 50px;
+    margin: 0;
+}
+.date, .parkingLotName, .carNum, .ticket{
+    width: 170px;
+}
+.state{
+    width: 300px;
+    z-index: 1;
+}
+.checkAllCar{
+    background-color:black;
+    border-color: black;
+    color: pink;
+    font-size: 18px;
+    width: 250px;
+    height: 60px;
+    margin-bottom: 40px;
+}
+.checkAllCar:hover{
+    background-color: pink;
+    color: black;
+}
+button:hover{
+    cursor: pointer;
+}
+.btnArea{
+    width: 200px;
+}
+.btnContainer{
+    display: flex;
+    width: 900px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.cardList{
+    width: 1100px;
+}
+.ticketCheck{
+    background-color:black;
+    border-color: black;
+    color: white;
+    font-size: 14px;
+    width: 70px;
+    height: 35px;
+}
+.ticketCheck:hover{
+    background-color: white;
+    color: black;
+}
+#checked {
+    margin-top: 20px;
+    background-color: dimgrey;
+}
