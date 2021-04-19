@@ -24,6 +24,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
+import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 
@@ -80,7 +81,7 @@ public class WebCrawler {
         }
 	}
 
-	public List<CarInfoDto> getDataFromModu(CarInfoDto lastDto) {
+	public List<CarInfoDto> getDataFromModu(ParkingTicket lastTicket) {
 		 List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 	        try {
 	            infoMap = new HashMap<String, By>();
@@ -152,11 +153,11 @@ public class WebCrawler {
 	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
 	                        dto.setTicket(ticketName);
 	                        
-	                        if(lastDto != null && dto.isEqual(lastDto)) {
+	                        if(lastTicket != null && dto.isEqual(lastTicket)) {
 	                        	break process;
 	                        }
 	                        
-	                        parkingLotDtos.add(dto);
+	                        parkingLotDtos.add(0, dto);
 	                    }
 
 

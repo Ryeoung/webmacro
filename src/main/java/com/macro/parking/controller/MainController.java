@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.macro.parking.crawler.WebCrawler;
+import com.macro.parking.dao.ParkingTicketDao;
+import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.service.CrawlerService;
+import com.macro.parking.service.ParkingTicketService;
 
 @RestController
 @RequestMapping("/api")
@@ -26,14 +29,17 @@ public class MainController {
 	@Autowired
 	CrawlerService crawlerService;
 	
+	@Autowired
+	ParkingTicketService parkingTicketService;
+	
 	@ResponseBody
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo(HttpSession session) {
-		CarInfoDto lastDto =(CarInfoDto)session.getAttribute("car");
-		List<CarInfoDto> carList = crawlerService.getDataFromModu(lastDto);
-		if(carList.size() > 0) {
-			session.setAttribute("car", carList.get(0));
-		}
+		ParkingTicket ticket = parkingTicketService.findLastParkingTicket();
+		List<CarInfoDto> carList = crawlerService.getDataFromModu(ticket);
+		List<ParkingTicket> tickets = crawlerService.convertCarInfoDtoToParkingTicket(carList);
+		parkingTicketService.addAllTicket(tickets);
+		
 		System.out.println(carList.size());
 		return carList;
 	}

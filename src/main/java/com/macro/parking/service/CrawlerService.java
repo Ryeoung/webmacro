@@ -3,6 +3,7 @@ package com.macro.parking.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -10,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.macro.parking.crawler.WebCrawler;
+import com.macro.parking.dao.CarDao;
 import com.macro.parking.dao.ParkingLotDao;
+import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingLot;
+import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 
 @Service
@@ -21,12 +25,41 @@ public class CrawlerService {
 	
 	@Autowired
 	ParkingLotDao parkingLotDao;
-//	@Autowired
-//	WebDriver driver;
-//	
-	public List<CarInfoDto> getDataFromModu(CarInfoDto lastDto) {
+	
+	@Autowired
+	CarDao carDao;
+	
+	public List<CarInfoDto> getDataFromModu(ParkingTicket lastTicket) {
 		crawler.setWebDriver();
-		return crawler.getDataFromModu(lastDto);
+		return crawler.getDataFromModu(lastTicket);
+	}
+	
+	public List<ParkingTicket> convertCarInfoDtoToParkingTicket(List<CarInfoDto> dtos) {
+		List<ParkingTicket> tickets = new LinkedList<>();
+		ParkingLot parkingLot = null;
+		CarInfoDto dto = null;
+		Car car = null;
+		for(int idx = 0, fin = dtos.size(); idx < fin; idx++) {
+			dto = dtos.get(idx);
+			car = carDao.findByNumber(dto.getCarNum());
+
+			if(car == null) {
+				car = new Car();
+				car.setNumber(dto.getCarNum());
+				car = carDao.save(car);
+			}
+			
+			parkingLot = parkingLotDao.findByName(dto.getParkingLotName());
+			ParkingTicket ticket = new ParkingTicket();
+			ticket.setCar(car);
+			ticket.setParkingLot(parkingLot);
+			ticket.setParkingTicketName(dto.getTicket());
+			
+			tickets.add(ticket);
+		}
+		
+	return tickets;
+		
 	}
 	
 	public List<CarInfoDto> pushTicketToParkWebsite(List<CarInfoDto> carInfos){
