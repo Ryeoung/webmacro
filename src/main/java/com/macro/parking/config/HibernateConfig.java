@@ -59,17 +59,10 @@ public class HibernateConfig {
 		  
 	    //LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
 	    LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-	    System.out.println("1");
 	    factory.setDataSource(dataSource());
-	    System.out.println("2");
 	    factory.setPackagesToScan(env.getProperty("hibernate.packagesToScan"));
-	    System.out.println("3");
 	    factory.setJpaVendorAdapter(jpaVendorAdapter());
-	    System.out.println("4");
-	   
-	   
 	    factory.setJpaProperties(hibernateProperties());
-	    System.out.println("5");
 	    //	   sessionFactoryBean.setHibernateProperties(properties);
 	    
 	    return factory;
