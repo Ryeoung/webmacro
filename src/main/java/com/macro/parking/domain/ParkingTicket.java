@@ -19,12 +19,12 @@ public class ParkingTicket {
 	 private int parkingTicketId;
 	 
     @ManyToOne
-    @JoinColumn(name = "car_number", insertable=false, updatable = false)
+    @JoinColumn(name = "car_number", updatable = false)
     private Car car;
 
 
     @ManyToOne
-    @JoinColumn(name = "parking_lot_id", insertable=false, updatable = false)
+    @JoinColumn(name = "parking_lot_id", updatable = false)
     private ParkingLot parkingLot;
 
     @Column(name = "parking_ticket_name")
