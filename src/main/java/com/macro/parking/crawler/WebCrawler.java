@@ -80,7 +80,7 @@ public class WebCrawler {
         }
 	}
 
-	public List<CarInfoDto> getDataFromModu() {
+	public List<CarInfoDto> getDataFromModu(CarInfoDto lastDto) {
 		 List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 	        try {
 	            infoMap = new HashMap<String, By>();
@@ -106,7 +106,7 @@ public class WebCrawler {
 	            parkingLotDtos = new LinkedList<>();
 	            btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
 	            // >> 5 페이지 간격으로 보여주는 단위
-	            do{
+	            process: do{
 	                int fin = btns.size();
 	                int idx = 0;
 
@@ -151,6 +151,11 @@ public class WebCrawler {
 	                        //주차권
 	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
 	                        dto.setTicket(ticketName);
+	                        
+	                        if(lastDto != null && dto.isEqual(lastDto)) {
+	                        	break process;
+	                        }
+	                        
 	                        parkingLotDtos.add(dto);
 	                    }
 

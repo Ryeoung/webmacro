@@ -1,5 +1,7 @@
 package com.macro.parking.controller;
 
+import javax.servlet.http.HttpSession;
+
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -26,8 +28,12 @@ public class MainController {
 	
 	@ResponseBody
 	@GetMapping("/cars")
-	public List<CarInfoDto> getCarInfo() {
-		List<CarInfoDto> carList = crawlerService.getDataFromModu();
+	public List<CarInfoDto> getCarInfo(HttpSession session) {
+		CarInfoDto lastDto =(CarInfoDto)session.getAttribute("car");
+		List<CarInfoDto> carList = crawlerService.getDataFromModu(lastDto);
+		if(carList.size() > 0) {
+			session.setAttribute("car", carList.get(0));
+		}
 		System.out.println(carList.size());
 		return carList;
 	}

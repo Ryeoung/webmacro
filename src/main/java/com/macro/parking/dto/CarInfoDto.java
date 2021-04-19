@@ -15,4 +15,16 @@ public class CarInfoDto {
 	private String carNum;
 	private String code;
 	private boolean checkApp;
+	
+	public boolean isEqual(CarInfoDto dto) {
+		if(dto.getDate().isEqual(this.getDate()) && 
+        		dto.getParkingLotName().equals(this.getParkingLotName()) && 
+        		dto.getCarNum().equals(this.getCarNum()) &&
+        		dto.getTicket().equals(this.getTicket())){
+			return true;
+			
+		}
+		
+		return false;
+	}
 }

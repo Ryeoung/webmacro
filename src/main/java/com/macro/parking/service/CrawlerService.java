@@ -24,9 +24,9 @@ public class CrawlerService {
 //	@Autowired
 //	WebDriver driver;
 //	
-	public List<CarInfoDto> getDataFromModu() {
+	public List<CarInfoDto> getDataFromModu(CarInfoDto lastDto) {
 		crawler.setWebDriver();
-		return crawler.getDataFromModu();
+		return crawler.getDataFromModu(lastDto);
 	}
 	
 	public List<CarInfoDto> pushTicketToParkWebsite(List<CarInfoDto> carInfos){

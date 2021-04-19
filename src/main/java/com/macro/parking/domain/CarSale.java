@@ -24,6 +24,6 @@ public class CarSale {
     @JoinColumn(name = "sale_id")
     private Sale sale;
 
-    @Column
+    @Column(name = "discount_rate")
     private int discountRate;
 }
