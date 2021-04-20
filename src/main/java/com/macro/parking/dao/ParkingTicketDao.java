@@ -8,4 +8,5 @@ import com.macro.parking.domain.ParkingTicket;
 
 public interface ParkingTicketDao extends JpaRepository<ParkingTicket, Long>{
 	ParkingTicket findTopByOrderByParkingTicketIdDesc();
+	
 }

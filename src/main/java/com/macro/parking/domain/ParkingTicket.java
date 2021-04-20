@@ -1,5 +1,6 @@
 package com.macro.parking.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.*;
@@ -33,10 +34,13 @@ public class ParkingTicket {
     @Column(name = "parking_ticket_name")
     private String parkingTicketName;
     
+    @Column(name = "order_time")
+    private LocalDateTime orderTime;
+    
     @Column(name = "parking_time")
-    private String parkingTime;
+    private LocalDateTime parkingTime;
 
     @Column(name = "exit_time")
-    private String exitTime;
+    private LocalDateTime exitTime;
     
 }

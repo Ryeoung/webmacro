@@ -54,6 +54,7 @@ public class CrawlerService {
 			ticket.setCar(car);
 			ticket.setParkingLot(parkingLot);
 			ticket.setParkingTicketName(dto.getTicket());
+			ticket.setOrderTime(dto.getDate());
 			
 			tickets.add(ticket);
 		}
