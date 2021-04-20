@@ -27,6 +27,9 @@ public class ParkingTicket {
     @JoinColumn(name = "parking_lot_id", updatable = false)
     private ParkingLot parkingLot;
 
+    @Column(name = "app_flag")
+    private boolean appFlag;
+    
     @Column(name = "parking_ticket_name")
     private String parkingTicketName;
     
