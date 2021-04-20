@@ -22,7 +22,12 @@ public class ParkingTicketService {
 	public List<ParkingTicket> addAllTicket(List<ParkingTicket> tickets) {
 		return parkingTicketDao.save(tickets);
 	}
+	
 	public ParkingTicket findLastParkingTicket() {
 		return parkingTicketDao.findTopByOrderByParkingTicketIdDesc();
+	}
+	
+	public List<ParkingTicket> findAllByToday() {
+		return parkingTicketDao.findAllByToday();
 	}
 }
