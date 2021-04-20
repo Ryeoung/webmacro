@@ -9,13 +9,15 @@ class App {
         this.checkList = document.getElementById("check");
         this.checkedList = document.getElementById("checked");
         this.pushTicketBtn = document.getElementById("pushTicket");
+        this.getTicketBtn = document.getElementById("getTicket");
         this.checkCards = Array.from(this.checkList.children);
-        this.requestAllCarInfo();
+        this.requestAllCarInfoToday();
+        this.addClickEventToGetNewTickectBtn();
         this.addClickEventToPushTicketBtn();
 
     }
 
-    requestAllCarInfo() {
+    requestAllCarInfoToday() {
         ajax({
             url : "/parking/api/cars",
             method : "GET",
@@ -27,10 +29,68 @@ class App {
     makeCardOfCar(data) {
         let carInfos = data;
         let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);
-        let cards = document.createRange().createContextualFragment(resultHTML);
-        this.checkList.appendChild(cards);
+        let cards = this.stringToElement(resultHTML);
+        cards.childNodes.forEach(card => {
+        	this.moveCardAboutCode(card);
+        });
         this.checkCards = Array.from(this.checkList.children);
     }
+    stringToElement(str){
+    	return  document.createRange().createContextualFragment(str);
+    }
+
+    
+    moveCardAboutCode(card){
+    	const OK = "ok";
+        const LOGIN_ERROR = "fail01";
+        const NO_CAR_ERROR = "fail02";
+        const TICKET_EXIST_ERROR = "fail03";
+
+    	let cardData = {};
+        
+        let childNode = Array.from(card.children);
+        
+        let stateNode = childNode[4];
+
+        let status = stateNode.innerHTML;
+        if(status === TICKET_EXIST_ERROR) {
+            stateNode.innerHTML = "완료";
+            this.checkedList.prepend(card);
+            return;
+        } else if(status === LOGIN_ERROR) {
+            stateNode.innerHTML = "로그인 에러 발생";
+        } else if(status === OK) {
+            stateNode.innerHTML = "주차확인 필요";
+        } else if(status === NO_CAR_ERROR) {
+        	stateNode.innerHTML = "차가 아직 안 왔습니다.";
+        }
+        this.checkList.prepend(card);
+    }
+        
+    addClickEventToGetNewTickectBtn() {
+    	this.getTicketBtn.addEventListener("click", 
+    			this.clickEventhandlerAboutGetNewTicket.bind(this));
+    }
+    
+    clickEventhandlerAboutGetNewTicket() {
+    	this.getNewTicket();
+    }
+        
+    getNewTicket(){
+    	let id = -200;
+    	if(this.checkList.childElementCount > 0) {
+    		let card = this.checkList.firstElementChild;
+        	id = card.dataset.id;	
+    	}
+    	
+    	
+    	ajax({
+            url : `/parking/api/newcars?id=${id}`,
+            method : "GET",
+            contentType : "application/json; charset=utf-8",
+        }, this.makeCardOfCar.bind(this));
+    }
+
     
     addClickEventToPushTicketBtn(){
         this.pushTicketBtn.addEventListener("click", 
@@ -65,38 +125,8 @@ class App {
     }
 
     clickEventOfPushTicketSuccess(data) {
-    	const OK = "ok";
-        const LOGIN_ERROR = "fail01";
-        const NO_CAR_ERROR = "fail02";
-        const TICKET_EXIST_ERROR = "fail03";
-        
         this.checkList.innerHTML = "";
-        let carInfos = data;
-        let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);
-        let cards = document.createRange().createContextualFragment(resultHTML);
-        let div = document.createElement("div");
-        
-        div.appendChild(cards);
-
-        Array.from(div.children).forEach(card => {
-            let cardData = {};
-            
-            let childNode = Array.from(card.children);
-            
-            let stateNode = childNode[4];
-
-            let status = stateNode.innerHTML;
-            if(status === OK) {
-                stateNode.innerHTML = "성공";
-            } else if(status === LOGIN_ERROR) {
-                stateNode.innerHTML = "로그인 에러 발생";
-            } else if(status === TICKET_EXIST_ERROR) {
-                stateNode.innerHTML = "이미 주차권이 있습니다.";
-                this.checkedList.appendChild(card);
-            } else if(status === NO_CAR_ERROR) {
-            	stateNode.innerHTML = "차가 아직 안 왔습니다.";
-            }
-        });
+        this.makeCardOfCar(data);
     }
 }
 window.onload = () => {

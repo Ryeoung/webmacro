@@ -17,6 +17,7 @@ import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.enums.StatusCodeType;
 
 @Service
 public class CrawlerService {
@@ -59,9 +60,34 @@ public class CrawlerService {
 			tickets.add(ticket);
 		}
 		
-	return tickets;
+		return tickets;
 		
 	}
+	public List<CarInfoDto> convertParkingTicketToCarInfoDto(List<ParkingTicket> tickets) {
+		List<CarInfoDto> dtos = new LinkedList<>();
+		ParkingLot parkingLot = null;
+		ParkingTicket ticket = null;
+		CarInfoDto dto = null;
+		Car car = null;
+		
+		for(int idx = 0, fin = tickets.size(); idx < fin; idx++) {
+			ticket = tickets.get(idx);
+			dto = new CarInfoDto();
+			dto.setCarNum(ticket.getCar().getNumber());
+			if(ticket.isAppFlag()) {
+				dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
+			}
+			dto.setParkingTicketId(ticket.getParkingTicketId());
+			dto.setParkingLotName(ticket.getParkingLot().getName());
+			dto.setTicket(ticket.getParkingTicketName());
+			dto.setDate(ticket.getOrderTime());
+			
+			dtos.add(dto);
+		}
+		
+		return dtos;
+	}
+	
 	
 	public List<CarInfoDto> pushTicketToParkWebsite(List<CarInfoDto> carInfos){
 		List<CarInfoDto> sortedCarInfos = new ArrayList<>(carInfos);

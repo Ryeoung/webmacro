@@ -34,13 +34,13 @@ public class ParkingTicket {
     @Column(name = "parking_ticket_name")
     private String parkingTicketName;
     
-    @Column(name = "order_time")
+    @Column(name = "order_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime orderTime;
     
-    @Column(name = "parking_time")
+    @Column(name = "parking_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime parkingTime;
 
-    @Column(name = "exit_time")
-    private LocalDateTime exitTime;
+    @Column(name = "exit_time", columnDefinition = "TIMESTAMP")
+    private LocalDateTime exitTime;    
     
 }
