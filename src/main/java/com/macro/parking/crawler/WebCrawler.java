@@ -21,6 +21,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
@@ -187,7 +188,7 @@ public class WebCrawler {
 	        return parkingLotDtos;
 	    }
 	 
-	public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
+	public void addTicketByParkingLot(List<CarInfoDto> carInfoList, String id, String pwd){
         try{
             Map<String, By> infoMap = new HashMap<String, By>();
             infoMap.put("id", By.id("id"));
@@ -206,10 +207,25 @@ public class WebCrawler {
             String siteId = id;
             String sitePw = pwd;
             login(siteId, sitePw, infoMap);
+            CarInfoDto carInfo = carInfoList.get(0);
+            
+            Select parkingLotSelect = new Select(driver.findElement(By.id("storeSelect")));
 
-            for(int idx = 0, fin = CarInfoList.size(); idx < fin; idx++) {
+            if(carInfo.equals("하이파킹 마제스타시티")) {
+                parkingLotSelect.selectByValue("8638");
+            } else if(carInfo.equals("하이파킹 94빌딩")){
+                parkingLotSelect.selectByValue("8637");
+            } else if(carInfo.equals("하이시티파킹 NH농협캐피탈빌딩")) {
+                parkingLotSelect.selectByValue("72943");
+            } else if(carInfo.equals("하이시티파킹 오토웨이타워")) {
+                parkingLotSelect.selectByValue("72945");
+            }
 
-                CarInfoDto carInfo  = CarInfoList.get(idx);
+            Thread.sleep(500);
+
+            for(int idx = 0, fin = carInfoList.size(); idx < fin; idx++) {
+
+                carInfo  = carInfoList.get(idx);
                 //popp 제거
                 deletePopUp();
 
