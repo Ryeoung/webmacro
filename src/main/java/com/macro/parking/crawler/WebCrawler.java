@@ -207,27 +207,31 @@ public class WebCrawler {
             String siteId = id;
             String sitePw = pwd;
             login(siteId, sitePw, infoMap);
+            
             CarInfoDto carInfo = carInfoList.get(0);
             
-            Select parkingLotSelect = new Select(driver.findElement(By.id("storeSelect")));
-
-            if(carInfo.equals("하이파킹 마제스타시티")) {
-                parkingLotSelect.selectByValue("8638");
-            } else if(carInfo.equals("하이파킹 94빌딩")){
-                parkingLotSelect.selectByValue("8637");
-            } else if(carInfo.equals("하이시티파킹 NH농협캐피탈빌딩")) {
-                parkingLotSelect.selectByValue("72943");
-            } else if(carInfo.equals("하이시티파킹 오토웨이타워")) {
-                parkingLotSelect.selectByValue("72945");
-            }
-
+            
             Thread.sleep(500);
 
             for(int idx = 0, fin = carInfoList.size(); idx < fin; idx++) {
-
+            	            	
                 carInfo  = carInfoList.get(idx);
                 //popp 제거
                 deletePopUp();
+                
+                if(idx == 0) {
+            		Select parkingLotSelect = new Select(driver.findElement(By.id("storeSelect")));
+
+                    if(carInfo.equals("하이파킹 마제스타시티")) {
+                        parkingLotSelect.selectByValue("8638");
+                    } else if(carInfo.equals("하이파킹 94빌딩")){
+                        parkingLotSelect.selectByValue("8637");
+                    } else if(carInfo.equals("하이시티파킹 NH농협캐피탈빌딩")) {
+                        parkingLotSelect.selectByValue("72943");
+                    } else if(carInfo.equals("하이시티파킹 오토웨이타워")) {
+                        parkingLotSelect.selectByValue("72945");
+                    }
+            	}
 
                 String carNum = carInfo.getCarNum();
                 if(isCarInParkingLot(carNum)) {
