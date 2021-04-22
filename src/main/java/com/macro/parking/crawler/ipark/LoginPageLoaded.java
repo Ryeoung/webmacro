@@ -23,9 +23,12 @@ public class LoginPageLoaded extends PageLoaded{
 	               "return document.readyState"
 	       ).equals("complete");
 	    int size = driver.findElements(By.tagName("div")).size();
+ 	    Boolean isIntroDisplay = driver.findElement(By.id("intro")).getAttribute("style").contains("display");
 
 	   Boolean isSkip = driver.findElement(By.id("skip")).getText().contains("Skip");
-	    return isJavascriptLoad && isTitleCorrect && isUrlCorrect && (size >= 13);
+	   System.out.println("login page");
+	   System.out.println(isTitleCorrect + " " + isJavascriptLoad + " " + isUrlCorrect + " " +isSkip +" "+size + isIntroDisplay);
+	    return isJavascriptLoad && isTitleCorrect && isUrlCorrect && (size >= 13) && isIntroDisplay;
 	  }
 
 }

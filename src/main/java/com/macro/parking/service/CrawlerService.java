@@ -57,7 +57,7 @@ public class CrawlerService {
 			ticket.setParkingTicketName(dto.getTicket());
 			ticket.setOrderTime(dto.getDate());
 			
-			if(dto.getCode().equals(StatusCodeType.TICKET_EXIST_ERROR.getCode())) {
+			if(dto.getCode() != null && dto.getCode().equals(StatusCodeType.TICKET_EXIST_ERROR.getCode())) {
 				ticket.setAppFlag(true);
 			}
 			tickets.add(ticket);

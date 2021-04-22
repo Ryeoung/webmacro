@@ -32,6 +32,7 @@ public class ParkingTicketService {
 				appCheckedTickets.add(ticket);
 			}
 		}
+		System.out.println("바뀐 사이즈 " + appCheckedTickets.size());
 		return parkingTicketDao.save(appCheckedTickets);
 	}
 	
