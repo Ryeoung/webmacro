@@ -1,5 +1,6 @@
 package com.macro.parking.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.*;
@@ -27,13 +28,19 @@ public class ParkingTicket {
     @JoinColumn(name = "parking_lot_id", updatable = false)
     private ParkingLot parkingLot;
 
+    @Column(name = "app_flag")
+    private boolean appFlag;
+    
     @Column(name = "parking_ticket_name")
     private String parkingTicketName;
     
-    @Column(name = "parking_time")
-    private String parkingTime;
+    @Column(name = "order_time", columnDefinition = "TIMESTAMP")
+    private LocalDateTime orderTime;
+    
+    @Column(name = "parking_time", columnDefinition = "TIMESTAMP")
+    private LocalDateTime parkingTime;
 
-    @Column(name = "exit_time")
-    private String exitTime;
+    @Column(name = "exit_time", columnDefinition = "TIMESTAMP")
+    private LocalDateTime exitTime;    
     
 }

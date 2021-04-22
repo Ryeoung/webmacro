@@ -34,8 +34,23 @@ public class MainController {
 	
 	@ResponseBody
 	@GetMapping("/cars")
-	public List<CarInfoDto> getCarInfo(HttpSession session) {
-		ParkingTicket ticket = parkingTicketService.findLastParkingTicket();
+	public List<CarInfoDto> getCarInfo() {
+		List<ParkingTicket > tickets = parkingTicketService.findAllByToday();
+		
+		System.out.println(tickets.size());
+		return crawlerService.convertParkingTicketToCarInfoDto(tickets);
+	}
+	
+	@ResponseBody
+	@GetMapping("/newcars")
+	public List<CarInfoDto> getCarsBylast(@RequestParam(defaultValue = "-1") int id) {
+		ParkingTicket ticket = null;
+		if(id > 0 ) {
+			ticket = parkingTicketService.findByParkingTicketId(id);
+		} else {
+			ticket = parkingTicketService.findLastParkingTicket();
+			System.out.println(ticket);
+		}
 		List<CarInfoDto> carList = crawlerService.getDataFromModu(ticket);
 		List<ParkingTicket> tickets = crawlerService.convertCarInfoDtoToParkingTicket(carList);
 		parkingTicketService.addAllTicket(tickets);
@@ -47,6 +62,10 @@ public class MainController {
 	@PostMapping("/register")
 	public List<CarInfoDto> addTicket(@RequestBody List<CarInfoDto> carInfoDto) {
 		List<CarInfoDto> carList = crawlerService.pushTicketToParkWebsite(carInfoDto);
+		List<ParkingTicket> tickets = crawlerService.convertCarInfoDtoToParkingTicket(carList);
+		parkingTicketService.updateByAppFlag(tickets);
+		
+		System.out.println(carList.size());
 		return carList;
 	}	
 }

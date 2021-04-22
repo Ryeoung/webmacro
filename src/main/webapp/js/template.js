@@ -1,6 +1,6 @@
 const template = {
     cardTemplate :  `{{#each .}}
-                                <div class = "card">
+                                <div class = "card" data-Id="{{parkingTicketId}}">
                                         <div class="date">{{date}}</div>
                                         <div class="parkingLotName">{{parkingLotName}}</div>
                                         <div class="carNum">{{carNum}}</div>

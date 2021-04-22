@@ -7,12 +7,14 @@ import com.macro.parking.domain.ParkingTicket;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
+@ToString
 public class CarInfoDto {
 	private LocalDateTime date;
-	private int parkingLotId;
+	private int parkingTicketId;
 	private String parkingLotName;
 	private String ticket;
 	private String carNum;
@@ -20,6 +22,7 @@ public class CarInfoDto {
 	private boolean checkApp;
 	
 	public boolean isEqual(CarInfoDto dto) {
+		System.out.println(dto);
 		if(dto.getDate().isEqual(this.getDate()) && 
         		dto.getParkingLotName().equals(this.getParkingLotName()) && 
         		dto.getCarNum().equals(this.getCarNum()) &&
@@ -36,6 +39,7 @@ public class CarInfoDto {
 		dto.setCarNum(ticket.getCar().getNumber());
 		dto.setTicket(ticket.getParkingTicketName());
 		dto.setParkingLotName(ticket.getParkingLot().getName());
+		dto.setDate(ticket.getOrderTime());
 		return isEqual(dto);
 	}
 }
