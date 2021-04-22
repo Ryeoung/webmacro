@@ -62,6 +62,10 @@ public class MainController {
 	@PostMapping("/register")
 	public List<CarInfoDto> addTicket(@RequestBody List<CarInfoDto> carInfoDto) {
 		List<CarInfoDto> carList = crawlerService.pushTicketToParkWebsite(carInfoDto);
+		List<ParkingTicket> tickets = crawlerService.convertCarInfoDtoToParkingTicket(carList);
+		parkingTicketService.updateByAppFlag(tickets);
+		
+		System.out.println(carList.size());
 		return carList;
 	}	
 }

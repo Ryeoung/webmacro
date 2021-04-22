@@ -25,6 +25,15 @@ public class ParkingTicketService {
 	public List<ParkingTicket> addAllTicket(List<ParkingTicket> tickets) {
 		return parkingTicketDao.save(tickets);
 	}
+	public List<ParkingTicket> updateByAppFlag(List<ParkingTicket> tickets) {
+		List<ParkingTicket> appCheckedTickets = new LinkedList<>();
+		for(ParkingTicket ticket :tickets) {
+			if(ticket.isAppFlag()) {
+				appCheckedTickets.add(ticket);
+			}
+		}
+		return parkingTicketDao.save(appCheckedTickets);
+	}
 	
 	public ParkingTicket findLastParkingTicket() {
 		return parkingTicketDao.findTopByOrderTimeGreaterThanEqual(getToday());
