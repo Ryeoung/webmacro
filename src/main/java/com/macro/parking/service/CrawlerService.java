@@ -72,11 +72,12 @@ public class CrawlerService {
 		ParkingTicket ticket = null;
 		CarInfoDto dto = null;
 		Car car = null;
-		
+
 		for(int idx = 0, fin = tickets.size(); idx < fin; idx++) {
 			ticket = tickets.get(idx);
 			dto = new CarInfoDto();
 			dto.setCarNum(ticket.getCar().getNumber());
+
 			if(ticket.isAppFlag()) {
 				dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
 			}

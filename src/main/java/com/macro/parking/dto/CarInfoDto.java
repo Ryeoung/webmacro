@@ -3,6 +3,7 @@ package com.macro.parking.dto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.macro.parking.domain.ParkingTicket;
 
 import lombok.Getter;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class CarInfoDto {
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
 	private LocalDateTime date;
 	private int parkingTicketId;
 	private String parkingLotName;
