@@ -2,6 +2,7 @@ package com.macro.parking.crawler.ipark;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 
 import com.macro.parking.crawler.PageLoaded;
@@ -12,23 +13,26 @@ public class LoginPageLoaded extends PageLoaded{
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
+	 @Override
 	  public Boolean apply(WebDriver  driver) {
-		
-	    Boolean isTitleCorrect = driver.getTitle()
-	                                   .contains(getExpectedTitle());
-	    Boolean isUrlCorrect = driver.getCurrentUrl()
-	                                 .contains(getExpectedUrl());	
-	    Boolean isJavascriptLoad = ((JavascriptExecutor) driver).executeScript(
-	               "return document.readyState"
-	       ).equals("complete");
-	    int size = driver.findElements(By.tagName("div")).size();
- 	    Boolean isIntroDisplay = driver.findElement(By.id("intro")).getAttribute("style").contains("display");
-
-	   Boolean isSkip = driver.findElement(By.id("skip")).getText().contains("Skip");
+	    
+	    int size  = 0 ;
+	    Boolean isIntroDisplay = false;
+	    Boolean isSkip = false;
+	    Boolean isDomAttached = isDomAttachPage(driver);
+	    try{
+	    	size = driver.findElements(By.tagName("div")).size();
+	     	isIntroDisplay = driver.findElement(By.id("intro")).getAttribute("style").contains("display");
+	     	isSkip = driver.findElement(By.id("skip")).getText().contains("Skip");
+	    } catch(StaleElementReferenceException e) {
+	    	return false;
+	    }
+	   	   
+	    
 	   System.out.println("login page");
-	   System.out.println(isTitleCorrect + " " + isJavascriptLoad + " " + isUrlCorrect + " " +isSkip +" "+size + isIntroDisplay);
-	    return isJavascriptLoad && isTitleCorrect && isUrlCorrect && (size >= 13) && isIntroDisplay;
+	   System.out.println(isSkip +" "+size + isIntroDisplay);
+	    return isDomAttached && (size >= 13) && isIntroDisplay;
 	  }
+	 
 
 }

@@ -41,6 +41,6 @@ public class TicketApplyPageLoaded  extends PageLoaded{
 	    		isFinishedLoading + " " + size);
 	    
 	     return isJavascriptLoad && isTitleCorrect && isUrlCorrect 
-	    		&& (size >= 26) && isFinishedLoading ;
+	    		&& (size >= 25) && isFinishedLoading ;
 	  }
 }

@@ -207,6 +207,7 @@ public class WebCrawler {
             
             wait.until(new LoginPageLoaded(iparkPageTitle, logInPageUrl));
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("intro")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("skip")));
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('intro').style.display = 'none';");
 
             
@@ -222,6 +223,17 @@ public class WebCrawler {
 //           로그인
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('id').value = '"+id +"';");
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('password').value = '"+ pwd +"';");
+	    	By idLocator = By.id("id");
+	    	By pwdLocator = By.id("password");
+	    	
+	    	wait.until(new ExpectedCondition<Boolean>() {
+	           	public Boolean apply(WebDriver driver) {
+	                Boolean isIdCorrect = driver.findElement(idLocator).getAttribute("value").contains(id);
+	                Boolean isPwCorrect = driver.findElement(pwdLocator).getAttribute("value").contains(pwd);
+	                return isIdCorrect && isPwCorrect;
+	               }
+	           }); 	    	
+	    	
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('login').click();");
 
 
@@ -244,18 +256,19 @@ public class WebCrawler {
 
                 if(idx == 0) {
             		Select parkingLotSelect = new Select(driver.findElement(By.id("storeSelect")));
-
-                    if(carInfo.equals("하이파킹 마제스타시티")) {
+            		String parkingLotName = carInfo.getParkingLotName();
+                    if(parkingLotName.equals("하이파킹 마제스타시티")) {
                         parkingLotSelect.selectByValue("8638");
-                    } else if(carInfo.equals("하이파킹 94빌딩")){
+                    } else if(parkingLotName.equals("하이파킹 94빌딩")){
                         parkingLotSelect.selectByValue("8637");
-                    } else if(carInfo.equals("하이시티파킹 NH농협캐피탈빌딩")) {
+                    } else if(parkingLotName.equals("하이시티파킹 NH농협캐피탈빌딩")) {
                         parkingLotSelect.selectByValue("72943");
-                    } else if(carInfo.equals("하이시티파킹 오토웨이타워")) {
+                    } else if(parkingLotName.equals("하이시티파킹 오토웨이타워")) {
                         parkingLotSelect.selectByValue("72945");
                     }
             	}
-                
+                Thread.sleep(500);
+
                 String carNum = carInfo.getCarNum();
 
                 String fourNumOfCar = carNum.substring(carNum.length() - 4, carNum.length());
@@ -273,7 +286,6 @@ public class WebCrawler {
     	        
     	        
                 wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr));
-
                 if(isCarInParkingLot(carNum)) {
                 	
         	        //wait.until(ExpectedConditions.elementToBeClickable(By.id("next"))).click();
