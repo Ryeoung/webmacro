@@ -35,6 +35,7 @@ class App {
         });
         this.checkCards = Array.from(this.checkList.children);
     }
+    
     stringToElement(str){
     	return  document.createRange().createContextualFragment(str);
     }
@@ -111,6 +112,8 @@ class App {
                     cardData.ticket = divElmt.innerText;
                 } else if(className === "parkingLotName") {
                     cardData.parkingLotName = divElmt.innerText;
+                } else if(className == "date") {
+                	cardDate.date =divElmt.innerText;
                 }
             });
             reqData.push(cardData);
