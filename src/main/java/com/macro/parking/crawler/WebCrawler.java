@@ -30,6 +30,7 @@ import com.macro.parking.crawler.ipark.LoginPageLoaded;
 import com.macro.parking.crawler.ipark.MainPageLoaded;
 import com.macro.parking.crawler.ipark.SearchCarPageLoaded;
 import com.macro.parking.crawler.ipark.TicketApplyPageLoaded;
+import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
@@ -87,7 +88,7 @@ public class WebCrawler {
         }
 	}
 
-	public List<CarInfoDto> getDataFromModu(ParkingTicket lastTicket) {
+	public List<CarInfoDto> getDataFromModu(ParkingInfo lastParkingInfo) {
 		 List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 	        try {
 	            infoMap = new HashMap<String, By>();
@@ -157,9 +158,9 @@ public class WebCrawler {
 
 	                        //주차권
 	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
-	                        dto.setTicket(ticketName);
+	                        dto.setAppTicketName(ticketName);
 	                        
-	                        if(lastTicket != null && dto.isEqual(lastTicket)) {
+	                        if(lastParkingInfo != null && dto.isEqual(lastParkingInfo)) {
 	                        	break process;
 	                        }
 	                        

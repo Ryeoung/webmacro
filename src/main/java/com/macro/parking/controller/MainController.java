@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.macro.parking.crawler.WebCrawler;
-import com.macro.parking.dao.ParkingTicketDao;
+import com.macro.parking.dao.ParkingInfoDao;
+import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.service.CrawlerService;
-import com.macro.parking.service.ParkingTicketService;
+import com.macro.parking.service.ParkingInfoService;
 
 @RestController
 @RequestMapping("/api")
@@ -30,30 +31,30 @@ public class MainController {
 	CrawlerService crawlerService;
 	
 	@Autowired
-	ParkingTicketService parkingTicketService;
+	ParkingInfoService parkingInfoService;
 	
 	@ResponseBody
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo() {
-		List<ParkingTicket > tickets = parkingTicketService.findAllByToday();
+		List<ParkingInfo > parkingInfos = parkingInfoService.findAllByToday();
 		
-		System.out.println(tickets.size());
-		return crawlerService.convertParkingTicketToCarInfoDto(tickets);
+		System.out.println(parkingInfos.size());
+		return crawlerService.convertParkingInfoToCarInfoDto(parkingInfos);
 	}
 	
 	@ResponseBody
 	@GetMapping("/newcars")
 	public List<CarInfoDto> getCarsBylast(@RequestParam(defaultValue = "-1") int id) {
-		ParkingTicket ticket = null;
+		ParkingInfo parkingInfo = null;
 		if(id > 0 ) {
-			ticket = parkingTicketService.findByParkingTicketId(id);
+			parkingInfo = parkingInfoService.findByParkingTicketId(id);
 		} else {
-			ticket = parkingTicketService.findLastParkingTicket();
-			System.out.println(ticket);
+			parkingInfo = parkingInfoService.findLastParkingTicket();
+			System.out.println(parkingInfo);
 		}
-		List<CarInfoDto> carList = crawlerService.getDataFromModu(ticket);
-		List<ParkingTicket> tickets = crawlerService.convertCarInfoDtoToParkingTicket(carList);
-		parkingTicketService.addAllTicket(tickets);
+		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
+		List<ParkingInfo> parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);
+		parkingInfoService.addAllTicket(parkingInfos);
 		
 		System.out.println(carList.size());
 		return carList;
@@ -62,8 +63,8 @@ public class MainController {
 	@PostMapping("/register")
 	public List<CarInfoDto> addTicket(@RequestBody List<CarInfoDto> carInfoDto) {
 		List<CarInfoDto> carList = crawlerService.pushTicketToParkWebsite(carInfoDto);
-		List<ParkingTicket> tickets = crawlerService.convertCarInfoDtoToParkingTicket(carList);
-		parkingTicketService.updateByAppFlag(tickets);
+		List<ParkingInfo> parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);
+		parkingInfoService.updateByAppFlag(parkingInfos);
 		
 		System.out.println(carList.size());
 		return carList;
