@@ -29,7 +29,7 @@ public class ParkingInfoService {
 	public List<ParkingInfo> updateByAppFlag(List<ParkingInfo> parkingInfos) {
 		List<ParkingInfo> appCheckedTickets = new LinkedList<>();
 		for(ParkingInfo info :parkingInfos) {
-			if(info.isAppFlag()) {
+			if(info != null) {
 				appCheckedTickets.add(info);
 			}
 		}

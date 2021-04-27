@@ -63,8 +63,17 @@ public class CrawlerService {
 			parkingInfo.setParkingTicket(parkingTicket);
 			parkingInfo.setOrderTime(dto.getDate());
 			
-			if(dto.getCode() != null && dto.getCode().equals(StatusCodeType.TICKET_EXIST_ERROR.getCode())) {
-				parkingInfo.setAppFlag(true);
+			if(dto.getCode() != null) {
+				if( dto.getCode().equals(StatusCodeType.TICKET_EXIST_ERROR.getCode())) {
+					parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
+				} else if(dto.getCode().equals(StatusCodeType.SUCCESS.getCode())) {
+					parkingInfo.setAppFlag(StatusCodeType.SUCCESS);
+				} else if(dto.getCode().equals(StatusCodeType.SELENIUM_ERROR.getCode())) {
+					parkingInfo.setAppFlag(StatusCodeType.SELENIUM_ERROR);
+
+				}
+			} else {
+				parkingInfo.setAppFlag(StatusCodeType.NOT_WORKING);
 			}
 			parkingInfos.add(parkingInfo);
 		}
@@ -83,10 +92,16 @@ public class CrawlerService {
 			parkingInfo = parkingInfos.get(idx);
 			dto = new CarInfoDto();
 			dto.setCarNum(parkingInfo.getCar().getNumber());
-
-			if(parkingInfo.isAppFlag()) {
-				dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
-			}
+				if(parkingInfo.getAppFlag().isEqual(StatusCodeType.TICKET_EXIST_ERROR)) {
+					dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
+				} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SUCCESS)) {
+					dto.setCode(StatusCodeType.SUCCESS.getCode());
+				} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SELENIUM_ERROR)) {
+					dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
+				} else {
+					dto.setCode(StatusCodeType.NOT_WORKING.getCode());
+				}
+						
 			dto.setParkingInfoId(parkingInfo.getParkingInfoId());
 			dto.setParkingLotName(parkingInfo.getParkingTicket().getParkingLot().getName());
 			dto.setAppTicketName(parkingInfo.getParkingTicket().getAppName());

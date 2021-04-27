@@ -46,6 +46,7 @@ class App {
         const LOGIN_ERROR = "fail01";
         const NO_CAR_ERROR = "fail02";
         const TICKET_EXIST_ERROR = "fail03";
+        const NOT_WORKING = "noting"
 
     	let cardData = {};
         
@@ -64,7 +65,7 @@ class App {
             stateNode.innerHTML = "주차확인 필요";
         } else if(status === NO_CAR_ERROR) {
         	stateNode.innerHTML = "차가 아직 안 왔습니다.";
-        }
+        } 
         this.checkList.prepend(card);
     }
         

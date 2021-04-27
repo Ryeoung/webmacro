@@ -57,7 +57,6 @@ public class MainController {
 			parkingInfo = parkingInfoService.findByParkingTicketId(id);
 		} else {
 			parkingInfo = parkingInfoService.findLastParkingTicket();
-			System.out.println(parkingInfo);
 		}
 		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
 		List<ParkingInfo> parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);

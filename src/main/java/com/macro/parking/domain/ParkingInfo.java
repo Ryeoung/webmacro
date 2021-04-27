@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.macro.parking.converter.StatusCodeTypeConverter;
+import com.macro.parking.enums.StatusCodeType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,8 +37,9 @@ public class ParkingInfo {
 	   @JoinColumn(name = "parking_ticket_id", updatable = false)
 	   private ParkingTicket parkingTicket;
 	
+	   @Convert(converter = StatusCodeTypeConverter.class)
 	   @Column(name = "app_flag")
-	   private boolean appFlag;
+	   private StatusCodeType appFlag;
 	   
 
 	   @Column(name = "order_time", columnDefinition = "TIMESTAMP")

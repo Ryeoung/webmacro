@@ -2,7 +2,8 @@ package com.macro.parking.enums;
 
 public enum StatusCodeType {
 	SUCCESS("ok"),
-	LOGING_ERROR("fail01"),
+	NOT_WORKING("noting"),
+	SELENIUM_ERROR("fail01"),
 	NO_CAR_ERROR("fail02"),
 	TICKET_EXIST_ERROR("fail03");
 	
@@ -14,5 +15,11 @@ public enum StatusCodeType {
 
 	public String getCode() {
 		return code;
+	}
+	public boolean isEqual(StatusCodeType target) {
+		if(this.code.equals(target.getCode())) {
+			return true;
+		}
+		return false;
 	}
 }
