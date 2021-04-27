@@ -24,8 +24,6 @@ public class ParkingTicket {
 	 @Column(name = "parking_ticket_id", nullable = false)
 	 private int parkingTicketId;
 	 
-
-
     @ManyToOne
     @JoinColumn(name = "parking_lot_id", updatable = false)
     private ParkingLot parkingLot;
@@ -37,15 +35,11 @@ public class ParkingTicket {
     private String appName;
     
     @Column(name = "hour")
-    private int hour;
+    private Integer hour;
     
     @Column(name = "price")
-    private int price;
+    private Integer price;
     
     @OneToMany(mappedBy = "parkingTicket")
-    private List<ParkingInfo> parkingInfo = new ArrayList<>();
-
-
-    
-    
+    private List<ParkingInfo> parkingInfo = new ArrayList<>();   
 }
