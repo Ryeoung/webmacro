@@ -2,6 +2,7 @@ package com.macro.parking.controller;
 
 import javax.servlet.http.HttpSession;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.macro.parking.crawler.WebCrawler;
 import com.macro.parking.dao.ParkingInfoDao;
+import com.macro.parking.dao.ParkingLotDao;
+import com.macro.parking.dao.ParkingTicketDao;
 import com.macro.parking.domain.ParkingInfo;
+import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.service.CrawlerService;
@@ -32,6 +36,9 @@ public class MainController {
 	
 	@Autowired
 	ParkingInfoService parkingInfoService;
+	
+	@Autowired
+	ParkingLotDao dao;
 	
 	@ResponseBody
 	@GetMapping("/cars")

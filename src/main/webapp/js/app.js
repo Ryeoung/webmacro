@@ -113,7 +113,7 @@ class App {
                 } else if(className === "parkingLotName") {
                     cardData.parkingLotName = divElmt.innerText;
                 } else if(className == "date") {
-                	cardDate.date =divElmt.innerText;
+                	cardData.date =divElmt.innerText;
                 }
             });
             reqData.push(cardData);
