@@ -13,6 +13,7 @@ import com.macro.parking.dao.ParkingInfoDao;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.enums.StatusCodeType;
 
 @Service
 public class ParkingInfoService {
@@ -29,7 +30,7 @@ public class ParkingInfoService {
 	public List<ParkingInfo> updateByAppFlag(List<ParkingInfo> parkingInfos) {
 		List<ParkingInfo> appCheckedTickets = new LinkedList<>();
 		for(ParkingInfo info :parkingInfos) {
-			if(info != null) {
+			if(!info.getAppFlag().isEqual(StatusCodeType.NOT_WORKING)) {
 				appCheckedTickets.add(info);
 			}
 		}
