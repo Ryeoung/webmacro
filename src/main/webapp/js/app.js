@@ -43,7 +43,7 @@ class App {
     
     moveCardAboutCode(card){
     	const OK = "ok";
-        const LOGIN_ERROR = "fail01";
+        const SELENIUM_ERROR = "fail01";
         const NO_CAR_ERROR = "fail02";
         const TICKET_EXIST_ERROR = "fail03";
         const NOT_WORKING = "noting"
@@ -59,13 +59,16 @@ class App {
             stateNode.innerHTML = "완료";
             this.checkedList.prepend(card);
             return;
-        } else if(status === LOGIN_ERROR) {
-            stateNode.innerHTML = "로그인 에러 발생";
+        } else if(status === SELENIUM_ERROR) {
+            stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
         } else if(status === OK) {
             stateNode.innerHTML = "주차확인 필요";
         } else if(status === NO_CAR_ERROR) {
         	stateNode.innerHTML = "차가 아직 안 왔습니다.";
-        } 
+        } else if(status == NOT_WORKING) {
+        	stateNode.innerHTML = "";
+        }
+        
         this.checkList.prepend(card);
     }
         

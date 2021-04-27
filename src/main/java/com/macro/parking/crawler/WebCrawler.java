@@ -195,7 +195,7 @@ public class WebCrawler {
 	    }
 	 
 	public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
-        try{
+        
             Map<String, By> infoMap = new HashMap<String, By>();
             infoMap.put("id", By.id("id"));
             infoMap.put("pw", By.id("password"));
@@ -203,7 +203,12 @@ public class WebCrawler {
             
             String logInPageUrl = "members.iparking.co.kr/";
             String iparkPageTitle = "i PARKING - MEMBERS";
-            
+            String siteId = id;
+            String sitePw = pwd;
+            CarInfoDto carInfo  = null;
+            int idx = 0;
+            int fin = 0;
+            try{
             load(iParkUrl);
             
             wait.until(new LoginPageLoaded(iparkPageTitle, logInPageUrl));
@@ -219,8 +224,7 @@ public class WebCrawler {
 //            wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-menu-close"))).click();
 
 //            driver.findElement(By.className("btn-menu-close")).click();
-            String siteId = id;
-            String sitePw = pwd;
+            
 //           로그인
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('id').value = '"+id +"';");
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('password').value = '"+ pwd +"';");
@@ -244,9 +248,9 @@ public class WebCrawler {
             String carSearchPageUlr = "members.iparking.co.kr/html/car-search-list.html";
             
             String ticketApplyPageUrl = "members.iparking.co.kr/html/discount-ticket-apply.html";
-            for(int idx = 0, fin = CarInfoList.size(); idx < fin; idx++) {
+            for(idx = 0,  fin = CarInfoList.size(); idx < fin; idx++) {
 
-                CarInfoDto carInfo  = CarInfoList.get(idx);
+                carInfo  = CarInfoList.get(idx);
                 
                 wait.until(new MainPageLoaded(iparkPageTitle, mainPageUrl));
 
@@ -346,29 +350,20 @@ public class WebCrawler {
 
 
         } catch(Exception e ) {
+        	int curIdx = 0;
+        	CarInfoDto dto = null;
+        	if(carInfo != null) {
+        		curIdx = idx;
+        	}
+        	for( ;curIdx < CarInfoList.size(); curIdx++) {
+        		dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
+        	}
             e.printStackTrace();
         } finally {
             driver.quit();
         }
     }
-		private void clickButtonToNextPage(By locator, String curUrl, String nextUrl) {
-			wait.until(new ExpectedCondition<Boolean>() {
-	            public Boolean apply(WebDriver driver)  {
-	            	String curUrl = driver.getCurrentUrl();
-	            	
-	                Boolean isCurPage = curUrl.contains(curUrl);
-	                Boolean isNextPage = curUrl.contains(nextUrl);
-	                List<WebElement> buttons = driver.findElements(locator);
-
-	            	if(buttons.size() > 0 && (isCurPage)) {
-		            	buttons.get(0).click();
-	            	}
-	            	System.out.println(driver.findElement(locator).getText() + " " + !isCurPage);
-
-	                return !isCurPage;
-	            }
-	        });
-		}
+		
 	    private void deletePopUp() throws InterruptedException {
 //	    	wait.until(ExpectedConditions.)
 	    	//wait.until(ExpectedConditions.elementToBeClickable(By.id("goHome"))).click();
