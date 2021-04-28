@@ -8,6 +8,7 @@ class App {
     constructor() {
         this.checkList = document.getElementById("check");
         this.checkedList = document.getElementById("checked");
+        this.readyToCheckList = document.getElementById("ready");
         this.pushTicketBtn = document.getElementById("pushTicket");
         this.getTicketBtn = document.getElementById("getTicket");
         this.checkCards = Array.from(this.checkList.children);
@@ -47,6 +48,7 @@ class App {
         const NO_CAR_ERROR = "fail02";
         const TICKET_EXIST_ERROR = "fail03";
         const NOT_WORKING = "noting"
+        const CHECK_TICKET = "check";
 
     	let cardData = {};
         
@@ -56,13 +58,18 @@ class App {
 
         let status = stateNode.innerHTML;
         if(status === TICKET_EXIST_ERROR) {
-            stateNode.innerHTML = "완료";
+            stateNode.innerHTML = "주차권이 이미 존재";
             this.checkedList.prepend(card);
+            return;
+        } else if(status == CHECK_TICKET) {
+        	stateNode.innerHTML = "주차 완료";
+        	this.checkedList.prepend(card);
             return;
         } else if(status === SELENIUM_ERROR) {
             stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
         } else if(status === OK) {
             stateNode.innerHTML = "주차확인 필요";
+            
         } else if(status === NO_CAR_ERROR) {
         	stateNode.innerHTML = "차가 아직 안 왔습니다.";
         } else if(status == NOT_WORKING) {
@@ -104,29 +111,9 @@ class App {
     }
 
     clickEventHandlerAboutPushTicket(event) {
-    	let reqData = [];
-        this.checkCards.forEach(card => {
-            let cardData = {};
-            
-            Array.from(card.children).forEach(divElmt => {
-                let className = divElmt.className;
-                if (className === "carNum") {
-                    cardData.carNum = divElmt.innerText;
-                } else if(className === "ticket") {
-                    cardData.ticket = divElmt.innerText;
-                } else if(className === "parkingLotName") {
-                    cardData.parkingLotName = divElmt.innerText;
-                } else if(className == "date") {
-                	cardData.date =divElmt.innerText;
-                }
-            });
-            reqData.push(cardData);
-        });
-
         ajax({
             url : "/parking/api/register",
             method : "POST",
-            data : reqData,
             contentType : "application/json; charset=utf-8",
         }, this.clickEventOfPushTicketSuccess.bind(this));
     }

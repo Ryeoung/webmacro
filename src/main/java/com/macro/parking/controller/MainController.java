@@ -25,6 +25,7 @@ import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.service.CrawlerService;
 import com.macro.parking.service.ParkingInfoService;
 
@@ -67,10 +68,20 @@ public class MainController {
 	}
 	
 	@PostMapping("/register")
-	public List<CarInfoDto> addTicket(@RequestBody List<CarInfoDto> carInfoDto) {
-		List<CarInfoDto> carList = crawlerService.pushTicketToParkWebsite(carInfoDto);
-		List<ParkingInfo> parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);
-		parkingInfoService.updateByAppFlag(parkingInfos);
+	public List<CarInfoDto> addTicket() {
+		
+		List<CarInfoDto> carList = null;
+		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
+		
+		if(parkingInfos.size() > 0 ) {
+			List<CarInfoDto> carInfoDtos = crawlerService.convertParkingInfoToCarInfoDto(parkingInfos);
+			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
+			parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);
+			parkingInfoService.updateByAppFlag(parkingInfos);
+			
+		} else {
+			carList = new ArrayList<CarInfoDto>();
+		}
 		
 		System.out.println(carList.size());
 		return carList;

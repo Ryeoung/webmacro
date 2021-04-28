@@ -194,7 +194,7 @@ public class WebCrawler {
 	        return parkingLotDtos;
 	    }
 	 
-	public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
+	public void addTicketByParkingLot(List<CarInfoDto> carInfoList, String id, String pwd){
         
             Map<String, By> infoMap = new HashMap<String, By>();
             infoMap.put("id", By.id("id"));
@@ -248,9 +248,9 @@ public class WebCrawler {
             String carSearchPageUlr = "members.iparking.co.kr/html/car-search-list.html";
             
             String ticketApplyPageUrl = "members.iparking.co.kr/html/discount-ticket-apply.html";
-            for(idx = 0,  fin = CarInfoList.size(); idx < fin; idx++) {
+            for(idx = 0,  fin = carInfoList.size(); idx < fin; idx++) {
 
-                carInfo  = CarInfoList.get(idx);
+                carInfo  = carInfoList.get(idx);
                 
                 wait.until(new MainPageLoaded(iparkPageTitle, mainPageUrl));
 
@@ -298,7 +298,8 @@ public class WebCrawler {
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("next")));
 
                 	((JavascriptExecutor) driver).executeScript("document.getElementById('next').click();");
-                    wait.until(new TicketApplyPageLoaded(iparkPageTitle, ticketApplyPageUrl));
+                	System.out.println(carInfo);
+                    wait.until(new TicketApplyPageLoaded(iparkPageTitle, ticketApplyPageUrl, carInfo.getWebTicketName()));
 
                     //readyPageLoad();
                     
@@ -314,19 +315,21 @@ public class WebCrawler {
                         String ticketXpath = "//*[@id=\"productList\"]/tr";
                         List<WebElement> saleTickets = driver.findElements(By.xpath(ticketXpath));
                         for(WebElement ticket :saleTickets) {
-//                            String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
+                        	String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
+                            if(carInfo.getWebTicketName().equals(ticketName)) {
+                            	 //주차권 구입 버튼
+//                                wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
 //
-//                            //주차권 구입 버튼
-//                            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
-////
 //
-//                            //최종 확인 pop 승락 2번
-//                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
-//                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
-//
-//                            carInfo.setCode(StatusCodeType.SUCCESS.getCode());
-//
-//                            break;
+//                                //최종 확인 pop 승락 2번
+//                                wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
+//                                wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
+
+                                carInfo.setCode(StatusCodeType.SUCCESS.getCode());
+
+                                break;
+                            }
+                           
                         }
                     }
                     //검색창 가기
@@ -355,7 +358,8 @@ public class WebCrawler {
         	if(carInfo != null) {
         		curIdx = idx;
         	}
-        	for( ;curIdx < CarInfoList.size(); curIdx++) {
+        	for( ;curIdx < carInfoList.size(); curIdx++) {
+        		dto = carInfoList.get(curIdx);
         		dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
         	}
             e.printStackTrace();
@@ -380,7 +384,7 @@ public class WebCrawler {
 	    	wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("car-list")));
 	    	
 
-	        	// 여기서 못 찾는 건 없다는 것
+	        // 여기서 못 찾는 건 없다는 것
 	        List<WebElement> trTags = driver.findElements(By.xpath("//*[@id=\"carList\"]/tr"));
 	      	        
 	        for(WebElement trTag :trTags) {

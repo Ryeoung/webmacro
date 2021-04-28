@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
+import com.macro.parking.enums.StatusCodeType;
 
 public interface ParkingInfoDao extends JpaRepository<ParkingInfo, Long>{
 	
@@ -16,7 +17,7 @@ public interface ParkingInfoDao extends JpaRepository<ParkingInfo, Long>{
 	
 	ParkingInfo findByParkingInfoId(int parkingInfoId);
 	
-	
+	List<ParkingInfo> findByAppFlagInAndOrderTimeGreaterThanEqual(List<StatusCodeType> appFlags, LocalDateTime cur);
 	List<ParkingInfo> findByOrderTimeGreaterThanEqual(LocalDateTime cur);
 
 }

@@ -62,16 +62,25 @@ public class CrawlerService {
 			parkingInfo.setCar(car);
 			parkingInfo.setParkingTicket(parkingTicket);
 			parkingInfo.setOrderTime(dto.getDate());
-			
+			System.out.println(dto);
 			if(dto.getCode() != null) {
 				if( dto.getCode().equals(StatusCodeType.TICKET_EXIST_ERROR.getCode())) {
 					parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
+					
 				} else if(dto.getCode().equals(StatusCodeType.SUCCESS.getCode())) {
 					parkingInfo.setAppFlag(StatusCodeType.SUCCESS);
+					
 				} else if(dto.getCode().equals(StatusCodeType.SELENIUM_ERROR.getCode())) {
 					parkingInfo.setAppFlag(StatusCodeType.SELENIUM_ERROR);
-				} else if(dto.getCode().equals(StatusCodeType.CHECK_TICKE)) {
+					
+				} else if(dto.getCode().equals(StatusCodeType.CHECK_TICKE.getCode())) {
 					parkingInfo.setAppFlag(StatusCodeType.CHECK_TICKE);
+					
+				} else if(dto.getCode().equals(StatusCodeType.NO_CAR_ERROR.getCode())) {
+					parkingInfo.setAppFlag(StatusCodeType.NO_CAR_ERROR);
+
+				} else {
+					parkingInfo.setAppFlag(StatusCodeType.NOT_WORKING);
 				}
 			} else {
 				parkingInfo.setAppFlag(StatusCodeType.NOT_WORKING);
@@ -95,14 +104,21 @@ public class CrawlerService {
 			dto.setCarNum(parkingInfo.getCar().getNumber());
 				if(parkingInfo.getAppFlag().isEqual(StatusCodeType.TICKET_EXIST_ERROR)) {
 					dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
+					
 				} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SUCCESS)) {
 					dto.setCode(StatusCodeType.SUCCESS.getCode());
+					
 				} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SELENIUM_ERROR)) {
 					dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
+					
 				} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.NOT_WORKING)){
 					dto.setCode(StatusCodeType.NOT_WORKING.getCode());
-				} else {
+					
+				} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.CHECK_TICKE)){
 					dto.setCode(StatusCodeType.CHECK_TICKE.getCode());
+					
+				} else {
+					dto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
 				}
 						
 			dto.setParkingInfoId(parkingInfo.getParkingInfoId());

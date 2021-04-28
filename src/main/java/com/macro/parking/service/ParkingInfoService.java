@@ -2,6 +2,7 @@ package com.macro.parking.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,14 +31,19 @@ public class ParkingInfoService {
 	public List<ParkingInfo> updateByAppFlag(List<ParkingInfo> parkingInfos) {
 		List<ParkingInfo> appCheckedTickets = new LinkedList<>();
 		for(ParkingInfo info :parkingInfos) {
-			if(!info.getAppFlag().isEqual(StatusCodeType.NOT_WORKING)) {
 				appCheckedTickets.add(info);
-			}
 		}
 		System.out.println("바뀐 사이즈 " + appCheckedTickets.size());
 		return parkingInfoDao.save(appCheckedTickets);
 	}
-	
+	public List<ParkingInfo> findAllWillCrawling() {
+		List<StatusCodeType> appFlags = new ArrayList<>();
+		appFlags.add(StatusCodeType.NO_CAR_ERROR);
+		appFlags.add(StatusCodeType.NOT_WORKING);
+		appFlags.add(StatusCodeType.SELENIUM_ERROR);
+		
+		return parkingInfoDao.findByAppFlagInAndOrderTimeGreaterThanEqual(appFlags, getToday());
+	}
 	public ParkingInfo findLastParkingTicket() {
 		return parkingInfoDao.findTopByOrderTimeGreaterThanEqual(getToday());
 	}
