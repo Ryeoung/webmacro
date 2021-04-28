@@ -14,6 +14,8 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 //		SELENIUM_ERROR("fail01"),
 //		NO_CAR_ERROR("fail02"),
 //		TICKET_EXIST_ERROR("fail03");
+//		PUT_TICKET("put"),
+
 //
 		if(attribute.isEqual(StatusCodeType.SELENIUM_ERROR)) {
 			return 1;
@@ -23,6 +25,8 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 			return 3;
 		} else if(attribute.isEqual(StatusCodeType.SUCCESS)) {
 			return 4;
+		} else if(attribute.isEqual(StatusCodeType.CHECK_TICKE)) {
+			return 5;
 		}
 		return 0;
 	}
@@ -38,9 +42,12 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 		} else if(dbData == 3) {
 			return StatusCodeType.TICKET_EXIST_ERROR;
 
+		} else if(dbData == 4) {
+			return StatusCodeType.TICKET_EXIST_ERROR;
+
 		}
-			
-		return StatusCodeType.TICKET_EXIST_ERROR;
+		return StatusCodeType.CHECK_TICKE;
+
 	}
 
 

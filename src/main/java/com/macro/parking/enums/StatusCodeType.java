@@ -2,6 +2,7 @@ package com.macro.parking.enums;
 
 public enum StatusCodeType {
 	SUCCESS("ok"),
+	CHECK_TICKE("check"),
 	NOT_WORKING("noting"),
 	SELENIUM_ERROR("fail01"),
 	NO_CAR_ERROR("fail02"),
