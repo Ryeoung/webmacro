@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -28,13 +30,23 @@ public class ParkingInfoService {
 	public List<ParkingInfo> addAllTicket(List<ParkingInfo> parkingInfos) {
 		return parkingInfoDao.save(parkingInfos);
 	}
-	public List<ParkingInfo> updateByAppFlag(List<ParkingInfo> parkingInfos) {
+	
+	public List<ParkingInfo> updateAllParkingInfo(List<ParkingInfo> parkingInfos) {
 		List<ParkingInfo> appCheckedTickets = new LinkedList<>();
 		for(ParkingInfo info :parkingInfos) {
-				appCheckedTickets.add(info);
+			updateParkingInfo(info);
 		}
 		System.out.println("바뀐 사이즈 " + appCheckedTickets.size());
 		return parkingInfoDao.save(appCheckedTickets);
+	}
+	
+	@Transactional
+	public ParkingInfo updateParkingInfo(ParkingInfo parkingInfo) {
+		ParkingInfo searchParkingInfo = parkingInfoDao.findByParkingInfoId(parkingInfo.getParkingInfoId());
+		if(searchParkingInfo != null) {
+			parkingInfoDao.save(searchParkingInfo);
+		}
+		return searchParkingInfo;
 	}
 	public List<ParkingInfo> findAllWillCrawling() {
 		List<StatusCodeType> appFlags = new ArrayList<>();

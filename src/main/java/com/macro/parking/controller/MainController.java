@@ -77,7 +77,7 @@ public class MainController {
 			List<CarInfoDto> carInfoDtos = crawlerService.convertParkingInfoToCarInfoDto(parkingInfos);
 			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
 			parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);
-			parkingInfoService.updateByAppFlag(parkingInfos);
+			parkingInfoService.updateAllParkingInfo(parkingInfos);
 			
 		} else {
 			carList = new ArrayList<CarInfoDto>();

@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.macro.parking.converter.StatusCodeTypeConverter;
 import com.macro.parking.enums.StatusCodeType;
 
@@ -21,6 +23,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@DynamicUpdate
 @Table(name = "parking_info")
 public class ParkingInfo {
 	 @Id
