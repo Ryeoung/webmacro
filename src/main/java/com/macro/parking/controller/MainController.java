@@ -72,7 +72,6 @@ public class MainController {
 		
 		List<CarInfoDto> carList = null;
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
-		
 		if(parkingInfos.size() > 0 ) {
 			List<CarInfoDto> carInfoDtos = crawlerService.convertParkingInfoToCarInfoDto(parkingInfos);
 			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);

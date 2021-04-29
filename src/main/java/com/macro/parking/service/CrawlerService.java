@@ -62,6 +62,7 @@ public class CrawlerService {
 			parkingInfo.setCar(car);
 			parkingInfo.setParkingTicket(parkingTicket);
 			parkingInfo.setOrderTime(dto.getDate());
+			parkingInfo.setParkingInfoId(dto.getParkingInfoId());
 			System.out.println(dto);
 			if(dto.getCode() != null) {
 				if( dto.getCode().equals(StatusCodeType.TICKET_EXIST_ERROR.getCode())) {

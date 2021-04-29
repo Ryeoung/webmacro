@@ -32,12 +32,11 @@ public class ParkingInfoService {
 	}
 	
 	public List<ParkingInfo> updateAllParkingInfo(List<ParkingInfo> parkingInfos) {
-		List<ParkingInfo> appCheckedTickets = new LinkedList<>();
 		for(ParkingInfo info :parkingInfos) {
 			updateParkingInfo(info);
 		}
-		System.out.println("바뀐 사이즈 " + appCheckedTickets.size());
-		return parkingInfoDao.save(appCheckedTickets);
+		System.out.println("바뀐 사이즈 " + parkingInfos.size());
+		return parkingInfoDao.save(parkingInfos);
 	}
 	
 	@Transactional
@@ -46,7 +45,7 @@ public class ParkingInfoService {
 		if(oldParkingInfo != null) {
 			parkingInfoDao.save(parkingInfo);
 		}
-		return oldParkingInfo;
+		return parkingInfo;
 	}
 	public List<ParkingInfo> findAllWillCrawling() {
 		List<StatusCodeType> appFlags = new ArrayList<>();

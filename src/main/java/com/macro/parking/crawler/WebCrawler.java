@@ -68,7 +68,7 @@ public class WebCrawler {
 		System.setProperty(driverName, path);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--window-size=1366,768");
-        options.addArguments("--headless");
+//        options.addArguments("--headless");
         options.setProxy(null);
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -317,13 +317,23 @@ public class WebCrawler {
                         	String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
                             if(carInfo.getWebTicketName().equals(ticketName)) {
                             	 //주차권 구입 버튼
-//                                wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
-//
-//
-//                                //최종 확인 pop 승락 2번
-//                                wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
-//                                wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
+                                wait.until(ExpectedConditions.elementToBeClickable(ticket.findElement(By.xpath("td[3]/button")))).click();
 
+
+                                //최종 확인 pop 승락 2번
+                                wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#confirmPopup #popupOk"))).click();
+                                wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#alertPopup #popupOk"))).click();
+                                wait.until(new ExpectedCondition<Boolean>() {
+
+									@Override
+									public Boolean apply(WebDriver input) {
+					                    List<WebElement> emptyCheck = driver.findElements(By.cssSelector("#myDcList > tr > .empty"));
+										if(emptyCheck.size() == 0) {
+											return false;
+										}
+					                    return true;
+									}
+								});
                                 carInfo.setCode(StatusCodeType.SUCCESS.getCode());
 
                                 break;
@@ -348,10 +358,8 @@ public class WebCrawler {
                    // wait.until(ExpectedConditions.elementToBeClickable(By.id("headerTitle"))).click();;
                     //Thread.sleep(2000);
                 }
-            	System.out.println(carInfo);
-
             }
-
+            System.out.println(carInfoList.get(0));
 
         } catch(Exception e ) {
         	int curIdx = 0;
