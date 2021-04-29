@@ -55,8 +55,13 @@ public class ParkingInfoService {
 		
 		return parkingInfoDao.findByAppFlagInAndOrderTimeGreaterThanEqual(appFlags, getToday());
 	}
-	public ParkingInfo findLastParkingTicket() {
+	public ParkingInfo findEarlyParkingInfoByToday() {
 		return parkingInfoDao.findTopByOrderTimeGreaterThanEqual(getToday());
+	}
+	
+	public ParkingInfo findlatelyParkingInfoByToday() {
+		return parkingInfoDao.findTopByOrderTimeGreaterThanEqualOrderByOrderTimeDesc(getToday());
+
 	}
 	
 	public List<ParkingInfo> findAllByToday() {

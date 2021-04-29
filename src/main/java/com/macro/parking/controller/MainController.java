@@ -58,9 +58,9 @@ public class MainController {
 	public List<CarInfoDto> getCarsBylast(@RequestParam(defaultValue = "-1") int id) {
 		ParkingInfo parkingInfo = null;
 		if(id > 0 ) {
-			parkingInfo = parkingInfoService.findByParkingInfoId(id);
+			parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 		} else {
-			parkingInfo = parkingInfoService.findLastParkingTicket();
+			parkingInfo = parkingInfoService.findEarlyParkingInfoByToday();
 		}
 		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
 		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
