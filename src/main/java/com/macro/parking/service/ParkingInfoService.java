@@ -62,7 +62,7 @@ public class ParkingInfoService {
 	public List<ParkingInfo> findAllByToday() {
 		return parkingInfoDao.findByOrderTimeGreaterThanEqual(getToday());
 	}
-	public ParkingInfo findByParkingTicketId(int parkingInfoId) {
+	public ParkingInfo findByParkingInfoId(int parkingInfoId) {
 		return parkingInfoDao.findByParkingInfoId(parkingInfoId);
 	}
 	

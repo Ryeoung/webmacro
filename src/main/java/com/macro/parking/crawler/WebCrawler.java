@@ -359,7 +359,6 @@ public class WebCrawler {
                     //Thread.sleep(2000);
                 }
             }
-            System.out.println(carInfoList.get(0));
 
         } catch(Exception e ) {
         	int curIdx = 0;

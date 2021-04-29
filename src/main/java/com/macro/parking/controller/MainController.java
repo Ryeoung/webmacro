@@ -47,7 +47,7 @@ public class MainController {
 		List<ParkingInfo > parkingInfos = parkingInfoService.findAllByToday();
 		
 		System.out.println(parkingInfos.size());
-		return crawlerService.convertParkingInfoToCarInfoDto(parkingInfos);
+		return crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 	}
 	
 	@ResponseBody
@@ -55,12 +55,12 @@ public class MainController {
 	public List<CarInfoDto> getCarsBylast(@RequestParam(defaultValue = "-1") int id) {
 		ParkingInfo parkingInfo = null;
 		if(id > 0 ) {
-			parkingInfo = parkingInfoService.findByParkingTicketId(id);
+			parkingInfo = parkingInfoService.findByParkingInfoId(id);
 		} else {
 			parkingInfo = parkingInfoService.findLastParkingTicket();
 		}
 		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
-		List<ParkingInfo> parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);
+		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
 		parkingInfoService.addAllTicket(parkingInfos);
 		
 		System.out.println(carList.size());
@@ -73,9 +73,9 @@ public class MainController {
 		List<CarInfoDto> carList = null;
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
 		if(parkingInfos.size() > 0 ) {
-			List<CarInfoDto> carInfoDtos = crawlerService.convertParkingInfoToCarInfoDto(parkingInfos);
+			List<CarInfoDto> carInfoDtos = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
-			parkingInfos = crawlerService.convertCarInfoDtoToParkingInfo(carList);
+			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
 			parkingInfoService.updateAllParkingInfo(parkingInfos);
 			
 		} else {
@@ -84,5 +84,16 @@ public class MainController {
 		
 		System.out.println(carList.size());
 		return carList;
-	}	
+	}
+	
+	@PostMapping("/check")
+	public CarInfoDto checkTicket(@RequestBody int parkingInfoId) {
+		ParkingInfo parkingInfo = parkingInfoService.findByParkingInfoId(parkingInfoId);
+		parkingInfo.setAppFlag(StatusCodeType.CHECK_TICKE);
+		parkingInfoService.updateParkingInfo(parkingInfo);
+		CarInfoDto carInfoDto = crawlerService.convertParkingInfoToCarInfoDto(parkingInfo);
+		return carInfoDto;
+		
+	}
+
 }
