@@ -83,8 +83,8 @@ public class CrawlerService {
 			} else if(carInfoDto.getCode().equals(StatusCodeType.SELENIUM_ERROR.getCode())) {
 				parkingInfo.setAppFlag(StatusCodeType.SELENIUM_ERROR);
 				
-			} else if(carInfoDto.getCode().equals(StatusCodeType.CHECK_TICKE.getCode())) {
-				parkingInfo.setAppFlag(StatusCodeType.CHECK_TICKE);
+			} else if(carInfoDto.getCode().equals(StatusCodeType.CHECK_TICKET.getCode())) {
+				parkingInfo.setAppFlag(StatusCodeType.CHECK_TICKET);
 				
 			} else if(carInfoDto.getCode().equals(StatusCodeType.NO_CAR_ERROR.getCode())) {
 				parkingInfo.setAppFlag(StatusCodeType.NO_CAR_ERROR);
@@ -129,8 +129,8 @@ public class CrawlerService {
 			} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.NOT_WORKING)){
 				dto.setCode(StatusCodeType.NOT_WORKING.getCode());
 				
-			} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.CHECK_TICKE)){
-				dto.setCode(StatusCodeType.CHECK_TICKE.getCode());
+			} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.CHECK_TICKET)){
+				dto.setCode(StatusCodeType.CHECK_TICKET.getCode());
 				
 			} else {
 				dto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());

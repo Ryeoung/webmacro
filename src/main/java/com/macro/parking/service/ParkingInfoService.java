@@ -43,9 +43,9 @@ public class ParkingInfoService {
 	public ParkingInfo updateParkingInfo(ParkingInfo parkingInfo) {
 		ParkingInfo oldParkingInfo = parkingInfoDao.findByParkingInfoId(parkingInfo.getParkingInfoId());
 		if(oldParkingInfo != null) {
-			parkingInfoDao.save(parkingInfo);
+			return parkingInfoDao.save(parkingInfo);
 		}
-		return parkingInfo;
+		return oldParkingInfo;
 	}
 	public List<ParkingInfo> findAllWillCrawling() {
 		List<StatusCodeType> appFlags = new ArrayList<>();

@@ -45,7 +45,7 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 			return StatusCodeType.SUCCESS;
 
 		}
-		return StatusCodeType.CHECK_TICKE;
+		return StatusCodeType.CHECK_TICKET;
 
 	}
 

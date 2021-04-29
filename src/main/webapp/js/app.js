@@ -53,7 +53,9 @@ class App {
     	let cardData = {};
         
         let childNode = Array.from(card.children);
-        
+        let checkBtn = childNode[5].children[0];
+        checkBtn.addEventListener("click", this.clickEventHandlerAboutCheckTicket.bind(this));
+
         let stateNode = childNode[4];
 
         let status = stateNode.innerHTML;
@@ -76,10 +78,26 @@ class App {
         } else if(status == NOT_WORKING) {
         	stateNode.innerHTML = "";
         }
-        
         this.checkList.prepend(card);
     }
+     
+    clickEventHandlerAboutCheckTicket(event){
+    	let btn = event.currentTarget;
+    	let card = btn.parentElement.parentElement;
+    	let parkingInfoId = Number(card.dataset.id);
+    
+    	card.parentNode.removeChild(card);
+
+    	ajax({
+            url : `/parking/api/ticket/${parkingInfoId}`,
+            method : "PUT",
+            contentType : "application/json; charset=utf-8",
+            data : data
+        }, this.makeCardOfCar.bind(this));
         
+    }
+   
+
     addClickEventToGetNewTickectBtn() {
     	this.getTicketBtn.addEventListener("click", 
     			this.clickEventhandlerAboutGetNewTicket.bind(this));
