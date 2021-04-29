@@ -214,7 +214,7 @@ public class WebCrawler {
             wait.until(new LoginPageLoaded(iparkPageTitle, logInPageUrl));
 //            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("intro")));
 //            wait.until(ExpectedConditions.elementToBeClickable(By.id("skip")));
-	    	((JavascriptExecutor) driver).executeScript("document.getElementById('intro').style.display = 'none';");
+//	    	((JavascriptExecutor) driver).executeScript("document.getElementById('intro').style.display = 'none';");
 
             
 //            wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-skip"))).click();

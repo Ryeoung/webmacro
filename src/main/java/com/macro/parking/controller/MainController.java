@@ -79,7 +79,7 @@ public class MainController {
 			List<CarInfoDto> carInfoDtos = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
 			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
-			parkingInfoService.updateAllParkingInfo(parkingInfos);
+//			parkingInfoService.updateAllParkingInfo(parkingInfos);
 			
 		} else {
 			carList = new ArrayList<CarInfoDto>();

@@ -35,6 +35,10 @@ public class CrawlerService {
 	@Autowired
 	ParkingTicketDao parkingTicketDao;
 	
+	@Autowired
+	ParkingInfoService parkingInfoService;
+	
+	
 	public List<CarInfoDto> getDataFromModu(ParkingInfo lastParkingInfo) {
 		crawler.setWebDriver();
 		return crawler.getDataFromModu(lastParkingInfo);
@@ -186,6 +190,8 @@ public class CrawlerService {
 		System.out.println(parkingLot);
 		crawler.setWebDriver();
 		crawler.addTicketByParkingLot(list, parkingLot.getWebId(), parkingLot.getWebPwd());
+		List<ParkingInfo> parkingInfos = convertAllCarInfoDtoToParkingInfos(list);
+		parkingInfoService.updateAllParkingInfo(parkingInfos);
 		
 	}
 }

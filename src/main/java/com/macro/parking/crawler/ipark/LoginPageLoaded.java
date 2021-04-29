@@ -20,14 +20,18 @@ public class LoginPageLoaded extends PageLoaded{
 	    Boolean isIntroDisplay = false;
 	    Boolean isSkip = false;
 	    Boolean isDomAttached = isDomAttachPage(driver);
+	    if(!isDomAttached) {
+	    	return false;
+	    }
 	    Boolean isBlockDisplay = false;
 	    try{
 	    	size = driver.findElements(By.tagName("div")).size();
 	     	isIntroDisplay = driver.findElement(By.id("intro")).getAttribute("style").contains("display");
-	     	isBlockDisplay = driver.findElement(By.id("intro")).getAttribute("style").contains("block");
-	     	if(isIntroDisplay && isBlockDisplay) {
+	     	if(isIntroDisplay) {
 		    	((JavascriptExecutor) driver).executeScript("document.getElementById('intro').style.display = 'none';");
 	     	}
+	     	isBlockDisplay = driver.findElement(By.id("intro")).getAttribute("style").contains("block");
+
 	     	isSkip = driver.findElement(By.id("skip")).getText().contains("Skip");
 	    } catch(StaleElementReferenceException e) {
 	    	return false;
@@ -37,7 +41,7 @@ public class LoginPageLoaded extends PageLoaded{
 	   	   
 	    
 	   System.out.println("login page");
-	   System.out.println(isSkip +" "+size + isIntroDisplay);
+	   System.out.println(isSkip +" "+size + isIntroDisplay + " " + isBlockDisplay);
 	    return isDomAttached && (size >= 13) && isIntroDisplay && !isBlockDisplay;
 	  }
 	 
