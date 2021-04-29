@@ -55,7 +55,7 @@ public class CrawlerService {
 				car.setNumber(dto.getCarNum());
 				car = carDao.save(car);
 			}
-			System.out.println(dto.getParkingLotName());
+//			System.out.println(dto.getParkingLotName());
 			parkingLot = parkingLotDao.findByName(dto.getParkingLotName());			
 			parkingTicket = parkingTicketDao.findByAppNameAndParkingLot_ParkingLotId(dto.getAppTicketName(), parkingLot.getParkingLotId());
 			ParkingInfo parkingInfo = new ParkingInfo();

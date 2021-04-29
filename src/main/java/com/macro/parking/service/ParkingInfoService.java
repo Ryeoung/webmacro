@@ -42,11 +42,11 @@ public class ParkingInfoService {
 	
 	@Transactional
 	public ParkingInfo updateParkingInfo(ParkingInfo parkingInfo) {
-		ParkingInfo searchParkingInfo = parkingInfoDao.findByParkingInfoId(parkingInfo.getParkingInfoId());
-		if(searchParkingInfo != null) {
-			parkingInfoDao.save(searchParkingInfo);
+		ParkingInfo oldParkingInfo = parkingInfoDao.findByParkingInfoId(parkingInfo.getParkingInfoId());
+		if(oldParkingInfo != null) {
+			parkingInfoDao.save(parkingInfo);
 		}
-		return searchParkingInfo;
+		return oldParkingInfo;
 	}
 	public List<ParkingInfo> findAllWillCrawling() {
 		List<StatusCodeType> appFlags = new ArrayList<>();

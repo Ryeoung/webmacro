@@ -68,7 +68,7 @@ public class WebCrawler {
 		System.setProperty(driverName, path);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--window-size=1366,768");
-//        options.addArguments("--headless");
+        options.addArguments("--headless");
         options.setProxy(null);
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -212,8 +212,8 @@ public class WebCrawler {
             load(iParkUrl);
             
             wait.until(new LoginPageLoaded(iparkPageTitle, logInPageUrl));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("intro")));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("skip")));
+//            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("intro")));
+//            wait.until(ExpectedConditions.elementToBeClickable(By.id("skip")));
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('intro').style.display = 'none';");
 
             
@@ -290,7 +290,7 @@ public class WebCrawler {
     	        //wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"container\"]/section[2]/div[2]/div/button"))).click();
     	        
     	        
-                wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr));
+                wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr, carNum));
                 if(isCarInParkingLot(carNum)) {
                 	
         	        //wait.until(ExpectedConditions.elementToBeClickable(By.id("next"))).click();
@@ -298,7 +298,6 @@ public class WebCrawler {
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("next")));
 
                 	((JavascriptExecutor) driver).executeScript("document.getElementById('next').click();");
-                	System.out.println(carInfo);
                     wait.until(new TicketApplyPageLoaded(iparkPageTitle, ticketApplyPageUrl, carInfo.getWebTicketName()));
 
                     //readyPageLoad();
@@ -349,6 +348,8 @@ public class WebCrawler {
                    // wait.until(ExpectedConditions.elementToBeClickable(By.id("headerTitle"))).click();;
                     //Thread.sleep(2000);
                 }
+            	System.out.println(carInfo);
+
             }
 
 
