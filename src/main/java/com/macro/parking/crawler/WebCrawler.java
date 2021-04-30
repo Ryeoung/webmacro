@@ -225,6 +225,7 @@ public class WebCrawler {
 
 //            driver.findElement(By.className("btn-menu-close")).click();
             
+            Thread.sleep(500);
 //           로그인
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('id').value = '"+id +"';");
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('password').value = '"+ pwd +"';");
@@ -242,7 +243,6 @@ public class WebCrawler {
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('login').click();");
 
 
-            //login(siteId, sitePw, infoMap);
             
             String mainPageUrl = "members.iparking.co.kr/html/home.html";
             String carSearchPageUlr = "members.iparking.co.kr/html/car-search-list.html";
@@ -254,7 +254,6 @@ public class WebCrawler {
                 
                 wait.until(new MainPageLoaded(iparkPageTitle, mainPageUrl));
 
-//                readyPageLoad();
 
                 //popp 제거
                 deletePopUp();
@@ -284,23 +283,15 @@ public class WebCrawler {
             	((JavascriptExecutor) driver).executeScript("document.getElementById('carNumber').value = '"+ fourNumOfCar + "';" +
             											"document.querySelector('#container > section.sec-inp > div.cont > div > button').click();");
 
-    	        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("carNumber"))).sendKeys(fourNumOfCar + Keys.ENTER);
 
-    	        //검색 버튼 클릭
-    	        //wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"container\"]/section[2]/div[2]/div/button"))).click();
-    	        
-    	        
                 wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr, carNum));
                 if(isCarInParkingLot(carNum)) {
                 	
-        	        //wait.until(ExpectedConditions.elementToBeClickable(By.id("next"))).click();
-        	       // clickButtonToNextPage(By.id("next"), carSearchPageUlr, ticketApplyPageUrl);
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("next")));
 
                 	((JavascriptExecutor) driver).executeScript("document.getElementById('next').click();");
                     wait.until(new TicketApplyPageLoaded(iparkPageTitle, ticketApplyPageUrl, carInfo.getWebTicketName()));
 
-                    //readyPageLoad();
                     
                     //주차권 구매 페이지
                     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("myDcList")));
@@ -312,14 +303,20 @@ public class WebCrawler {
                     } else {
                         //주차권 구매
                         String ticketXpath = "//*[@id=\"productList\"]/tr";
+                        String ticketName = "";
+                        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("productList")));
                         List<WebElement> saleTickets = driver.findElements(By.xpath(ticketXpath));
+                        int ticketIdx = 0;
                         for(WebElement ticket :saleTickets) {
-                        	String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
+                        	ticketIdx += 1;
+                        	wait.until(ExpectedConditions.invisibilityOfElementWithText(By.xpath(ticketXpath + "/td[1]"), ticketName));
+                        	ticketName = ticket.findElement(By.xpath("td[1]")).getText();
+                        	
                             if(carInfo.getWebTicketName().equals(ticketName)) {
                             	 //주차권 구입 버튼
-                                wait.until(ExpectedConditions.elementToBeClickable(ticket.findElement(By.xpath("td[3]/button")))).click();
+//                                wait.until(ExpectedConditions.elementToBeClickable(ticket.findElement(By.xpath("td[3]/button")))).click();
 
-
+                    	    	((JavascriptExecutor) driver).executeScript("document.querySelector('#productList > tr:nth-child("+ ticketIdx + ") > td:nth-child(3) > button').click()");
                                 //최종 확인 pop 승락 2번
                                 wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#confirmPopup #popupOk"))).click();
                                 wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#alertPopup #popupOk"))).click();

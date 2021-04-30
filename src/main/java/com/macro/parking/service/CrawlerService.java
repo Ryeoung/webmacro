@@ -70,7 +70,9 @@ public class CrawlerService {
 			car.setNumber(carInfoDto.getCarNum());
 			car = carDao.save(car);
 		}
-		ParkingLot parkingLot = parkingLotDao.findByName(carInfoDto.getParkingLotName());			
+		System.out.println(carInfoDto);
+		ParkingLot parkingLot = parkingLotDao.findByName(carInfoDto.getParkingLotName());
+		System.out.println(parkingLot);
 		ParkingTicket parkingTicket = parkingTicketDao.findByAppNameAndParkingLot_ParkingLotId(carInfoDto.getAppTicketName(), parkingLot.getParkingLotId());
 		ParkingInfo parkingInfo = new ParkingInfo();
 		parkingInfo.setCar(car);
@@ -99,7 +101,7 @@ public class CrawlerService {
 		} else {
 			parkingInfo.setAppFlag(StatusCodeType.NOT_WORKING);
 		}
-		
+
 		return parkingInfo;
 	}
 	
