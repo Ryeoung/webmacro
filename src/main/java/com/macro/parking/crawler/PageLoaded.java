@@ -30,7 +30,11 @@ public class PageLoaded implements ExpectedCondition<Boolean> {
 	}
 
 	@Override
-	  public Boolean apply(WebDriver  driver) {
+	 public Boolean apply(WebDriver  driver) {
+		return isDomAttachPage(driver);
+	 }
+	
+	public Boolean isDomAttachPage(WebDriver driver) {
 		Boolean isJavascriptLoad = ((JavascriptExecutor) driver).executeScript(
                 "return document.readyState"
         ).equals("complete");
@@ -39,6 +43,6 @@ public class PageLoaded implements ExpectedCondition<Boolean> {
 	    Boolean isUrlCorrect = driver.getCurrentUrl()
 	                                 .contains(expectedUrl);				
 	    return isJavascriptLoad && isTitleCorrect && isUrlCorrect;
-	  }
+	}
 
 }

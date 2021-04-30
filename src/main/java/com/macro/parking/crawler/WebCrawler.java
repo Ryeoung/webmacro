@@ -30,6 +30,7 @@ import com.macro.parking.crawler.ipark.LoginPageLoaded;
 import com.macro.parking.crawler.ipark.MainPageLoaded;
 import com.macro.parking.crawler.ipark.SearchCarPageLoaded;
 import com.macro.parking.crawler.ipark.TicketApplyPageLoaded;
+import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
@@ -87,7 +88,7 @@ public class WebCrawler {
         }
 	}
 
-	public List<CarInfoDto> getDataFromModu(ParkingTicket lastTicket) {
+	public List<CarInfoDto> getDataFromModu(ParkingInfo lastParkingInfo) {
 		 List<CarInfoDto> parkingLotDtos = new LinkedList<>();
 	        try {
 	            infoMap = new HashMap<String, By>();
@@ -157,9 +158,9 @@ public class WebCrawler {
 
 	                        //주차권
 	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
-	                        dto.setTicket(ticketName);
+	                        dto.setAppTicketName(ticketName);
 	                        
-	                        if(lastTicket != null && dto.isEqual(lastTicket)) {
+	                        if(lastParkingInfo != null && dto.isEqual(lastParkingInfo)) {
 	                        	break process;
 	                        }
 	                        
@@ -193,8 +194,8 @@ public class WebCrawler {
 	        return parkingLotDtos;
 	    }
 	 
-	public void addTicketByParkingLot(List<CarInfoDto> CarInfoList, String id, String pwd){
-        try{
+	public void addTicketByParkingLot(List<CarInfoDto> carInfoList, String id, String pwd){
+        
             Map<String, By> infoMap = new HashMap<String, By>();
             infoMap.put("id", By.id("id"));
             infoMap.put("pw", By.id("password"));
@@ -202,12 +203,18 @@ public class WebCrawler {
             
             String logInPageUrl = "members.iparking.co.kr/";
             String iparkPageTitle = "i PARKING - MEMBERS";
-            
+            String siteId = id;
+            String sitePw = pwd;
+            CarInfoDto carInfo  = null;
+            int idx = 0;
+            int fin = 0;
+            try{
             load(iParkUrl);
             
             wait.until(new LoginPageLoaded(iparkPageTitle, logInPageUrl));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("intro")));
-	    	((JavascriptExecutor) driver).executeScript("document.getElementById('intro').style.display = 'none';");
+//            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("intro")));
+//            wait.until(ExpectedConditions.elementToBeClickable(By.id("skip")));
+//	    	((JavascriptExecutor) driver).executeScript("document.getElementById('intro').style.display = 'none';");
 
             
 //            wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-skip"))).click();
@@ -217,45 +224,55 @@ public class WebCrawler {
 //            wait.until(ExpectedConditions.elementToBeClickable(By.className("btn-menu-close"))).click();
 
 //            driver.findElement(By.className("btn-menu-close")).click();
-            String siteId = id;
-            String sitePw = pwd;
+            
+            Thread.sleep(500);
 //           로그인
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('id').value = '"+id +"';");
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('password').value = '"+ pwd +"';");
+	    	By idLocator = By.id("id");
+	    	By pwdLocator = By.id("password");
+	    	
+	    	wait.until(new ExpectedCondition<Boolean>() {
+	           	public Boolean apply(WebDriver driver) {
+	                Boolean isIdCorrect = driver.findElement(idLocator).getAttribute("value").contains(id);
+	                Boolean isPwCorrect = driver.findElement(pwdLocator).getAttribute("value").contains(pwd);
+	                return isIdCorrect && isPwCorrect;
+	               }
+	           }); 	    	
+	    	
 	    	((JavascriptExecutor) driver).executeScript("document.getElementById('login').click();");
 
 
-            //login(siteId, sitePw, infoMap);
             
             String mainPageUrl = "members.iparking.co.kr/html/home.html";
             String carSearchPageUlr = "members.iparking.co.kr/html/car-search-list.html";
             
             String ticketApplyPageUrl = "members.iparking.co.kr/html/discount-ticket-apply.html";
-            for(int idx = 0, fin = CarInfoList.size(); idx < fin; idx++) {
+            for(idx = 0,  fin = carInfoList.size(); idx < fin; idx++) {
 
-                CarInfoDto carInfo  = CarInfoList.get(idx);
+                carInfo  = carInfoList.get(idx);
                 
                 wait.until(new MainPageLoaded(iparkPageTitle, mainPageUrl));
 
-//                readyPageLoad();
 
                 //popp 제거
                 deletePopUp();
 
                 if(idx == 0) {
             		Select parkingLotSelect = new Select(driver.findElement(By.id("storeSelect")));
-
-                    if(carInfo.equals("하이파킹 마제스타시티")) {
+            		String parkingLotName = carInfo.getParkingLotName();
+                    if(parkingLotName.equals("하이파킹 마제스타시티")) {
                         parkingLotSelect.selectByValue("8638");
-                    } else if(carInfo.equals("하이파킹 94빌딩")){
+                    } else if(parkingLotName.equals("하이파킹 94빌딩")){
                         parkingLotSelect.selectByValue("8637");
-                    } else if(carInfo.equals("하이시티파킹 NH농협캐피탈빌딩")) {
+                    } else if(parkingLotName.equals("하이시티파킹 NH농협캐피탈빌딩")) {
                         parkingLotSelect.selectByValue("72943");
-                    } else if(carInfo.equals("하이시티파킹 오토웨이타워")) {
+                    } else if(parkingLotName.equals("하이시티파킹 오토웨이타워")) {
                         parkingLotSelect.selectByValue("72945");
                     }
             	}
-                
+                Thread.sleep(500);
+
                 String carNum = carInfo.getCarNum();
 
                 String fourNumOfCar = carNum.substring(carNum.length() - 4, carNum.length());
@@ -266,24 +283,15 @@ public class WebCrawler {
             	((JavascriptExecutor) driver).executeScript("document.getElementById('carNumber').value = '"+ fourNumOfCar + "';" +
             											"document.querySelector('#container > section.sec-inp > div.cont > div > button').click();");
 
-    	        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("carNumber"))).sendKeys(fourNumOfCar + Keys.ENTER);
 
-    	        //검색 버튼 클릭
-    	        //wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"container\"]/section[2]/div[2]/div/button"))).click();
-    	        
-    	        
-                wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr));
-
+                wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr, carNum));
                 if(isCarInParkingLot(carNum)) {
                 	
-        	        //wait.until(ExpectedConditions.elementToBeClickable(By.id("next"))).click();
-        	       // clickButtonToNextPage(By.id("next"), carSearchPageUlr, ticketApplyPageUrl);
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("next")));
 
                 	((JavascriptExecutor) driver).executeScript("document.getElementById('next').click();");
-                    wait.until(new TicketApplyPageLoaded(iparkPageTitle, ticketApplyPageUrl));
+                    wait.until(new TicketApplyPageLoaded(iparkPageTitle, ticketApplyPageUrl, carInfo.getWebTicketName()));
 
-                    //readyPageLoad();
                     
                     //주차권 구매 페이지
                     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("myDcList")));
@@ -295,21 +303,39 @@ public class WebCrawler {
                     } else {
                         //주차권 구매
                         String ticketXpath = "//*[@id=\"productList\"]/tr";
+                        String ticketName = "";
+                        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("productList")));
                         List<WebElement> saleTickets = driver.findElements(By.xpath(ticketXpath));
+                        int ticketIdx = 0;
                         for(WebElement ticket :saleTickets) {
-//                            String ticketName = ticket.findElement(By.xpath("td[1]")).getText();
-//
-//                            //주차권 구입 버튼
-//                            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(ticketXpath + "/td[3]/button"))).click();
-////
-//
-//                            //최종 확인 pop 승락 2번
-//                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
-//                            wait.until(ExpectedConditions.elementToBeClickable(By.id("popupOk"))).click();
-//
-//                            carInfo.setCode(StatusCodeType.SUCCESS.getCode());
-//
-//                            break;
+                        	ticketIdx += 1;
+                        	wait.until(ExpectedConditions.invisibilityOfElementWithText(By.xpath(ticketXpath + "/td[1]"), ticketName));
+                        	ticketName = ticket.findElement(By.xpath("td[1]")).getText();
+                        	
+                            if(carInfo.getWebTicketName().equals(ticketName)) {
+                            	 //주차권 구입 버튼
+//                                wait.until(ExpectedConditions.elementToBeClickable(ticket.findElement(By.xpath("td[3]/button")))).click();
+
+                    	    	((JavascriptExecutor) driver).executeScript("document.querySelector('#productList > tr:nth-child("+ ticketIdx + ") > td:nth-child(3) > button').click()");
+                                //최종 확인 pop 승락 2번
+                                wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#confirmPopup #popupOk"))).click();
+                                wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#alertPopup #popupOk"))).click();
+                                wait.until(new ExpectedCondition<Boolean>() {
+
+									@Override
+									public Boolean apply(WebDriver input) {
+					                    List<WebElement> emptyCheck = driver.findElements(By.cssSelector("#myDcList > tr > .empty"));
+										if(emptyCheck.size() == 0) {
+											return false;
+										}
+					                    return true;
+									}
+								});
+                                carInfo.setCode(StatusCodeType.SUCCESS.getCode());
+
+                                break;
+                            }
+                           
                         }
                     }
                     //검색창 가기
@@ -331,31 +357,22 @@ public class WebCrawler {
                 }
             }
 
-
         } catch(Exception e ) {
+        	int curIdx = 0;
+        	CarInfoDto dto = null;
+        	if(carInfo != null) {
+        		curIdx = idx;
+        	}
+        	for( ;curIdx < carInfoList.size(); curIdx++) {
+        		dto = carInfoList.get(curIdx);
+        		dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
+        	}
             e.printStackTrace();
         } finally {
             driver.quit();
         }
     }
-		private void clickButtonToNextPage(By locator, String curUrl, String nextUrl) {
-			wait.until(new ExpectedCondition<Boolean>() {
-	            public Boolean apply(WebDriver driver)  {
-	            	String curUrl = driver.getCurrentUrl();
-	            	
-	                Boolean isCurPage = curUrl.contains(curUrl);
-	                Boolean isNextPage = curUrl.contains(nextUrl);
-	                List<WebElement> buttons = driver.findElements(locator);
-
-	            	if(buttons.size() > 0 && (isCurPage)) {
-		            	buttons.get(0).click();
-	            	}
-	            	System.out.println(driver.findElement(locator).getText() + " " + !isCurPage);
-
-	                return !isCurPage;
-	            }
-	        });
-		}
+		
 	    private void deletePopUp() throws InterruptedException {
 //	    	wait.until(ExpectedConditions.)
 	    	//wait.until(ExpectedConditions.elementToBeClickable(By.id("goHome"))).click();
@@ -372,7 +389,7 @@ public class WebCrawler {
 	    	wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("car-list")));
 	    	
 
-	        	// 여기서 못 찾는 건 없다는 것
+	        // 여기서 못 찾는 건 없다는 것
 	        List<WebElement> trTags = driver.findElements(By.xpath("//*[@id=\"carList\"]/tr"));
 	      	        
 	        for(WebElement trTag :trTags) {

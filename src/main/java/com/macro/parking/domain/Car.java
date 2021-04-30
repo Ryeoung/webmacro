@@ -21,6 +21,6 @@ public class Car {
     private String licence;
     
     @OneToMany(mappedBy = "car")
-    private List<ParkingTicket> parkingTicket = new ArrayList<>();
+    private List<ParkingInfo> parkingInfo = new ArrayList<>();
 
 }

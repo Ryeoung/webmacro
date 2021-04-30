@@ -3,6 +3,8 @@ package com.macro.parking.dto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
 
 import lombok.Getter;
@@ -13,12 +15,14 @@ import lombok.ToString;
 @Getter
 @ToString
 public class CarInfoDto {
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
 	private LocalDateTime date;
-	private int parkingTicketId;
+	private int parkingInfoId;
 	private String parkingLotName;
-	private String ticket;
+	private String appTicketName;
 	private String carNum;
 	private String code;
+	private String webTicketName;
 	private boolean checkApp;
 	
 	public boolean isEqual(CarInfoDto dto) {
@@ -26,20 +30,21 @@ public class CarInfoDto {
 		if(dto.getDate().isEqual(this.getDate()) && 
         		dto.getParkingLotName().equals(this.getParkingLotName()) && 
         		dto.getCarNum().equals(this.getCarNum()) &&
-        		dto.getTicket().equals(this.getTicket())){
+        		dto.getAppTicketName().equals(this.getAppTicketName())){
 			return true;
 			
 		}
 		
 		return false;
 	}
-	public boolean isEqual(ParkingTicket ticket) {
+	public boolean isEqual(ParkingInfo parkingInfo) {
 		
 		CarInfoDto dto = new CarInfoDto();
-		dto.setCarNum(ticket.getCar().getNumber());
-		dto.setTicket(ticket.getParkingTicketName());
-		dto.setParkingLotName(ticket.getParkingLot().getName());
-		dto.setDate(ticket.getOrderTime());
+		dto.setCarNum(parkingInfo.getCar().getNumber());
+		dto.setWebTicketName(parkingInfo.getParkingTicket().getWebName());
+		dto.setAppTicketName(parkingInfo.getParkingTicket().getAppName());
+		dto.setParkingLotName(parkingInfo.getParkingTicket().getParkingLot().getName());
+		dto.setDate(parkingInfo.getOrderTime());
 		return isEqual(dto);
 	}
 }

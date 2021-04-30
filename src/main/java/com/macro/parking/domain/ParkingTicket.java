@@ -1,9 +1,14 @@
 package com.macro.parking.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,27 +25,21 @@ public class ParkingTicket {
 	 private int parkingTicketId;
 	 
     @ManyToOne
-    @JoinColumn(name = "car_number", updatable = false)
-    private Car car;
-
-
-    @ManyToOne
     @JoinColumn(name = "parking_lot_id", updatable = false)
     private ParkingLot parkingLot;
 
-    @Column(name = "app_flag")
-    private boolean appFlag;
+    @Column(name = "web_name")
+    private String webName;
     
-    @Column(name = "parking_ticket_name")
-    private String parkingTicketName;
+    @Column(name = "app_name")
+    private String appName;
     
-    @Column(name = "order_time", columnDefinition = "TIMESTAMP")
-    private LocalDateTime orderTime;
+    @Column(name = "hour")
+    private Integer hour;
     
-    @Column(name = "parking_time", columnDefinition = "TIMESTAMP")
-    private LocalDateTime parkingTime;
-
-    @Column(name = "exit_time", columnDefinition = "TIMESTAMP")
-    private LocalDateTime exitTime;    
+    @Column(name = "price")
+    private Integer price;
     
+    @OneToMany(mappedBy = "parkingTicket")
+    private List<ParkingInfo> parkingInfo = new ArrayList<>();   
 }
