@@ -141,7 +141,8 @@ public class CrawlerService {
 			} else {
 				dto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
 			}
-					
+			System.out.println(parkingInfo.getCar().getNumber());
+		System.out.println(parkingInfo.getParkingTicket().getParkingTicketId());			
 		dto.setParkingInfoId(parkingInfo.getParkingInfoId());
 		dto.setParkingLotName(parkingInfo.getParkingTicket().getParkingLot().getName());
 		dto.setAppTicketName(parkingInfo.getParkingTicket().getAppName());

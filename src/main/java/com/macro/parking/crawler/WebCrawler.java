@@ -315,7 +315,7 @@ public class WebCrawler {
                             if(carInfo.getWebTicketName().equals(ticketName)) {
                             	 //주차권 구입 버튼
 //                                wait.until(ExpectedConditions.elementToBeClickable(ticket.findElement(By.xpath("td[3]/button")))).click();
-
+                            	Thread.sleep(500);
                     	    	((JavascriptExecutor) driver).executeScript("document.querySelector('#productList > tr:nth-child("+ ticketIdx + ") > td:nth-child(3) > button').click()");
                                 //최종 확인 pop 승락 2번
                                 wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#confirmPopup #popupOk"))).click();
