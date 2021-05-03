@@ -79,7 +79,7 @@ button:hover{
 .tabContainer, .cardList{
     width: 1100px;
 }
-.ticketCheck{
+.ticketBtn{
     background-color:black;
     border-color: black;
     color: white;
@@ -87,13 +87,17 @@ button:hover{
     width: 70px;
     height: 35px;
 }
+.ticketBtn:hover{
+    background-color: white;
+    color: black;
+}
 .tabContainer{
 	display:flex;
 	flex-direction:row;
 	margin-bottom:10px;
 }
 .tabLink{
-	width:33%;
+	width:25%;
 	display: flex;
 	justify-content:center;
 	align-items: center;
@@ -116,10 +120,7 @@ button:hover{
 .tabActive {
 	display: flex;
 }
-.ticketCheck:hover{
-    background-color: white;
-    color: black;
-}
+
 #checked {
     background-color: dimgrey;
 }

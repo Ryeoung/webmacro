@@ -95,6 +95,9 @@ public class CrawlerService {
 			} else if(carInfoDto.getCode().equals(StatusCodeType.NO_CAR_ERROR.getCode())) {
 				parkingInfo.setAppFlag(StatusCodeType.NO_CAR_ERROR);
 
+			} else if(carInfoDto.getCode().equals(StatusCodeType.CANCEL.getCode())) {
+				parkingInfo.setAppFlag(StatusCodeType.CANCEL);
+				
 			} else {
 				parkingInfo.setAppFlag(StatusCodeType.NOT_WORKING);
 			}
@@ -139,9 +142,12 @@ public class CrawlerService {
 		} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.CHECK_TICKET)){
 			dto.setCode(StatusCodeType.CHECK_TICKET.getCode());
 			
+		} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.CANCEL)){
+			dto.setCode(StatusCodeType.CANCEL.getCode());
 		} else {
 			dto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
 		}
+		
 		System.out.println(parkingInfo.getParkingTicket().getParkingTicketId());			
 		dto.setParkingInfoId(parkingInfo.getParkingInfoId());
 		dto.setParkingLotName(parkingInfo.getParkingTicket().getParkingLot().getName());

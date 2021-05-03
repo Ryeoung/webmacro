@@ -90,11 +90,11 @@ public class MainController {
 	}
 	
 	@PutMapping("/ticket/{parkingInfoId}")
-	public List<CarInfoDto> checkTicket(@PathVariable int parkingInfoId) {
-		ParkingInfo parkingInfo = parkingInfoService.findByParkingInfoId(parkingInfoId);
-		parkingInfo.setAppFlag(StatusCodeType.CHECK_TICKET);
-		parkingInfoService.updateParkingInfo(parkingInfo);
-		CarInfoDto carInfoDto = crawlerService.convertParkingInfoToCarInfoDto(parkingInfo);
+	public List<CarInfoDto> checkTicket(@PathVariable int parkingInfoId, @RequestBody ParkingInfo parkingInfo) {
+		ParkingInfo newParkingInfo = parkingInfoService.findByParkingInfoId(parkingInfoId);
+		newParkingInfo.setAppFlag(parkingInfo.getAppFlag());
+		parkingInfoService.updateParkingInfo(newParkingInfo);
+		CarInfoDto carInfoDto = crawlerService.convertParkingInfoToCarInfoDto(newParkingInfo);
 		return Arrays.asList(carInfoDto);
 		
 	}

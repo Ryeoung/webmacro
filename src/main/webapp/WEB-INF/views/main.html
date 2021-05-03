@@ -14,9 +14,10 @@
            		<button class="checkAllCar" id="checkTicket">주차권 선택하기</button>
         	</div>
         	<div class="tabContainer">
-        		<div class="tabLink" data-tab-id="ready">현장 발권된 주차권</div>
+        		<div class="tabLink" data-tab-id="ready" id="defaultTab">현장 발권된 주차권</div>
         		<div class="tabLink" data-tab-id="check">현장에 발권할 주차권</div>
         		<div class="tabLink" data-tab-id="checked">주차 완료</div>
+        		<div class="tabLink" data-tab-id="cancel">취소된 주차권</div>
         	</div>
         	<div class="cardList" id = "header">
             	<div class = "card">
@@ -28,7 +29,7 @@
                 	<div class="btnArea">선택</div>
             	</div>            
         	</div>
-        	<div class="cardList tabContent tabActive" id="ready">
+        	<div class="cardList tabContent" id="ready">
         	</div>
         	
         	
@@ -38,6 +39,9 @@
         	
         	
         	<div class="cardList tabContent" id = "checked">
+        	</div>
+        	
+        	<div class="cardList tabContent" id = "cancel">
         	</div>
     </div>
 </body>

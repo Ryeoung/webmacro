@@ -10,11 +10,7 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 
 	@Override
 	public Integer convertToDatabaseColumn(StatusCodeType attribute) {
-//		SUCCESS("ok"),
-//		SELENIUM_ERROR("fail01"),
-//		NO_CAR_ERROR("fail02"),
-//		TICKET_EXIST_ERROR("fail03");
-//		PUT_TICKET("put"),
+
 		if(attribute == null ||attribute.isEqual(StatusCodeType.NOT_WORKING)) {
 			return 0;
 		} else if(attribute.isEqual(StatusCodeType.SELENIUM_ERROR)) {
@@ -25,8 +21,10 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 			return 3;
 		} else if(attribute.isEqual(StatusCodeType.SUCCESS)) {
 			return 4;
-		} 
-		return 5;
+		} else if(attribute.isEqual(StatusCodeType.CHECK_TICKET)) {
+			return 5;
+		}
+		return 6;
 		
 	}
 
@@ -44,8 +42,10 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 		} else if(dbData == 4) {
 			return StatusCodeType.SUCCESS;
 
+		} else if(dbData == 5) {
+			return StatusCodeType.CHECK_TICKET;
 		}
-		return StatusCodeType.CHECK_TICKET;
+		return StatusCodeType.CANCEL;
 
 	}
 
