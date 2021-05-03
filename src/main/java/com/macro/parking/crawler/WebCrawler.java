@@ -309,13 +309,13 @@ public class WebCrawler {
                         int ticketIdx = 0;
                         for(WebElement ticket :saleTickets) {
                         	ticketIdx += 1;
-                        	wait.until(ExpectedConditions.invisibilityOfElementWithText(By.xpath(ticketXpath + "/td[1]"), ticketName));
+                        	wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(ticketXpath + "/td[1]")));
                         	ticketName = ticket.findElement(By.xpath("td[1]")).getText();
                         	
                             if(carInfo.getWebTicketName().equals(ticketName)) {
                             	 //주차권 구입 버튼
 //                                wait.until(ExpectedConditions.elementToBeClickable(ticket.findElement(By.xpath("td[3]/button")))).click();
-
+                            	Thread.sleep(500);
                     	    	((JavascriptExecutor) driver).executeScript("document.querySelector('#productList > tr:nth-child("+ ticketIdx + ") > td:nth-child(3) > button').click()");
                                 //최종 확인 pop 승락 2번
                                 wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#confirmPopup #popupOk"))).click();

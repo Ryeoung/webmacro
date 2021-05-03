@@ -10,53 +10,37 @@
         <div class="container">
         	<div class="btnContainer">
         	     <button class="checkAllCar" id="getTicket">주차권 새로고침</button>
-        	
             	<button class="checkAllCar" id="pushTicket">아이파크에 주차권 넣기</button>
            		<button class="checkAllCar" id="checkTicket">주차권 선택하기</button>
         	</div>
+        	<div class="tabContainer">
+        		<div class="tabLink" data-tab-id="ready" id="defaultTab">현장 발권된 주차권</div>
+        		<div class="tabLink" data-tab-id="check">현장에 발권할 주차권</div>
+        		<div class="tabLink" data-tab-id="checked">주차 완료</div>
+        		<div class="tabLink" data-tab-id="cancel">취소된 주차권</div>
+        	</div>
         	
-        	<h2>주차 확인 필요</h2>
         	<div class="cardList" id = "header">
             	<div class = "card">
-              		<div class="date">시간</div>
-                	<div class="parkingLotName">주차장 이름</div>
-               		<div class="carNum">차 번호</div>
-                	<div class="ticket">주차권 </div>
-                	<div class="state">비고</div>
-                	<div class="btnArea">선택</div>
+              		<div class="date title" data-order-by>시간</div>
+                	<div class="parkingLotName title" data-order-by>주차장 이름</div>
+               		<div class="carNum title" data-order-by>차 번호</div>
+                	<div class="ticket title" data-order-by>주차권 </div>
+                	<div class="state title" data-order-by>비고</div>
+                	<div class="btnArea title" data-order-by>선택</div>
             	</div>            
         	</div>
-        	<div class="cardList" id="ready">
+        	<div class="cardList tabContent" id="ready">
         	</div>
         	
-        	<h2>확인이 필요한 주차권</h2>
-        	<div class="cardList" id = "header">
-            	<div class = "card">
-              		<div class="date">시간</div>
-                	<div class="parkingLotName">주차장 이름</div>
-               		<div class="carNum">차 번호</div>
-                	<div class="ticket">주차권 </div>
-                	<div class="state">비고</div>
-                	<div class="btnArea">선택</div>
-            	</div>            
-        	</div>
-        	
-        	<div class="cardList" id="check">
-       			 
+        	<div class="cardList tabContent" id="check">	 
         	</div>	
         	
-        	<h2>주차 확인된 주차권</h2>
-        	<div class="cardList" id = "header">
-            	<div class = "card">
-              		<div class="date">시간</div>
-                	<div class="parkingLotName">주차장 이름</div>
-               		<div class="carNum">차 번호</div>
-                	<div class="ticket">주차권 </div>
-                	<div class="state">비고</div>
-                	<div class="btnArea">선택</div>
-            	</div>            
+        	
+        	<div class="cardList tabContent" id = "checked">
         	</div>
-        	<div class="carList" id = "checked">
+        	
+        	<div class="cardList tabContent" id = "cancel">
         	</div>
     </div>
 </body>
