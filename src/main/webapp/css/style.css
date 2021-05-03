@@ -41,8 +41,11 @@ body {
     min-height: 50px;
     margin: 0;
 }
-.date, .parkingLotName, .carNum, .ticket{
+.date, .carNum, .ticket{
     width: 170px;
+}
+.parkingLotName {
+	width:220px;
 }
 .state{
     width: 300px;
@@ -89,6 +92,8 @@ button:hover{
     color: black;
 }
 #checked {
-    margin-top: 20px;
     background-color: dimgrey;
+}
+h2{
+	margin: 20px 0 10px 0;
 }
