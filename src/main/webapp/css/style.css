@@ -26,6 +26,10 @@ body {
     flex-direction: column;
     justify-content: space-around;
 }
+.title:hover{
+	    cursor: pointer;
+}
+
 .card{
     display: flex;
     flex-direction: row;
