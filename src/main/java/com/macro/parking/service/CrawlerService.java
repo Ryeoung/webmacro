@@ -122,26 +122,26 @@ public class CrawlerService {
 	}
 	public CarInfoDto convertParkingInfoToCarInfoDto(ParkingInfo parkingInfo) {
 		CarInfoDto dto = new CarInfoDto();
+		System.out.println(parkingInfo.getCar().getNumber());
 		dto.setCarNum(parkingInfo.getCar().getNumber());
-			if(parkingInfo.getAppFlag().isEqual(StatusCodeType.TICKET_EXIST_ERROR)) {
-				dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
-				
-			} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SUCCESS)) {
-				dto.setCode(StatusCodeType.SUCCESS.getCode());
-				
-			} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SELENIUM_ERROR)) {
-				dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
-				
-			} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.NOT_WORKING)){
-				dto.setCode(StatusCodeType.NOT_WORKING.getCode());
-				
-			} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.CHECK_TICKET)){
-				dto.setCode(StatusCodeType.CHECK_TICKET.getCode());
-				
-			} else {
-				dto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
-			}
-			System.out.println(parkingInfo.getCar().getNumber());
+		if(parkingInfo.getAppFlag().isEqual(StatusCodeType.TICKET_EXIST_ERROR)) {
+			dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
+			
+		} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SUCCESS)) {
+			dto.setCode(StatusCodeType.SUCCESS.getCode());
+			
+		} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.SELENIUM_ERROR)) {
+			dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
+			
+		} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.NOT_WORKING)){
+			dto.setCode(StatusCodeType.NOT_WORKING.getCode());
+			
+		} else if(parkingInfo.getAppFlag().isEqual(StatusCodeType.CHECK_TICKET)){
+			dto.setCode(StatusCodeType.CHECK_TICKET.getCode());
+			
+		} else {
+			dto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
+		}
 		System.out.println(parkingInfo.getParkingTicket().getParkingTicketId());			
 		dto.setParkingInfoId(parkingInfo.getParkingInfoId());
 		dto.setParkingLotName(parkingInfo.getParkingTicket().getParkingLot().getName());

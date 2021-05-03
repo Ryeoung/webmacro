@@ -309,7 +309,7 @@ public class WebCrawler {
                         int ticketIdx = 0;
                         for(WebElement ticket :saleTickets) {
                         	ticketIdx += 1;
-                        	wait.until(ExpectedConditions.invisibilityOfElementWithText(By.xpath(ticketXpath + "/td[1]"), ticketName));
+                        	wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(ticketXpath + "/td[1]")));
                         	ticketName = ticket.findElement(By.xpath("td[1]")).getText();
                         	
                             if(carInfo.getWebTicketName().equals(ticketName)) {
