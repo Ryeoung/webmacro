@@ -65,6 +65,7 @@ class App {
             return;
         } else if(status == CHECK_TICKET) {
         	stateNode.innerHTML = "주차 완료";
+        	checkBtn.style.display = "none";
         	this.checkedList.prepend(card);
             return;
         } else if(status === SELENIUM_ERROR) {
