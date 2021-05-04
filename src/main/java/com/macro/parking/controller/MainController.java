@@ -55,14 +55,15 @@ public class MainController {
 	
 	@ResponseBody
 	@GetMapping("/newcars")
-	public List<CarInfoDto> getCarsBylast(@RequestParam(defaultValue = "-1") int id) {
+	public List<CarInfoDto> getCarsBylast() {
 		ParkingInfo parkingInfo = null;
-		if(id > 0 ) {
+		ParkingInfo earlyParkingInfoOfToday = null;
+		earlyParkingInfoOfToday = parkingInfoService.findEarlyParkingInfoByToday();
+		
+		if(earlyParkingInfoOfToday != null) {
 			parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
-		} else {
-			parkingInfo = parkingInfoService.findEarlyParkingInfoByToday();
-		}
-		System.out.println(parkingInfo.getCar().getNumber());
+		} 
+		
 		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
 		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
 		parkingInfoService.addAllTicket(parkingInfos);

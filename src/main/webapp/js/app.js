@@ -229,15 +229,11 @@ class App {
     }
         
     getNewTicket(){
-    	let id = -200;
-    	if(this.checkList.childElementCount > 0) {
-    		let card = this.checkList.firstElementChild;
-        	id = card.dataset.id;	
-    	}
+    	
     	
     	
     	ajax({
-            url : `/parking/api/newcars?id=${id}`,
+            url : `/parking/api/newcars`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
         }, this.makeCardOfCar.bind(this));

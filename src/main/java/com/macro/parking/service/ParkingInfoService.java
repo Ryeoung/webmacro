@@ -60,7 +60,7 @@ public class ParkingInfoService {
 	}
 	
 	public ParkingInfo findlatelyParkingInfoByToday() {
-		return parkingInfoDao.findTopByOrderTimeGreaterThanEqualOrderByOrderTimeDesc(getToday());
+		return parkingInfoDao.findTopByOrderTimeGreaterThanEqualOrderByOrderTimeDescParkingInfoIdDesc(getToday());
 
 	}
 	
