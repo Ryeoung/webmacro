@@ -62,6 +62,7 @@ public class MainController {
 		} else {
 			parkingInfo = parkingInfoService.findEarlyParkingInfoByToday();
 		}
+		System.out.println(parkingInfo.getCar().getNumber());
 		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
 		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
 		parkingInfoService.addAllTicket(parkingInfos);

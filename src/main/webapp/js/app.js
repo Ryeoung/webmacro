@@ -176,7 +176,7 @@ class App {
             stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
         } else if(status === OK) {
             stateNode.innerHTML = "주차확인 필요";
-            this.hideBtn(deleteBtn);
+            //this.hideBtn(deleteBtn);
             this.readyToCheckList.prepend(card);
             return;
         } else if(status === NO_CAR_ERROR) {
@@ -190,7 +190,7 @@ class App {
             return;
         }
         
-        this.hideBtn(checkBtn);
+        //this.hideBtn(checkBtn);
         this.checkList.prepend(card);
     }
     
