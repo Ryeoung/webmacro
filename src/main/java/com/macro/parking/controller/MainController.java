@@ -80,9 +80,7 @@ public class MainController {
 		if(parkingInfos.size() > 0 ) {
 			List<CarInfoDto> carInfoDtos = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
-			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
-//			parkingInfoService.updateAllParkingInfo(parkingInfos);
-			
+			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);			
 		} else {
 			carList = new ArrayList<CarInfoDto>();
 		}
