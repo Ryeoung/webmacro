@@ -5,13 +5,16 @@ import template from "./template.js";
 import templateParser from "./templateParser.js";
 
 export class Search{
-    constructor(){
+    constructor(ticket){
         this.searchInput = document.getElementById("searchInput");
         this.searchHistory = document.getElementById("searchHistory");
         this.searchContainer = document.getElementById("searchContainer");
         this.searchBtn = document.getElementById("searchBtn");
+        this.addSearchEvent();
         this.showWords();
         this.addKeydownEvent();
+        this.ticket = ticket;
+
     }
     showWords() {
         let words = this.getWordArray();
@@ -54,10 +57,6 @@ export class Search{
             this.searchHistory.removeChild(historyWord);
             let wordText = historyWord.children[0].innerHTML;
             wordText += " ";
-            // let idx = words.indexOf(wordText);
-            // if(idx >= 0 ){
-            //    words.splice(idx, 1);
-            // }
             this.deleteWord(wordText);
         });
     }
@@ -71,20 +70,27 @@ export class Search{
         this.searchInput.addEventListener("keydown", (event) => {
             // Enter를 입력하면
             if(event.keyCode == 13) {
-                let wordData = this.searchInput.value;
-                let wordsStr = localStorage.getItem("words");
-
-                if(wordsStr === null) {
-                    wordsStr = "";
-                }
-
-                wordsStr += `${wordData} `;
-                localStorage.setItem("words", wordsStr);
-
-                let addData = [];
-                addData.push(wordData);
-                this.addWordElmts(addData);
+                this.searchBtn.click();
             }
+        });
+    }
+    addSearchEvent(){
+        this.searchBtn.addEventListener("click", () => {
+            let wordData = this.searchInput.value;
+            let wordsStr = localStorage.getItem("words");
+
+            if(wordsStr === null) {
+                wordsStr = "";
+            }
+
+            wordsStr += `${wordData} `;
+            localStorage.setItem("words", wordsStr);
+
+            let addData = [];
+            addData.push(wordData);
+            this.addWordElmts(addData);
+            
+            this.ticket.requestTicketsOfSearchWord(wordData);
         });
     }
     getWordArray(){

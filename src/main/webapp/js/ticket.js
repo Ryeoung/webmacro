@@ -18,15 +18,31 @@ export class Ticket{
         this.addClickEventToGetNewTickectBtn();
         this.addClickEventToPushTicketBtn();
     }
-    requestAllTicketOfToday() {
+    
+    requestTickesOfToday() {
         ajax({
             url : "/parking/api/cars",
             method : "GET",
-            contentType : "application/json; charset=utf-8",
+            contentType : "application/json; charset=utf-8"
         }, this.makeCardOfCar.bind(this));
         
     }
-
+    
+    requestTicketsOfSearchWord(word) {
+    	ajax({
+            url : `/parking/api/search?word=${word}`,
+            method : "GET",
+            contentType : "application/json; charset=utf-8",
+            data : word
+        },(data) => {
+        	this.checkList.innerHTML = "";
+        	this.checkedList.innerHTML = "";
+        	this.readyToCheckList.innerHTML = "";
+        	this.cancelList.innerHTML = "";
+        	this.makeCardOfCar(data);
+        });
+    }
+    
     makeCardOfCar(data) {
         let carInfos = data;
         let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);

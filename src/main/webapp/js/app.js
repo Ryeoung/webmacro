@@ -19,8 +19,8 @@ class App {
         this.ticket = new Ticket();
         this.sort = new Sort();
         this.tab = new Tab();
-        this.search = new Search();
-        this.ticket.requestAllTicketOfToday();   
+        this.search = new Search(this.ticket);
+        this.ticket.requestTickesOfToday();   
     }    
 }
 window.onload = () => {

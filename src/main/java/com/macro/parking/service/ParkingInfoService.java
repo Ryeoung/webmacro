@@ -71,6 +71,11 @@ public class ParkingInfoService {
 		return parkingInfoDao.findByParkingInfoId(parkingInfoId);
 	}
 	
+	public List<ParkingInfo> findByParkingTicketAndCar(String carNum, List<ParkingTicket> parkingTickets) {
+		String likeQuery = "%" + carNum + "%";
+		return parkingInfoDao.findByOrderTimeGreaterThanEqualAndParkingTicketInOrCar_NumberLike(getToday(), parkingTickets, likeQuery);
+	}
+	
 	private LocalDateTime getToday() {
 		LocalDate today = LocalDate.now();
 		return today.atStartOfDay();
