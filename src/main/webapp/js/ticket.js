@@ -35,12 +35,16 @@ export class Ticket{
             contentType : "application/json; charset=utf-8",
             data : word
         },(data) => {
-        	this.checkList.innerHTML = "";
-        	this.checkedList.innerHTML = "";
-        	this.readyToCheckList.innerHTML = "";
-        	this.cancelList.innerHTML = "";
+        	this.deleteAllTicketList();
         	this.makeCardOfCar(data);
         });
+    }
+    
+    deleteAllTicketList(){
+    	this.checkList.innerHTML = "";
+    	this.checkedList.innerHTML = "";
+    	this.readyToCheckList.innerHTML = "";
+    	this.cancelList.innerHTML = "";
     }
     
     makeCardOfCar(data) {

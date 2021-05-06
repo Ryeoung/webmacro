@@ -9,11 +9,13 @@ export class Search{
         this.searchInput = document.getElementById("searchInput");
         this.searchHistory = document.getElementById("searchHistory");
         this.searchContainer = document.getElementById("searchContainer");
+        this.searchStopBtn = document.getElementById("searchStopBtn");
         this.searchBtn = document.getElementById("searchBtn");
+        this.ticket = ticket;
         this.addSearchEvent();
         this.showWords();
         this.addKeydownEvent();
-        this.ticket = ticket;
+        this.addStopSearchEvent();
 
     }
     showWords() {
@@ -23,6 +25,7 @@ export class Search{
         }
         this.addWordElmts(words);
     }
+    
     addWordElmts(words) {
         let data = [];
         words.forEach(word => {
@@ -45,11 +48,13 @@ export class Search{
         this.addClickDeleteBtnEvent(wordCancelBtn);
         this.searchHistory.appendChild(wordElmt);
     }
+    
     addClickSearchWordEvent(searchWordElmt){
         searchWordElmt.addEventListener("click", (event) => {
             this.searchInput.value = searchWordElmt.innerHTML;
         });
     }
+    
     addClickDeleteBtnEvent(deleteBtn){
         deleteBtn.addEventListener("click", (event) => {
 
@@ -82,7 +87,13 @@ export class Search{
             if(wordsStr === null) {
                 wordsStr = "";
             }
+            
+            this.ticket.requestTicketsOfSearchWord(wordData);
+        	this.searchStopBtn.style.display="block";
 
+            if(wordsStr.indexOf(wordData) >= 0) {
+            	return;
+            }
             wordsStr += `${wordData} `;
             localStorage.setItem("words", wordsStr);
 
@@ -90,9 +101,9 @@ export class Search{
             addData.push(wordData);
             this.addWordElmts(addData);
             
-            this.ticket.requestTicketsOfSearchWord(wordData);
         });
     }
+    
     getWordArray(){
         let wordsStr = localStorage.getItem("words");
         if(wordsStr === null) {
@@ -101,6 +112,14 @@ export class Search{
         let words = wordsStr.split(" ");
         words.pop();
         return words;
+    }
+    
+    addStopSearchEvent() {
+    	this.searchStopBtn.addEventListener("click", () => {
+    		this.searchInput.value = "";
+    		this.ticket.deleteAllTicketList();
+            this.ticket.requestTickesOfToday();   
+    	});
     }
     
 }
