@@ -118,7 +118,7 @@ export class Search{
     addStopSearchEvent() {
     	this.searchStopBtn.addEventListener("click", () => {
     		this.searchInput.value = "";
-        	this.searchStopBtn.style.display="none";
+        	this.searchStopBtn.style.display = "none";
     		this.ticket.deleteAllTicketList();
             this.ticket.requestTickesOfToday();   
     	});

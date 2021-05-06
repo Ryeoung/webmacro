@@ -58,7 +58,4 @@ export class Tab{
     	});
     }
     
-    setTicketCnt() {
-    	
-    }
 }

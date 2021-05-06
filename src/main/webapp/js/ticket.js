@@ -203,7 +203,7 @@ export class Ticket{
 
     clickEventOfPushTicketSuccess(data) {
         this.checkList.innerHTML = "";
-        this.tab.checkedCntElmt.innerHTML = 0;
+        this.tab.checkCntElmt.innerHTML = 0;
         this.makeCardOfCar(data);
     }
 }
