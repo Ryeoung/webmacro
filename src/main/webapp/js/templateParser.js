@@ -27,6 +27,12 @@ class TemplateParser {
 		});
 		return resultHTML;
 	}
+	/*
+	 * string data -> HTML DOM
+	 */
+	stringToElement(str){
+    	return  document.createRange().createContextualFragment(str);
+    }
 }
 const templateParser = new TemplateParser();
 export default templateParser;

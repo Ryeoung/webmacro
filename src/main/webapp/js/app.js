@@ -4,6 +4,10 @@ import template from "./template.js";
 
 import templateParser from "./templateParser.js";
 
+import {
+    Search
+} from "./search.js";
+
 class App {
     constructor() {
         this.checkList = document.getElementById("check");
@@ -12,16 +16,20 @@ class App {
         this.cancelList = document.getElementById("cancel");
         this.titles = document.getElementsByClassName("title");
         this.addClickEventAboutSortByTitle();
+        
         this.pushTicketBtn = document.getElementById("pushTicket");
         this.getTicketBtn = document.getElementById("getTicket");
+        
         this.tabLinks = document.getElementsByClassName("tabLink");
         this.addOpenTab();
+
         document.getElementById("defaultTab").click();
         this.checkCards = Array.from(this.checkList.children);
         this.requestAllCarInfoToday();
         this.addClickEventToGetNewTickectBtn();
         this.addClickEventToPushTicketBtn();
-
+        this.search = new Search();
+       
     }
     addClickEventAboutSortByTitle(){
     	Array.from(this.titles).forEach(titleElmt => {
@@ -125,16 +133,14 @@ class App {
     makeCardOfCar(data) {
         let carInfos = data;
         let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);
-        let cards = this.stringToElement(resultHTML);
+        let cards = templateParser.stringToElement(resultHTML);
         cards.childNodes.forEach(card => {
         	this.moveCardAboutCode(card);
         });
         this.checkCards = Array.from(this.checkList.children);
     }
     
-    stringToElement(str){
-    	return  document.createRange().createContextualFragment(str);
-    }
+  
 
     
     moveCardAboutCode(card){
@@ -229,9 +235,6 @@ class App {
     }
         
     getNewTicket(){
-    	
-    	
-    	
     	ajax({
             url : `/parking/api/newcars`,
             method : "GET",
