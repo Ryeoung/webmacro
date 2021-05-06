@@ -5,19 +5,23 @@ import template from "./template.js";
 import templateParser from "./templateParser.js";
 
 export class Ticket{
-    constructor() {
+    constructor(tab) {
         this.checkList = document.getElementById("check");
         this.checkedList = document.getElementById("checked");
         this.readyToCheckList = document.getElementById("ready");
         this.cancelList = document.getElementById("cancel");
-        
+        this.tab = tab;
+
         this.pushTicketBtn = document.getElementById("pushTicket");
         this.getTicketBtn = document.getElementById("getTicket");
         this.checkCards = Array.from(this.checkList.children);
 
         this.addClickEventToGetNewTickectBtn();
         this.addClickEventToPushTicketBtn();
+        
+
     }
+    
     
     requestTickesOfToday() {
         ajax({
@@ -45,22 +49,35 @@ export class Ticket{
     	this.checkedList.innerHTML = "";
     	this.readyToCheckList.innerHTML = "";
     	this.cancelList.innerHTML = "";
+    	
+    	 this.tab.checkCntElmt.innerHTML = 0;
+         this.tab.checkedCntElmt.innerHTML = 0;
+         this.tab.readyCntElmt.innerHTML = 0;
+         this.tab.cancelCntElmt.innerHTML = 0;
     }
     
     makeCardOfCar(data) {
         let carInfos = data;
         let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);
         let cards = templateParser.stringToElement(resultHTML);
+        let ticketCnt = {
+    			check: 0,
+    			checked: 0,
+    			ready: 0,
+    			cancel: 0
+        };
+        
         cards.childNodes.forEach(card => {
-        	this.moveCardAboutCode(card);
+        	this.moveCardAboutCode(card , ticketCnt);
         });
+        
+        this.tab.updateTicketCnt(ticketCnt);
+        
         this.checkCards = Array.from(this.checkList.children);
     }
-    
-  
 
     
-    moveCardAboutCode(card){
+    moveCardAboutCode(card, ticketCnt){
     	const OK = "ok";
         const SELENIUM_ERROR = "fail01";
         const NO_CAR_ERROR = "fail02";
@@ -88,18 +105,20 @@ export class Ticket{
         if(status === TICKET_EXIST_ERROR) {
             stateNode.innerHTML = "주차권이 이미 존재";
             this.hideBtn(deleteBtn);
+            ticketCnt.checked += 1;
             this.checkedList.prepend(card);
             return;
         } else if(status == CHECK_TICKET) {
         	stateNode.innerHTML = "주차 완료";
         	this.hideBtn(checkBtn, deleteBtn);
+        	ticketCnt.checked += 1;
         	this.checkedList.prepend(card);
             return;
         } else if(status === SELENIUM_ERROR) {
             stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
         } else if(status === OK) {
             stateNode.innerHTML = "주차확인 필요";
-            //this.hideBtn(deleteBtn);
+            ticketCnt.ready += 1;
             this.readyToCheckList.prepend(card);
             return;
         } else if(status === NO_CAR_ERROR) {
@@ -109,11 +128,13 @@ export class Ticket{
         } else if(status == CANCEL) {
         	stateNode.innerHTML = "취소";
             this.hideBtn(deleteBtn, checkBtn);
+            ticketCnt.cancel += 1;
             this.cancelList.prepend(card);
             return;
         }
         
-        //this.hideBtn(checkBtn);
+       
+        ticketCnt.check += 1;
         this.checkList.prepend(card);
     }
     
@@ -129,14 +150,20 @@ export class Ticket{
     	let btn = event.currentTarget;
     	let card = btn.parentElement.parentElement;
     	let parkingInfoId = Number(card.dataset.id);
-    
+
+    	let ticketCnt = {};
+    	ticketCnt[card.parentNode.getAttribute("id")] = -1;
+    	
+    	this.tab.updateTicketCnt(ticketCnt);
+
     	card.parentNode.removeChild(card);
-    	let data =changed;
+    	let appFlag = changed;
+    	
     	ajax({
             url : `/parking/api/ticket/${parkingInfoId}`,
             method : "PUT",
             contentType : "application/json; charset=utf-8",
-            data : data
+            data : appFlag
         }, this.makeCardOfCar.bind(this));
         
     }
@@ -176,6 +203,7 @@ export class Ticket{
 
     clickEventOfPushTicketSuccess(data) {
         this.checkList.innerHTML = "";
+        this.tab.checkedCntElmt.innerHTML = 0;
         this.makeCardOfCar(data);
     }
 }
