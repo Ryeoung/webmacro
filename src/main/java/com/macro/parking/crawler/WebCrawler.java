@@ -113,6 +113,7 @@ public class WebCrawler {
 	            int cnt = 1;
 	            parkingLotDtos = new LinkedList<>();
 	            btns = driver.findElements(By.cssSelector("nav > ul > li.ng-scope"));
+//	            LocalDateTime cur = LocalDateTime.now();
 	            // >> 5 페이지 간격으로 보여주는 단위
 	            process: do{
 	                int fin = btns.size();
@@ -132,12 +133,7 @@ public class WebCrawler {
 	                    for(int rowIdx = 0; rowIdx < elements.size(); rowIdx++) {
 	                        WebElement e = elements.get(rowIdx);
 	                        String state = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath +"["+(rowIdx + 1) +"]"+"/td[7]"))).getText();
-
-
-	                        if(state.equals("결제취소")) {
-	                            continue;
-	                        }
-	                        
+    
 	                        CarInfoDto dto = new CarInfoDto();
 
 	                        element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "["+(rowIdx + 1) +"]"+"/td[1]/div/span")));
@@ -147,16 +143,19 @@ public class WebCrawler {
 	                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 	                        dto.setDate(localDateTime);
 
-	                        //장
+	                        //장소
+	                        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "["+(rowIdx + 1) +"]"+"/td[2]/div/span/a")));
 	                        String parkingLotName = e.findElement(By.xpath("td[2]/div/span/a")).getText();
 	                        dto.setParkingLotName(parkingLotName);
 
 	                        //차번호
+	                        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "["+(rowIdx + 1) +"]"+"/td[3]/div/span")));
 	                        String[] carInfo = e.findElement(By.xpath("td[3]/div/span")).getText().split("\\n");
 	                        String carNum = carInfo[0];
 	                        dto.setCarNum(carNum);
 
 	                        //주차권
+	                        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(trXpath + "["+(rowIdx + 1) +"]"+"/td[4]/div[2]/div[1]/span")));
 	                        String ticketName = e.findElement(By.xpath("td[4]/div[2]/div[1]/span")).getText();
 	                        dto.setAppTicketName(ticketName);
 	                        
@@ -164,6 +163,9 @@ public class WebCrawler {
 	                        	break process;
 	                        }
 	                        
+	                        if(state.equals("결제취소")) {
+	                            continue;
+	                        }
 	                        parkingLotDtos.add(0, dto);
 	                    }
 

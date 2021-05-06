@@ -14,10 +14,11 @@ import com.macro.parking.enums.StatusCodeType;
 public interface ParkingInfoDao extends JpaRepository<ParkingInfo, Long>{
 	
 	ParkingInfo findTopByOrderTimeGreaterThanEqual(LocalDateTime cur);
-	ParkingInfo findTopByOrderTimeGreaterThanEqualOrderByOrderTimeDesc(LocalDateTime cur);
+	ParkingInfo findTopByOrderTimeGreaterThanEqualOrderByOrderTimeDescParkingInfoIdDesc(LocalDateTime cur);
 	ParkingInfo findByParkingInfoId(int parkingInfoId);
 	
 	List<ParkingInfo> findByAppFlagInAndOrderTimeGreaterThanEqual(List<StatusCodeType> appFlags, LocalDateTime cur);
 	List<ParkingInfo> findByOrderTimeGreaterThanEqual(LocalDateTime cur);
+	List<ParkingInfo> findByOrderTimeGreaterThanEqualAndParkingTicketInOrCar_NumberLike(LocalDateTime cur, List<ParkingTicket> parkingTickets, String carNumber);
 
 }

@@ -31,6 +31,8 @@ import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.service.CrawlerService;
 import com.macro.parking.service.ParkingInfoService;
+import com.macro.parking.service.ParkingLotService;
+import com.macro.parking.service.ParkingTicketService;
 
 @RestController
 @RequestMapping("/api")
@@ -42,7 +44,10 @@ public class MainController {
 	ParkingInfoService parkingInfoService;
 	
 	@Autowired
-	ParkingLotDao dao;
+	ParkingLotService parkingLotService;
+	
+	@Autowired
+	ParkingTicketService parkingTicketService;
 	
 	@ResponseBody
 	@GetMapping("/cars")
@@ -55,19 +60,31 @@ public class MainController {
 	
 	@ResponseBody
 	@GetMapping("/newcars")
-	public List<CarInfoDto> getCarsBylast(@RequestParam(defaultValue = "-1") int id) {
+	public List<CarInfoDto> getCarsBylast() {
 		ParkingInfo parkingInfo = null;
-		if(id > 0 ) {
+		ParkingInfo earlyParkingInfoOfToday = null;
+		earlyParkingInfoOfToday = parkingInfoService.findEarlyParkingInfoByToday();
+		
+		if(earlyParkingInfoOfToday != null) {
 			parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
-		} else {
-			parkingInfo = parkingInfoService.findEarlyParkingInfoByToday();
-		}
+		} 
+		
 		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
 		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
 		parkingInfoService.addAllTicket(parkingInfos);
 		
 		System.out.println(carList.size());
 		return carList;
+	}
+	
+	@GetMapping("/search")
+	public List<CarInfoDto> getCarInfoDtoBySearchWord(@RequestParam("word") String word) {
+		List<ParkingLot> parkingLots = parkingLotService.findByNameLike(word);
+		List<ParkingTicket> parkingTickets = parkingTicketService.findByParkingLots(parkingLots);
+		List<ParkingInfo> parkingInfos = parkingInfoService.findByParkingTicketAndCar(word, parkingTickets);
+		
+		System.out.println(parkingInfos.size());
+		return crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);		
 	}
 	
 	@PostMapping("/register")
@@ -78,9 +95,7 @@ public class MainController {
 		if(parkingInfos.size() > 0 ) {
 			List<CarInfoDto> carInfoDtos = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
-			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
-//			parkingInfoService.updateAllParkingInfo(parkingInfos);
-			
+			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);			
 		} else {
 			carList = new ArrayList<CarInfoDto>();
 		}
