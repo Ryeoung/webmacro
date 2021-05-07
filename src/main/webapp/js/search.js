@@ -13,6 +13,7 @@ export class Search{
         this.searchBtn = document.getElementById("searchBtn");
         this.ticket = ticket;
         this.addSearchEvent();
+        this.addFocusEvent();
         this.showWords();
         this.addKeydownEvent();
         this.addStopSearchEvent();
@@ -48,6 +49,14 @@ export class Search{
         this.addClickSearchWordEvent(searchWordElmt);
         this.addClickDeleteBtnEvent(wordCancelBtn);
         this.searchHistory.appendChild(wordElmt);
+    }
+    
+    addFocusEvent(){
+    	this.searchInput.addEventListener("focus", () => {
+        	this.searchHistory.style.display = "flex";
+        	this.searchStopBtn.style.display="block";
+
+    	});
     }
     
     addClickSearchWordEvent(searchWordElmt){
@@ -90,7 +99,6 @@ export class Search{
             }
             
             this.ticket.requestTicketsOfSearchWord(wordData);
-        	this.searchStopBtn.style.display="block";
 
             if(wordsStr.indexOf(wordData) >= 0) {
             	return;
@@ -119,6 +127,7 @@ export class Search{
     	this.searchStopBtn.addEventListener("click", () => {
     		this.searchInput.value = "";
         	this.searchStopBtn.style.display = "none";
+        	this.searchHistory.style.display = "none";
     		this.ticket.deleteAllTicketList();
             this.ticket.requestTickesOfToday();   
     	});
