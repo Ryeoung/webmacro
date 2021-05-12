@@ -26,14 +26,14 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
-import com.macro.parking.crawler.ipark.LoginPageLoaded;
-import com.macro.parking.crawler.ipark.MainPageLoaded;
-import com.macro.parking.crawler.ipark.SearchCarPageLoaded;
-import com.macro.parking.crawler.ipark.TicketApplyPageLoaded;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
+import com.macro.parking.pageloaded.ipark.LoginPageLoaded;
+import com.macro.parking.pageloaded.ipark.MainPageLoaded;
+import com.macro.parking.pageloaded.ipark.SearchCarPageLoaded;
+import com.macro.parking.pageloaded.ipark.TicketApplyPageLoaded;
 
 import lombok.Getter;
 import lombok.Setter;

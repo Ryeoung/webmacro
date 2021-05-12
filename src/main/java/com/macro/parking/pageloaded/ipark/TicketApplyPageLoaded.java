@@ -1,4 +1,4 @@
-package com.macro.parking.crawler.ipark;
+package com.macro.parking.pageloaded.ipark;
 
 import java.util.List;
 
@@ -8,8 +8,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.macro.parking.crawler.PageLoaded;
-import com.macro.parking.enums.StatusCodeType;
+import com.macro.parking.pageloaded.PageLoaded;
 
 public class TicketApplyPageLoaded  extends PageLoaded{
 	private String ticketName;

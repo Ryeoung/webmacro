@@ -21,12 +21,19 @@
 		<spring.version>4.3.5.RELEASE</spring.version>
 		<hibernate.version>5.3.11.Final</hibernate.version>
 		<hibernate.validator>5.4.1.Final</hibernate.validator>
+		<webdrivermanager.version>3.8.1</webdrivermanager.version>
 		<selenium.version>3.141.59</selenium.version>
 		<!-- jackson -->
 		<jackson2.version>2.9.4</jackson2.version>
 	</properties>
 
 	<dependencies>
+	<!--WebDriver manager - Selenium  -->
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>${webdrivermanager.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>

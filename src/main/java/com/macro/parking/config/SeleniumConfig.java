@@ -8,6 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import com.macro.parking.crawler.WebCrawler;
+import com.macro.parking.page.modu.LoginPage;
+import com.macro.parking.page.modu.ModuPage;
+import com.macro.parking.page.modu.ReservationPage;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
@@ -64,14 +69,25 @@ public class SeleniumConfig {
 //	public WebDriverWait webDriverWait(WebDriver driver) throws Exception {
 //		return new WebDriverWait(driver, waitTime);
 //	}
-
+	@Bean
+	public ModuPage moduPage(LoginPage loginPage, ReservationPage reservationPage) {
+		ModuPage moduPage = new ModuPage(loginPage, reservationPage);
+		moduPage.setId(moduId);
+		moduPage.setPassword(moduPw);
+		
+		return moduPage;
+	}
+	
+	
 //    @Bean
 //    public WebDriver setupChromeDriver() throws Exception {
-//        System.setProperty(driverName, path);
-//        WebDriver driver = null;
+//        //System.setProperty(driverName, path);
+//        WebDriverManager.chromedriver();
+//        
+//    	WebDriver driver = null;
 //        ChromeOptions options = new ChromeOptions();
 //        options.addArguments("--window-size=1366,768");
-//        options.addArguments("--headless");
+//        //options.addArguments("--headless");
 //        options.setProxy(null);
 //        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 //        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
