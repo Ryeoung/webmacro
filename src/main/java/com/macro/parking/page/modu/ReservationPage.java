@@ -41,7 +41,6 @@ public class ReservationPage extends BasePage{
 		this.curPage = 1;
 		this.loadAnotherPageBtn = this.waitForElementToBeClickAble(this.anotherPageBtn);
 		this.waitForPageBtnElmtsToApper();
-		this.waitForReservationElmtsToApper();
 		
 	}
 	
@@ -55,6 +54,10 @@ public class ReservationPage extends BasePage{
 	}
 	
 	public void clickNextPageBtn() {
+		if(this.isFinished) {
+			return;
+		}
+		
 		if(this.curPage % 5 == 0) {
 			this.loadAnotherPageBtn.click();
 			
@@ -62,7 +65,6 @@ public class ReservationPage extends BasePage{
 		
 		this.curPage += 1;
 		this.clickPageBtnByPageNum(this.curPage);
-		this.waitForReservationElmtsToApper();
 	}
 	
 	public void clickPageBtnByPageNum(int pageNum) {
@@ -74,18 +76,20 @@ public class ReservationPage extends BasePage{
 	public List<CarInfoDto> crawlingForReservation(ParkingInfo lastParkingInfo) {
 		List<CarInfoDto> carInfoDtos = new LinkedList<CarInfoDto>();
 		LocalDateTime toDayStartTime = LocalDate.now().atStartOfDay();
-		
+		this.waitForReservationElmtsToApper();
+
          for(int rowIdx = 0; rowIdx < this.reservationElmts.size(); rowIdx++) {
              WebElement reservationElmt = reservationElmts.get(rowIdx);
-             
+             System.out.println(rowIdx);
             By txtState = By.xpath(this.rowXPathExp +"["+(rowIdx + 1) +"]"+"/td[7]");
      		String stateStr = this.waitForElementToAppear(txtState).getText();
 
              CarInfoDto dto = this.convertReservationElmtToCarInfoDto(reservationElmt, rowIdx);
              
              //최신 데이터와 비
-             if(lastParkingInfo != null && dto.isEqual(lastParkingInfo)
-            		 && (toDayStartTime.isBefore(dto.getDate()))) {
+             System.out.println(lastParkingInfo.getCar().getNumber() + " " + dto.isEqual(lastParkingInfo) + " " + toDayStartTime.isBefore(dto.getDate()));
+             if((lastParkingInfo != null && dto.isEqual(lastParkingInfo))
+            		 || dto.getDate().isBefore(toDayStartTime)) {
             	 this.isFinished = true;
              	break;
              }

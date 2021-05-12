@@ -1,5 +1,6 @@
 package com.macro.parking.service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.PageLoadStrategy;
@@ -23,13 +24,26 @@ public class ModePageCrawler {
 	@Autowired
 	ModuPage moduPage;
 	
+	private WebDriver driver;
 	public List<CarInfoDto> getParkingTicketReservation(ParkingInfo lastParkingInfo){
-		moduPage.setDriver(this.setupChromeDriver());
-		moduPage.login();
-		return moduPage.getParkingTicketData(lastParkingInfo);
+		List<CarInfoDto>  carInfoDtos = null;
+		try {
+			this.setupChromeDriver();
+			moduPage.setDriver(this.driver);
+			moduPage.login();
+			carInfoDtos = moduPage.getParkingTicketData(lastParkingInfo);
+		} catch (Exception e) {
+            e.printStackTrace();
+            carInfoDtos = new LinkedList<CarInfoDto>();
+        } finally {
+            this.driver.quit();
+        }
+
+		
+		return  carInfoDtos;
 	}
 	
-	public WebDriver setupChromeDriver()  {
+	public void setupChromeDriver()  {
 	      //System.setProperty(driverName, path);
 	  	  WebDriver driver = null;
 
@@ -47,6 +61,6 @@ public class ModePageCrawler {
 		} catch(Exception e) {
 			
 		}
-	      return driver;
+	      this.driver = driver;
 	  }
 }

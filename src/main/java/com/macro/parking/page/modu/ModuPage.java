@@ -49,11 +49,12 @@ public class ModuPage{
 		do{
 			
 			crawledData = reservationPage.crawlingForReservation(lastParkingInfo);
+			
 			if(crawledData.size() > 0) {
 				totalCrawledData.addAll(crawledData);
 			}
 			reservationPage.clickNextPageBtn();
-		} while(reservationPage.isFinished());
+		} while(!reservationPage.isFinished());
 		
 		
 		return crawledData;
