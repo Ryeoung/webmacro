@@ -52,7 +52,7 @@ public class ModuPageCrawler extends PageCrawler{
 			crawledData = reservationPage.crawlingForReservation(lastParkingInfo);
 			
 			if(crawledData.size() > 0) {
-				totalCrawledData.addAll(crawledData);
+				totalCrawledData.addAll(0,crawledData);
 			}
 			reservationPage.clickNextPageBtn();
 			
