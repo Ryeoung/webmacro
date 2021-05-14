@@ -32,6 +32,7 @@ public class ModePageCrawler {
 			moduPage.setDriver(this.driver);
 			moduPage.login();
 			carInfoDtos = moduPage.getParkingTicketData(lastParkingInfo);
+			
 		} catch (Exception e) {
             e.printStackTrace();
             carInfoDtos = new LinkedList<CarInfoDto>();

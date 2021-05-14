@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class BasePage{
 
     protected WebDriver driver;
     
-    private WebDriverWait wait;
+    protected WebDriverWait wait;
 
     public void  init(WebDriver driver) {
     	this.driver = driver;
@@ -60,7 +61,7 @@ public class BasePage{
     protected void waitForPageLoad(PageLoaded pagedLoaded){
     	wait.until(pagedLoaded);
     }
-
+    
 
     public void navigate(String url) {
         this.driver.navigate().to(url);

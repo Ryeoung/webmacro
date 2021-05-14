@@ -26,7 +26,6 @@ public class CarInfoDto {
 	private boolean checkApp;
 	
 	public boolean isEqual(CarInfoDto dto) {
-		System.out.println(dto);
 		if(dto.getDate().isEqual(this.getDate()) && 
         		dto.getParkingLotName().equals(this.getParkingLotName()) && 
         		dto.getCarNum().equals(this.getCarNum()) &&

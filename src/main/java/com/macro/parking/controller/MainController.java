@@ -75,8 +75,8 @@ public class MainController {
 		List<CarInfoDto> carList = modePageCrawler.getParkingTicketReservation(parkingInfo);
 
 //		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
-		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
-		parkingInfoService.addAllTicket(parkingInfos);
+//		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
+//		parkingInfoService.addAllTicket(parkingInfos);
 		
 		System.out.println(carList.size());
 		return carList;

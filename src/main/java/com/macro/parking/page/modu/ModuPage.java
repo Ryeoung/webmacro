@@ -54,6 +54,7 @@ public class ModuPage{
 				totalCrawledData.addAll(crawledData);
 			}
 			reservationPage.clickNextPageBtn();
+			
 		} while(!reservationPage.isFinished());
 		
 		
