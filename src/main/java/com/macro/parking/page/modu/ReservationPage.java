@@ -95,12 +95,10 @@ public class ReservationPage extends BasePage{
 		this.waitForReservationElmtsToApper();
 		
          for(int rowIdx = 0; rowIdx < this.reservationElmts.size(); rowIdx++) {
-             System.out.println(rowIdx);
             By txtState = By.xpath(this.rowXPathExp +"["+(rowIdx + 1) +"]"+"/td[7]");
      		String stateStr = this.waitForElementToAppear(txtState).getText();
 
              CarInfoDto dto = this.convertReservationElmtToCarInfoDto(rowIdx);
-             System.out.println("여");
              //최신 데이터와 비
              if((lastParkingInfo != null && dto.isEqual(lastParkingInfo))
             		 || dto.getDate().isBefore(toDayStartTime)) {
