@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.dto.CarInfoDto;
 
-import com.macro.parking.page.modu.ModuPage;
+import com.macro.parking.crawler.ModuPageCrawler;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -22,46 +22,12 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class ModePageCrawler {
 	
 	@Autowired
-	ModuPage moduPage;
+	ModuPageCrawler moduPage;
 	
-	private WebDriver driver;
-	public List<CarInfoDto> getParkingTicketReservation(ParkingInfo lastParkingInfo){
-		List<CarInfoDto>  carInfoDtos = null;
-		try {
-			this.setupChromeDriver();
-			moduPage.setDriver(this.driver);
+   	public List<CarInfoDto> getParkingTicketReservation(ParkingInfo lastParkingInfo){
+			moduPage.setupChromeDriver();
 			moduPage.login();
-			carInfoDtos = moduPage.getParkingTicketData(lastParkingInfo);
-			
-		} catch (Exception e) {
-            e.printStackTrace();
-            carInfoDtos = new LinkedList<CarInfoDto>();
-        } finally {
-            this.driver.quit();
-        }
-
-		
-		return  carInfoDtos;
+			return moduPage.getParkingTicketData(lastParkingInfo);		
 	}
 	
-	public void setupChromeDriver()  {
-	      //System.setProperty(driverName, path);
-	  	  WebDriver driver = null;
-
-		try {
-	      WebDriverManager.chromedriver();
-	      
-	      ChromeOptions options = new ChromeOptions();
-	      options.addArguments("--window-size=1366,768");
-	      //options.addArguments("--headless");
-	      options.setProxy(null);
-	      options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-	      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-	      capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-	      driver = new ChromeDriver(capabilities);
-		} catch(Exception e) {
-			
-		}
-	      this.driver = driver;
-	  }
 }

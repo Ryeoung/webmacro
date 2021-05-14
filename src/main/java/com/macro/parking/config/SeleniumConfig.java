@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 
 import com.macro.parking.crawler.WebCrawler;
 import com.macro.parking.page.modu.LoginPage;
-import com.macro.parking.page.modu.ModuPage;
+import com.macro.parking.crawler.ModuPageCrawler;
 import com.macro.parking.page.modu.ReservationPage;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -70,8 +70,8 @@ public class SeleniumConfig {
 //		return new WebDriverWait(driver, waitTime);
 //	}
 	@Bean
-	public ModuPage moduPage(LoginPage loginPage, ReservationPage reservationPage) {
-		ModuPage moduPage = new ModuPage(loginPage, reservationPage);
+	public ModuPageCrawler moduPage(LoginPage loginPage, ReservationPage reservationPage) {
+		ModuPageCrawler moduPage = new ModuPageCrawler(loginPage, reservationPage);
 		moduPage.setId(moduId);
 		moduPage.setPassword(moduPw);
 		

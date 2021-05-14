@@ -1,39 +1,40 @@
-package com.macro.parking.page.modu;
+package com.macro.parking.crawler;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.page.modu.LoginPage;
+import com.macro.parking.page.modu.ReservationPage;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.Getter;
 import lombok.Setter;
 
 
-@Getter
+
 @Setter
-public class ModuPage{
+@Getter
+public class ModuPageCrawler extends PageCrawler{
 	private final LoginPage loginPage;
 	private final ReservationPage reservationPage;
 	
 	private String id;
 	private String password;
 
-	public ModuPage(LoginPage loginPage, ReservationPage reservationPage) {
+	public ModuPageCrawler(LoginPage loginPage, ReservationPage reservationPage) {
 		this.loginPage = loginPage;
 		this.reservationPage = reservationPage;
 	}
-
-	public void setDriver(WebDriver driver) {
-		this.loginPage.init(driver);
-		this.reservationPage.init(driver);
-		
+	
+	@Override
+	public void setupChromeDriver() {
+		super.setupChromeDriver();
+		this.loginPage.init(this.driver);
+		this.reservationPage.init(this.driver);
 	}
+	
 
 	public void login() {
 		this.loginPage.load();
@@ -58,7 +59,7 @@ public class ModuPage{
 		} while(!reservationPage.isFinished());
 		
 		
-		return crawledData;
+		return totalCrawledData;
 	}
     
 
