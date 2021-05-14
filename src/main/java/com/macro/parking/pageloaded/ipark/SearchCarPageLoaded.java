@@ -12,10 +12,9 @@ import com.macro.parking.pageloaded.PageLoaded;
 
 
 public class SearchCarPageLoaded extends PageLoaded{
-	private String carNum;
-	public SearchCarPageLoaded(String expectedTitle, String expectedUrl, String carNum) {
+	public SearchCarPageLoaded(String expectedTitle, String expectedUrl) {
 		super(expectedTitle, expectedUrl);
-		this.carNum = carNum;
+		
 	}
 	
 	 @Override

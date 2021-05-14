@@ -273,8 +273,8 @@ public class WebCrawler {
                         parkingLotSelect.selectByValue("72945");
                     }
             	}
+                
                 Thread.sleep(500);
-
                 String carNum = carInfo.getCarNum();
 
                 String fourNumOfCar = carNum.substring(carNum.length() - 4, carNum.length());
@@ -282,11 +282,12 @@ public class WebCrawler {
                 
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("carNumber")));
     	        //차번호 4자리 검색칸에 넣기
+                
             	((JavascriptExecutor) driver).executeScript("document.getElementById('carNumber').value = '"+ fourNumOfCar + "';" +
             											"document.querySelector('#container > section.sec-inp > div.cont > div > button').click();");
 
 
-                wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr, carNum));
+                wait.until(new SearchCarPageLoaded(iparkPageTitle, carSearchPageUlr));
                 if(isCarInParkingLot(carNum)) {
                 	
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("next")));

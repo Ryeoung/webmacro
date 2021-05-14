@@ -2,17 +2,15 @@ package com.macro.parking.page;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.macro.parking.pageloaded.PageLoaded;
 
@@ -24,13 +22,15 @@ public class BasePage{
     protected WebDriver driver;
     
     protected WebDriverWait wait;
-
+    
+    protected JavascriptExecutor javascriptExcutor;
     public void  init(WebDriver driver) {
     	this.driver = driver;
         this.init();
     }
     public void  init() {
         wait = new WebDriverWait(this.driver, TIMEOUT, POLLING);
+        javascriptExcutor = (JavascriptExecutor) this.driver;
         PageFactory.initElements(new AjaxElementLocatorFactory(this.driver, TIMEOUT), this);
     }
     

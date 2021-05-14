@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -72,11 +73,11 @@ public class MainController {
 		if(earlyParkingInfoOfToday != null) {
 			parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 		} 
-		List<CarInfoDto> carList = modePageCrawler.getParkingTicketReservation(parkingInfo);
+//		List<CarInfoDto> carList = modePageCrawler.getParkingTicketReservation(parkingInfo);
 
-//		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
-//		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
-//		parkingInfoService.addAllTicket(parkingInfos);
+		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
+		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
+		parkingInfoService.addAllTicket(parkingInfos);
 		
 		System.out.println(carList.size());
 		return carList;
@@ -96,6 +97,8 @@ public class MainController {
 	public List<CarInfoDto> addTicket() {
 		
 		List<CarInfoDto> carList = null;
+		ParkingInfo p = parkingInfoService.findByParkingInfoId(11841);
+	
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
 		if(parkingInfos.size() > 0 ) {
 			List<CarInfoDto> carInfoDtos = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
