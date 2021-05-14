@@ -30,5 +30,14 @@ public class PageCrawler {
 			
 		}
 	      this.driver = driver;
-	  }
+	}
+	
+	public void quit() {
+		this.driver.quit();
+	}
+	
+	public void close() {
+		this.driver.close();
+	}
+	
 }
