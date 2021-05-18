@@ -44,6 +44,7 @@ public class ReservationPage extends BasePage{
 		this.loadAnotherPageBtn = this.waitForElementToBeClickAble(this.anotherPageBtn);
 		this.waitForPageBtnElmtsToApper();
 		this.firstDataOfPage = getFirstDataOfPage();
+		this.isFinished = false;
 		
 		
 	}
@@ -58,21 +59,24 @@ public class ReservationPage extends BasePage{
 	
 	public void waitForReservationElmtsToApper() {
 		this.reservationElmts = this.waitForElementsToAppear(this.reservation);
+		
 	}
 	
-	public void clickNextPageBtn() {
+	public void clickNextPageBtn() throws InterruptedException {
 		if(this.isFinished) {
+			System.out.println("다음 페이지로  때 끝일 경우  ");
 			return;
 		}
 		
 		if(this.curPage % 5 == 0) {
 			this.loadAnotherPageBtn.click();
-			
+			this.waitForPageBtnElmtsToApper();
 		}
 		
 		this.curPage += 1;
 		this.clickPageBtnByPageNum(this.curPage);
 		this.waitForNextPageLoad();
+		
 		this.firstDataOfPage = getFirstDataOfPage();
 	}
 	
@@ -84,8 +88,7 @@ public class ReservationPage extends BasePage{
 	
 	public void clickPageBtnByPageNum(int pageNum) {
 		int  btnIdx = (pageNum - 1) % 5;
-		WebElement aTagElmt = this.pageBtnElmts.get(btnIdx).findElement(By.tagName("a"));
-		this.waitForElementToBeClickAble(aTagElmt).click();
+		this.waitForElementToBeClickAble(this.pageBtnElmts.get(btnIdx).findElement(By.tagName("a"))).click();
 	}
 	
 	public List<CarInfoDto> crawlingForReservation(ParkingInfo lastParkingInfo) {
@@ -102,6 +105,9 @@ public class ReservationPage extends BasePage{
              //최신 데이터와 비
              if((lastParkingInfo != null && dto.isEqual(lastParkingInfo))
             		 || dto.getDate().isBefore(toDayStartTime)) {
+//            	 System.out.println((lastParkingInfo != null && dto.isEqual(lastParkingInfo)));
+//            	 System.out.println(dto.getDate().isBefore(toDayStartTime));
+//            	 System.out.println(dto);
             	 this.isFinished = true;
              	break;
              }
@@ -112,7 +118,6 @@ public class ReservationPage extends BasePage{
              
              carInfoDtos.add(0, dto);
          }
-        
         
         
 		return carInfoDtos;

@@ -42,19 +42,26 @@ public class ModuPageCrawler extends PageCrawler{
 		this.loginPage.login();
 	}
 	
-	public List<CarInfoDto> getParkingTicketData(ParkingInfo lastParkingInfo) {
+	public List<CarInfoDto> getParkingTicketData(ParkingInfo lastParkingInfo){
 		List<CarInfoDto> totalCrawledData = new LinkedList<CarInfoDto>();
 		List<CarInfoDto> crawledData = null;
 		reservationPage.load();
 		
 		do{
-			
+			System.out.println("주차장 플렛폼 관리페이지에서 주차권 예약 정보 가져오기 ");
 			crawledData = reservationPage.crawlingForReservation(lastParkingInfo);
 			
 			if(crawledData.size() > 0) {
 				totalCrawledData.addAll(0,crawledData);
 			}
-			reservationPage.clickNextPageBtn();
+			System.out.println(reservationPage.isFinished());
+			System.out.println("다음 페이지 ");
+			try {
+				reservationPage.clickNextPageBtn(); 
+			} catch(Exception e) {
+				
+			}
+			
 			
 		} while(!reservationPage.isFinished());
 		

@@ -18,7 +18,7 @@ public class ModePageCrawler {
 	@Autowired
 	ModuPageCrawler moduPageCrawler;
 	
-   	public List<CarInfoDto> getParkingTicketReservation(ParkingInfo lastParkingInfo){
+   	public List<CarInfoDto> getParkingTicketReservation(ParkingInfo lastParkingInfo) {
 			moduPageCrawler.setupChromeDriver();
 			moduPageCrawler.login();
 			List<CarInfoDto> parkingTicketReservations = moduPageCrawler.getParkingTicketData(lastParkingInfo);

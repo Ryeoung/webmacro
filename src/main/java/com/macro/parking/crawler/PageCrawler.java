@@ -20,7 +20,7 @@ public class PageCrawler {
 	      
 	      ChromeOptions options = new ChromeOptions();
 	      options.addArguments("--window-size=1366,768");
-	      //options.addArguments("--headless");
+//	      options.addArguments("--headless");
 	      options.setProxy(null);
 	      options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 	      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
