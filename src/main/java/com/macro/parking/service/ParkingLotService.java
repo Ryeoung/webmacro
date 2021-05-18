@@ -21,4 +21,5 @@ public class ParkingLotService {
 	public ParkingLot findByName(String name) {
 		return parkingLotDao.findByName(name);
 	}
+	
 }

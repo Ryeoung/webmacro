@@ -8,8 +8,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingLot;
+import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.crawler.IParkingPageCralwer;
 import com.macro.parking.crawler.ModuPageCrawler;
@@ -31,15 +33,39 @@ public class PageCrawlerService {
 	@Autowired
 	ParkingInfoService parkingInfoService;
 	
+	@Autowired
+	ParkingTicketService parkingTicketService;
+	
+	@Autowired
+	CarService carService;
 	
    	public List<ParkingInfo> getParkingTicketReservation(ParkingInfo lastParkingInfo) {
    			moduPageCrawler.setupChromeDriver();
 			moduPageCrawler.load();
    			moduPageCrawler.login();
 			List<ParkingInfo> parkingInfos = moduPageCrawler.getParkingTicketData(lastParkingInfo);
+			parkingInfos.forEach(parkingInfo -> this.getParkingTicketAndCar(parkingInfo));
 			moduPageCrawler.quit();
+			
 			return parkingInfos;
 	}
+   	public void getParkingTicketAndCar(ParkingInfo parkingInfo) {
+   		String carNum = parkingInfo.getCar().getNumber();
+   		Car car = carService.findByNumber(carNum);
+
+		if(car == null) {
+			car = carService.addCar(parkingInfo.getCar());
+		}
+		System.out.println(parkingInfo);
+		ParkingLot parkingLot = parkingLotService.findByName(parkingInfo.getParkingTicket().getParkingLot().getName());
+		System.out.println(parkingLot);
+		ParkingTicket parkingTicket = parkingTicketService.findByAppNameAndParkingLot(parkingInfo.getParkingTicket().getAppName(),  parkingLot);
+		
+		parkingInfo.setCar(car);
+		parkingInfo.setParkingTicket(parkingTicket);
+   	}
+   	
+   	
    	
 	
 	public List<ParkingInfo> applyParkingTickets(List<ParkingInfo> parkingInfos){
