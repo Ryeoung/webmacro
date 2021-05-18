@@ -12,8 +12,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.springframework.stereotype.Component;
 
+import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingInfo;
+import com.macro.parking.domain.ParkingLot;
+import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.modu.TicketReservationInfoPageLoaded;
 
@@ -28,7 +32,7 @@ public class ReservationPage extends BasePage{
 		
 	List<WebElement> pageBtnElmts;
 	List<WebElement> reservationElmts;
-	CarInfoDto firstDataOfPage;
+	ParkingInfo firstDataOfPage;
 	// >
 	WebElement loadAnotherPageBtn;
 	
@@ -53,7 +57,7 @@ public class ReservationPage extends BasePage{
 		this.pageBtnElmts = this.waitForElementsToAppear(this.pageBtns);
 	
 	}
-	public CarInfoDto getFirstDataOfPage() {
+	public ParkingInfo getFirstDataOfPage() {
         return this.convertReservationElmtToCarInfoDto(0);
 	}
 	
@@ -82,7 +86,7 @@ public class ReservationPage extends BasePage{
 	
 	public void waitForNextPageLoad() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd\nHH:mm:ss");
-		String reservationTimeStr = this.firstDataOfPage.getDate().format(formatter);
+		String reservationTimeStr = this.firstDataOfPage.getOrderTime().format(formatter);
 		this.waitForTextToDisappear(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr[1]/td[2]/div/span/a"), reservationTimeStr);
 	}
 	
@@ -91,8 +95,10 @@ public class ReservationPage extends BasePage{
 		this.waitForElementToBeClickAble(this.pageBtnElmts.get(btnIdx).findElement(By.tagName("a"))).click();
 	}
 	
-	public List<CarInfoDto> crawlingForReservation(ParkingInfo lastParkingInfo) {
-		List<CarInfoDto> carInfoDtos = new LinkedList<CarInfoDto>();
+	public List<ParkingInfo> crawlingForReservation(ParkingInfo lastParkingInfo) {
+//		List<CarInfoDto> carInfoDtos = new LinkedList<CarInfoDto>();
+		List<ParkingInfo> parkingInfos = new LinkedList<ParkingInfo>();
+		
 		LocalDateTime toDayStartTime = LocalDate.now().atStartOfDay();
 		this.waitForPageLoad(new TicketReservationInfoPageLoaded(this.title, this.url));
 		this.waitForReservationElmtsToApper();
@@ -101,10 +107,20 @@ public class ReservationPage extends BasePage{
             By txtState = By.xpath(this.rowXPathExp +"["+(rowIdx + 1) +"]"+"/td[7]");
      		String stateStr = this.waitForElementToAppear(txtState).getText();
 
-             CarInfoDto dto = this.convertReservationElmtToCarInfoDto(rowIdx);
-             //최신 데이터와 비
-             if((lastParkingInfo != null && dto.isEqual(lastParkingInfo))
-            		 || dto.getDate().isBefore(toDayStartTime)) {
+//             CarInfoDto dto = this.convertReservationElmtToCarInfoDto(rowIdx);
+     		ParkingInfo parkingInfo = this.convertReservationElmtToCarInfoDto(rowIdx);
+
+     		//최신 데이터와 비
+//             if((lastParkingInfo != null && dto.isEqual(lastParkingInfo))
+//            		 || dto.getDate().isBefore(toDayStartTime)) {
+////            	 System.out.println((lastParkingInfo != null && dto.isEqual(lastParkingInfo)));
+////            	 System.out.println(dto.getDate().isBefore(toDayStartTime));
+////            	 System.out.println(dto);
+//            	 this.isFinished = true;
+//             	break;
+//             }
+     		 if((lastParkingInfo != null && lastParkingInfo.isEqual(parkingInfo))
+            		 || parkingInfo.getOrderTime().isBefore(toDayStartTime)) {
 //            	 System.out.println((lastParkingInfo != null && dto.isEqual(lastParkingInfo)));
 //            	 System.out.println(dto.getDate().isBefore(toDayStartTime));
 //            	 System.out.println(dto);
@@ -116,14 +132,14 @@ public class ReservationPage extends BasePage{
                  continue;
              }
              
-             carInfoDtos.add(0, dto);
+             parkingInfos.add(0, parkingInfo);
          }
         
         
-		return carInfoDtos;
+		return parkingInfos;
 	}
 	
-	public CarInfoDto convertReservationElmtToCarInfoDto( int rowIdx) {
+	public ParkingInfo convertReservationElmtToCarInfoDto( int rowIdx) {
 
         CarInfoDto dto = new CarInfoDto();
         By txtReservationTime = By.xpath(this.rowXPathExp  + "["+(rowIdx + 1) +"]"+"/td[1]/div/span");
@@ -131,29 +147,41 @@ public class ReservationPage extends BasePage{
         By txtCarNum = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[3]/div/span");
         By txtParkingTicketName = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[4]/div[2]/div[1]/span");
         
+		ParkingInfo parkingInfo = new ParkingInfo();
 		
         WebElement reservationTimeElmt = this.waitForElementToAppear(txtReservationTime);
         //날짜
         String dateTimeStr = reservationTimeElmt.getText().replaceAll("\\n", " ");
-        LocalDateTime localDateTime = LocalDateTime.parse(dateTimeStr,
+        LocalDateTime orderTime = LocalDateTime.parse(dateTimeStr,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        dto.setDate(localDateTime);
-
-        //장소
+        dto.setDate(orderTime);
+       parkingInfo.setOrderTime(orderTime);
+       
+       //주차권
+       String appName = this.waitForElementToAppear(txtParkingTicketName).getText();
+       dto.setAppTicketName(appName);
+       ParkingTicket parkingTicket = new ParkingTicket();
+       parkingTicket.setAppName(appName);
+       parkingInfo.setParkingTicket(parkingTicket);
         
+       //장소
         String parkingLotName = this.waitForElementToAppear(txtParkingLot).getText();
         dto.setParkingLotName(parkingLotName);
-
+        
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName(parkingLotName);
+        parkingInfo.getParkingTicket().setParkingLot(parkingLot);
+        
         //차번호
         String[] carNums = this.waitForElementToAppear(txtCarNum).getText().split("\\n");
         String carNum = carNums[0];
+        Car car = new Car();
+        car.setNumber(carNum);
         dto.setCarNum(carNum);
-
-        //주차권
-        String ticketName = this.waitForElementToAppear(txtParkingTicketName).getText();
-        dto.setAppTicketName(ticketName);
+        parkingInfo.setCar(car);
+        parkingInfo.setAppFlag(StatusCodeType.NOT_WORKING);
         
-        return dto;
+        return parkingInfo;
 	}
 	
 	public boolean isFinished() {

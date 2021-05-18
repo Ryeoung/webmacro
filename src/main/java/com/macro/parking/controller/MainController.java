@@ -72,10 +72,9 @@ public class MainController {
 		if(earlyParkingInfoOfToday != null) {
 			parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 		} 
-		List<CarInfoDto> carList = modePageCrawler.getParkingTicketReservation(parkingInfo);
+		List<ParkingInfo> parkingInfos  = modePageCrawler.getParkingTicketReservation(parkingInfo);
 
-//		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
-		List<ParkingInfo> parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);
+		List<CarInfoDto> carList = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 		parkingInfoService.addAllTicket(parkingInfos);
 		
 		System.out.println(carList.size());
@@ -96,7 +95,6 @@ public class MainController {
 	public List<CarInfoDto> addTicket() {
 		
 		List<CarInfoDto> carList = null;
-		ParkingInfo p = parkingInfoService.findByParkingInfoId(11841);
 	
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
 		if(parkingInfos.size() > 0 ) {

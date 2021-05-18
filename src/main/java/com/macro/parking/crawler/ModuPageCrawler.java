@@ -44,9 +44,10 @@ public class ModuPageCrawler extends PageCrawler{
 		this.loginPage.login();
 	}
 	
-	public List<CarInfoDto> getParkingTicketData(ParkingInfo lastParkingInfo){
-		List<CarInfoDto> totalCrawledData = new LinkedList<CarInfoDto>();
-		List<CarInfoDto> crawledData = null;
+	public List<ParkingInfo> getParkingTicketData(ParkingInfo lastParkingInfo){
+//		List<CarInfoDto> totalCrawledData = new LinkedList<CarInfoDto>();
+		List<ParkingInfo> totalParkingInfos = new LinkedList<ParkingInfo>();
+		List<ParkingInfo> crawledData = null;
 		reservationPage.load();
 		
 		do{
@@ -54,7 +55,7 @@ public class ModuPageCrawler extends PageCrawler{
 			crawledData = reservationPage.crawlingForReservation(lastParkingInfo);
 			
 			if(crawledData.size() > 0) {
-				totalCrawledData.addAll(0,crawledData);
+				totalParkingInfos.addAll(0,crawledData);
 			}
 			System.out.println(reservationPage.isFinished());
 			System.out.println("다음 페이지 ");
@@ -68,7 +69,7 @@ public class ModuPageCrawler extends PageCrawler{
 		} while(!reservationPage.isFinished());
 		
 		
-		return totalCrawledData;
+		return totalParkingInfos;
 	}
     
 

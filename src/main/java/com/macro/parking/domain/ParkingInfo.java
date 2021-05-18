@@ -52,5 +52,16 @@ public class ParkingInfo {
 	   private LocalDateTime parkingTime;
 	
 	   @Column(name = "exit_time", columnDefinition = "TIMESTAMP")
-	   private LocalDateTime exitTime;    
+	   private LocalDateTime exitTime;
+	   
+	   public boolean isEqual(ParkingInfo parkingInfo) {
+		   if(this.orderTime.isEqual(parkingInfo.getOrderTime()) && 
+				   this.car.getNumber().equals(parkingInfo.getCar().getNumber()) &&
+				   this.parkingTicket.getAppName().equals(parkingInfo.getParkingTicket().getAppName()) &&
+				   this.parkingTicket.getParkingLot().getName().equals(parkingInfo.getParkingTicket().getParkingLot().getName())) {
+			   return true;
+		   }
+		   
+		   return false;
+	   }
 }

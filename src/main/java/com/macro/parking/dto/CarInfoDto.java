@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingInfo;
+import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
+import com.macro.parking.enums.StatusCodeType;
+import com.macro.parking.service.ParkingTicketService;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,4 +50,6 @@ public class CarInfoDto {
 		dto.setDate(parkingInfo.getOrderTime());
 		return isEqual(dto);
 	}
+	
+	
 }

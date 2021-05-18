@@ -32,13 +32,13 @@ public class PageCrawlerService {
 	ParkingInfoService parkingInfoService;
 	
 	
-   	public List<CarInfoDto> getParkingTicketReservation(ParkingInfo lastParkingInfo) {
+   	public List<ParkingInfo> getParkingTicketReservation(ParkingInfo lastParkingInfo) {
    			moduPageCrawler.setupChromeDriver();
 			moduPageCrawler.load();
    			moduPageCrawler.login();
-			List<CarInfoDto> parkingTicketReservations = moduPageCrawler.getParkingTicketData(lastParkingInfo);
+			List<ParkingInfo> parkingInfos = moduPageCrawler.getParkingTicketData(lastParkingInfo);
 			moduPageCrawler.quit();
-			return parkingTicketReservations;
+			return parkingInfos;
 	}
    	
 	
