@@ -125,7 +125,7 @@ public class CrawlerService {
 	}
 	public CarInfoDto convertParkingInfoToCarInfoDto(ParkingInfo parkingInfo) {
 		CarInfoDto dto = new CarInfoDto();
-		System.out.println(parkingInfo.getCar().getNumber());
+//		System.out.println(parkingInfo.getCar().getNumber());
 		dto.setCarNum(parkingInfo.getCar().getNumber());
 		if(parkingInfo.getAppFlag().isEqual(StatusCodeType.TICKET_EXIST_ERROR)) {
 			dto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
@@ -148,7 +148,7 @@ public class CrawlerService {
 			dto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
 		}
 		
-		System.out.println(parkingInfo.getParkingTicket().getParkingTicketId());			
+//		System.out.println(parkingInfo.getParkingTicket().getParkingTicketId());			
 		dto.setParkingInfoId(parkingInfo.getParkingInfoId());
 		dto.setParkingLotName(parkingInfo.getParkingTicket().getParkingLot().getName());
 		dto.setAppTicketName(parkingInfo.getParkingTicket().getAppName());
