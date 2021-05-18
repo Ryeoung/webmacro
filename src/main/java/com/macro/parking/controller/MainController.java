@@ -31,7 +31,7 @@ import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.service.CrawlerService;
-import com.macro.parking.service.ModePageCrawler;
+import com.macro.parking.service.PageCrawlerService;
 import com.macro.parking.service.ParkingInfoService;
 import com.macro.parking.service.ParkingLotService;
 import com.macro.parking.service.ParkingTicketService;
@@ -52,7 +52,7 @@ public class MainController {
 	ParkingTicketService parkingTicketService;
 	
 	@Autowired
-	ModePageCrawler modePageCrawler;
+	PageCrawlerService modePageCrawler;
 	
 	@ResponseBody
 	@GetMapping("/cars")

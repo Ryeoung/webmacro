@@ -13,7 +13,7 @@ import com.macro.parking.crawler.ModuPageCrawler;
 
 
 @Service
-public class ModePageCrawler {
+public class PageCrawlerService {
 	
 	@Autowired
 	ModuPageCrawler moduPageCrawler;
