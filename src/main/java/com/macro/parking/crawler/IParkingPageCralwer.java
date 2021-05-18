@@ -2,6 +2,7 @@ package com.macro.parking.crawler;
 
 import java.util.List;
 
+import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.page.ipark.CarSearchPage;
@@ -42,16 +43,16 @@ public class IParkingPageCralwer extends PageCrawler{
 	}
 	
 
-	public void applyParkingTicket(List<CarInfoDto> carInfoDtos) {
+	public void applyParkingTicket(List<ParkingInfo> parkingInfos) {
 		int idx = 0;
 		
-		String parkingLotName = carInfoDtos.get(0).getParkingLotName();
+		String parkingLotName = parkingInfos.get(0).getParkingTicket().getParkingLot().getName();
 		
-		CarInfoDto carInfoDto = null;
+		ParkingInfo parkingInfo = null;
 		
 		try {
-			for(idx = 0; idx < carInfoDtos.size(); idx++) {
-                carInfoDto  = carInfoDtos.get(idx);
+			for(idx = 0; idx < parkingInfos.size(); idx++) {
+                parkingInfo  = parkingInfos.get(idx);
 
 				mainPage.load();
 				mainPage.deletePopUp();
@@ -61,7 +62,7 @@ public class IParkingPageCralwer extends PageCrawler{
 				}
 				
                 Thread.sleep(500);
-				String carNumber = carInfoDto.getCarNum();
+				String carNumber = parkingInfo.getCar().getNumber();
 	            String fourNumOfCar = carNumber.substring(carNumber.length() - 4, carNumber.length());
 	            
 	            System.out.println(fourNumOfCar);
@@ -74,20 +75,20 @@ public class IParkingPageCralwer extends PageCrawler{
 					//해당 차량 주차권 정보로 가기 
 					this.carSearchPage.clickChoiceCarBtn();
 					
-					this.ticketApplyPage.load(carInfoDto.getWebTicketName());
+					this.ticketApplyPage.load(parkingInfo.getParkingTicket().getWebName());
 					if(this.ticketApplyPage.isHavingMyTicket()) {
 						//해당 차량의 주차권이 이미 존재하는 경우 
-                        carInfoDto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
+                        parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
 					} else {
 						if(this.ticketApplyPage.buyParkingTicket()) {
 							//해당 차량이 구매한 주차권을 구매한 경우 
-							carInfoDto.setCode(StatusCodeType.TICKET_EXIST_ERROR.getCode());
+							parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
 						}
 					}
 					
 				} else {
 					//치 없는 경우 
-                    carInfoDto.setCode(StatusCodeType.NO_CAR_ERROR.getCode());
+                    parkingInfo.setAppFlag(StatusCodeType.NO_CAR_ERROR);
                     
                     //검색창으로 되돌아 가기
                     this.carSearchPage.clickGoMainBtn();
@@ -97,14 +98,14 @@ public class IParkingPageCralwer extends PageCrawler{
 			} 
 		}  catch(Exception e ) {
         	int curIdx = 0;
-        	CarInfoDto dto = null;
+        	ParkingInfo info = null;
 
-        	if(carInfoDto != null) {
+        	if(parkingInfo != null) {
         		curIdx = idx;
         	}
-        	for( ;curIdx < carInfoDtos.size(); curIdx++) {
-        		dto = carInfoDtos.get(curIdx);
-        		dto.setCode(StatusCodeType.SELENIUM_ERROR.getCode());
+        	for( ;curIdx < parkingInfos.size(); curIdx++) {
+        		info = parkingInfos.get(curIdx);
+        		info.setAppFlag(StatusCodeType.SELENIUM_ERROR);
         	}
             e.printStackTrace();
         } 
