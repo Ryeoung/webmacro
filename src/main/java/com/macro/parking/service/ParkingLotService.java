@@ -17,4 +17,8 @@ public class ParkingLotService {
 		String query = "%" + name + "%";
 		return parkingLotDao.findByNameLike(query);
 	}
+	
+	public ParkingLot findByName(String name) {
+		return parkingLotDao.findByName(name);
+	}
 }

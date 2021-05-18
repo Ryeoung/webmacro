@@ -8,7 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import com.macro.parking.crawler.WebCrawler;
-import com.macro.parking.page.modu.LoginPage;
+import com.macro.parking.page.ipark.CarSearchPage;
+import com.macro.parking.page.ipark.IParkLoginPage;
+import com.macro.parking.page.ipark.MainPage;
+import com.macro.parking.page.ipark.TicketApplyPage;
+import com.macro.parking.page.modu.ModuLoginPage;
+import com.macro.parking.crawler.IParkingPageCralwer;
 import com.macro.parking.crawler.ModuPageCrawler;
 import com.macro.parking.page.modu.ReservationPage;
 
@@ -65,47 +70,20 @@ public class SeleniumConfig {
 		return webCrawler;
 		
 	}
-//	@Bean
-//	public WebDriverWait webDriverWait(WebDriver driver) throws Exception {
-//		return new WebDriverWait(driver, waitTime);
-//	}
+
 	@Bean
-	public ModuPageCrawler moduPage(LoginPage loginPage, ReservationPage reservationPage) {
-		ModuPageCrawler moduPage = new ModuPageCrawler(loginPage, reservationPage);
+	public ModuPageCrawler moduPage(ModuLoginPage moduLoginPage, ReservationPage reservationPage) {
+		ModuPageCrawler moduPage = new ModuPageCrawler(moduLoginPage, reservationPage);
 		moduPage.setId(moduId);
 		moduPage.setPassword(moduPw);
 		
 		return moduPage;
 	}
 	
-	
-//    @Bean
-//    public WebDriver setupChromeDriver() throws Exception {
-//        //System.setProperty(driverName, path);
-//        WebDriverManager.chromedriver();
-//        
-//    	WebDriver driver = null;
-//        ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--window-size=1366,768");
-//        //options.addArguments("--headless");
-//        options.setProxy(null);
-//        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-//        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-//        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-//
-//        try {
-//            /*
-//             *
-//             * @ params
-//             * option : headless
-//             *
-//             */
-//            driver = new ChromeDriver(capabilities);
-//        } catch (Exception e) {
-//            logger.error("### [driver error] msg: {}, cause: {}", e.getMessage(), e.getCause());
-//        }
-//
-//        return driver;
-//    }
+	@Bean
+	public IParkingPageCralwer iparkPage(IParkLoginPage iParkLoginPage, MainPage mainPage, 
+											CarSearchPage carSearchPage, TicketApplyPage ticketApplyPage) {
+		return new IParkingPageCralwer(iParkLoginPage, mainPage, carSearchPage, ticketApplyPage);
+	}
 
 }

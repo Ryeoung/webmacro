@@ -3,20 +3,22 @@ package com.macro.parking.page.ipark;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.modu.LoginPageLoaded;
 
-public class LoginPage extends BasePage{
+@Component
+public class IParkLoginPage extends BasePage{
 	private By txtId = By.id("id");
 	private By txtPassword = By.id("password");
 	
-    private String url = "members.iparking.co.kr/";
+    private String url = "https://members.iparking.co.kr/";
     private String title= "i PARKING - MEMBERS";
     
 	public void load() {
-		super.navigate("https://admin.moduparking.com/main#/partner");
-		super.waitForPageLoad(new LoginPageLoaded(title, url));
+		super.navigate(this.url);
+		super.waitForPageLoad(new LoginPageLoaded(this.title, this.url));
 		
     }
 

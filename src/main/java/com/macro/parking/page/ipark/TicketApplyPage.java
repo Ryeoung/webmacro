@@ -7,10 +7,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.TicketApplyPageLoaded;
 
+@Component
 public class TicketApplyPage extends BasePage{
 	By myTicketList = By.id("myDcList");
 	By emptyMyDcList = By.cssSelector("#myDcList > tr > .empty");
@@ -40,7 +42,7 @@ public class TicketApplyPage extends BasePage{
         return true;
 	}
 	
-	public void buyParkingTicket() throws InterruptedException {
+	public boolean buyParkingTicket() throws InterruptedException {
 		String ticketXpath = "";
         String ticketName = "";
         
@@ -66,11 +68,12 @@ public class TicketApplyPage extends BasePage{
     	    	this.waitForElementToBeClickAble(this.successBuyTicketPopup).click();
                                 
                 this.waitForBuyTicket();
-
-                break;
+                return true;
             }
            
         }
+        
+        return false;
 	}
 	
 	public void waitForBuyTicket() {

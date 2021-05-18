@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.dto.CarInfoDto;
-import com.macro.parking.page.modu.LoginPage;
+import com.macro.parking.page.modu.ModuLoginPage;
 import com.macro.parking.page.modu.ReservationPage;
 
 import lombok.Getter;
@@ -17,13 +17,13 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ModuPageCrawler extends PageCrawler{
-	private final LoginPage loginPage;
+	private final ModuLoginPage loginPage;
 	private final ReservationPage reservationPage;
 	
 	private String id;
 	private String password;
 
-	public ModuPageCrawler(LoginPage loginPage, ReservationPage reservationPage) {
+	public ModuPageCrawler(ModuLoginPage loginPage, ReservationPage reservationPage) {
 		this.loginPage = loginPage;
 		this.reservationPage = reservationPage;
 	}
@@ -35,9 +35,11 @@ public class ModuPageCrawler extends PageCrawler{
 		this.reservationPage.init(this.driver);
 	}
 	
+	public void load() {
+		this.loginPage.load();
+	}
 
 	public void login() {
-		this.loginPage.load();
 		this.loginPage.fillUserInfo(this.id, this.password);
 		this.loginPage.login();
 	}

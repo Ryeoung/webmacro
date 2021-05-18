@@ -3,10 +3,12 @@ package com.macro.parking.page.ipark;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.MainPageLoaded;
 
+@Component
 public class MainPage extends BasePage{
 	By carNum = By.id("carNumber");
 	
@@ -14,12 +16,12 @@ public class MainPage extends BasePage{
     String title = "i PARKING - MEMBERS";
     String url= "members.iparking.co.kr/html/car-search-list.html";
     
-    public void load() throws InterruptedException {
+    public void load() {
     	this.waitForPageLoad(new MainPageLoaded(title, url));
         this.deletePopUp();
     }
     
-    public void deletePopUp() throws InterruptedException {
+    public void deletePopUp() {
 //    	wait.until(ExpectedConditions.)
     	//wait.until(ExpectedConditions.elementToBeClickable(By.id("goHome"))).click();
     	this.javascriptExcutor.executeScript("document.getElementById('information').style.display = 'none';" +

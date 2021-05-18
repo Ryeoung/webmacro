@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.SearchCarPageLoaded;
 
+@Component
 public class CarSearchPage extends BasePage{
 	By cars = By.className("car-list");
 	By choiceCarBtn = By.id("next");

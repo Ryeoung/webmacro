@@ -2,15 +2,14 @@ package com.macro.parking.page.modu;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
+
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.modu.LoginPageLoaded;
 
 @Component
-public class LoginPage  extends BasePage{
+public class ModuLoginPage  extends BasePage{
 	
     By txtId = By.cssSelector("body > form > div:nth-child(2) > input");    
     By txtPassword = By.cssSelector("body > form > div:nth-child(3) > input");
@@ -19,8 +18,8 @@ public class LoginPage  extends BasePage{
     String url = "https://admin.moduparking.com/";
     String title = "모두의주차장 ADMIN";
     public void load() {
-		super.navigate("https://admin.moduparking.com/main#/partner");
-		super.waitForPageLoad(new LoginPageLoaded(title, url));
+		this.navigate(url);
+		this.waitForPageLoad(new LoginPageLoaded(title, url));
 		System.out.println("로드끝 ");
     }
 
