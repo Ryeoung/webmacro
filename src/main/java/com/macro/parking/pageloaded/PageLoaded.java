@@ -42,6 +42,7 @@ public class PageLoaded implements ExpectedCondition<Boolean> {
 	                                   .contains(expectedTitle);
 	    Boolean isUrlCorrect = driver.getCurrentUrl()
 	                                 .contains(expectedUrl);	   
+	    System.out.println("");
 	    return isJavascriptLoad && isTitleCorrect && isUrlCorrect;
 	}
 

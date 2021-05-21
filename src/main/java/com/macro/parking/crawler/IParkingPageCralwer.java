@@ -67,24 +67,26 @@ public class IParkingPageCralwer extends PageCrawler{
 	            
 	            System.out.println(fourNumOfCar);
 				
-	            mainPage.searchCarNum(carNumber);
+	            mainPage.searchCarNum(fourNumOfCar);
 				
-				this.carSearchPage.load(carNumber);
+				this.carSearchPage.load();
+				
 				if(this.carSearchPage.isCarInParkingLot(carNumber)) {
 					//차 있는 경우 
-					//해당 차량 주차권 정보로 가기 
+					//해당 차량 주차권 정보로 가기
 					this.carSearchPage.clickChoiceCarBtn();
 					
 					this.ticketApplyPage.load(parkingInfo.getParkingTicket().getWebName());
-					if(this.ticketApplyPage.isHavingMyTicket()) {
+					if(!this.ticketApplyPage.isHavingMyTicket()) {
 						//해당 차량의 주차권이 이미 존재하는 경우 
                         parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
 					} else {
 						if(this.ticketApplyPage.buyParkingTicket()) {
 							//해당 차량이 구매한 주차권을 구매한 경우 
-							parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
+							parkingInfo.setAppFlag(StatusCodeType.SUCCESS);
 						}
 					}
+					this.ticketApplyPage.clickGoHomeBtn();
 					
 				} else {
 					//치 없는 경우 

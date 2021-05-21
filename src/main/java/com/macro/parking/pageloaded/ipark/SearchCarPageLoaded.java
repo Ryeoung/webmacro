@@ -56,7 +56,7 @@ public class SearchCarPageLoaded extends PageLoaded{
 	    System.out.println(
 	    		isFinishedLoading + " " + size + " " + isExistcarInfoChild);
 	    
-	     return isDomAttached && (size == 20) && isFinishedLoading  && isExistcarInfoChild;
+	     return isDomAttached && (size >= 20) && isFinishedLoading  && isExistcarInfoChild;
 	  }
 
 

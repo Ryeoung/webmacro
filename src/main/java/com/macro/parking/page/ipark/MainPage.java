@@ -14,7 +14,7 @@ public class MainPage extends BasePage{
 	
 	WebElement inputCarNum;
     String title = "i PARKING - MEMBERS";
-    String url= "members.iparking.co.kr/html/car-search-list.html";
+    String url= "members.iparking.co.kr/html/home.html";
     
     public void load() {
     	this.waitForPageLoad(new MainPageLoaded(title, url));
@@ -45,9 +45,9 @@ public class MainPage extends BasePage{
             parkingLotSelect.selectByValue("8638");
         } else if(parkingLotName.equals("하이파킹 94빌딩")){
             parkingLotSelect.selectByValue("8637");
-        } else if(parkingLotName.equals("하이시티파킹 NH농협캐피탈빌딩")) {
+        } else if(parkingLotName.equals("하이파킹 NH농협캐피탈빌딩")) {
             parkingLotSelect.selectByValue("72943");
-        } else if(parkingLotName.equals("하이시티파킹 오토웨이타워")) {
+        } else if(parkingLotName.equals("하이파킹 오토웨이타워")) {
             parkingLotSelect.selectByValue("72945");
         }
     }

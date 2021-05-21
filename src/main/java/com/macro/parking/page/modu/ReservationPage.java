@@ -119,6 +119,7 @@ public class ReservationPage extends BasePage{
 //            	 this.isFinished = true;
 //             	break;
 //             }
+     		 
      		 if((lastParkingInfo != null && lastParkingInfo.isEqual(parkingInfo))
             		 || parkingInfo.getOrderTime().isBefore(toDayStartTime)) {
 //            	 System.out.println((lastParkingInfo != null && dto.isEqual(lastParkingInfo)));

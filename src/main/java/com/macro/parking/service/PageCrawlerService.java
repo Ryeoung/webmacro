@@ -70,9 +70,16 @@ public class PageCrawlerService {
    	
    	
 	
-	public List<ParkingInfo> applyParkingTickets(List<ParkingInfo> parkingInfos){
+	public void applyParkingTickets(List<ParkingInfo> parkingInfos){
 		List<ParkingInfo> sortedParkingInfo = new ArrayList<>(parkingInfos);
+		Collections.sort(sortedParkingInfo, new Comparator<ParkingInfo>() {
 
+			@Override
+			public int compare(ParkingInfo o1, ParkingInfo o2) {
+				return o1.getParkingTicket().getParkingLot().getName().
+						compareTo(o2.getParkingTicket().getParkingLot().getName());
+			}
+		});
 		
 		ParkingInfo pre = sortedParkingInfo.get(0);
 		ParkingInfo cur = null;
@@ -95,7 +102,7 @@ public class PageCrawlerService {
 		}
 		
 		this.addTicketByParkingLot(subList);
-		return sortedParkingInfo;
+		
 	}
 	
 	private void addTicketByParkingLot(List<ParkingInfo> list) {
@@ -103,7 +110,6 @@ public class PageCrawlerService {
 //		ParkingLot parkingLot = parkingLotService.findByName(carInfoDto.getParkingLotName());
 		ParkingLot parkingLot = parkingInfo.getParkingTicket().getParkingLot();
 
-		System.out.println(parkingInfo.getParkingTicket().getParkingLot().getName());
 		System.out.println(parkingLot.getName());
 		iparkPageCrawler.setupChromeDriver();
 		iparkPageCrawler.load();
@@ -113,7 +119,8 @@ public class PageCrawlerService {
 		//		
 //		crawler.addTicketByParkingLot(list, parkingLot.getWebId(), parkingLot.getWebPwd());
 //		List<ParkingInfo> parkingInfos = convertAllCarInfoDtoToParkingInfos(list);
-//		parkingInfoService.updateAllParkingInfo(parkingInfos);
+		parkingInfoService.updateAllParkingInfo(list);
+		iparkPageCrawler.quit();
 		
 	}
 	

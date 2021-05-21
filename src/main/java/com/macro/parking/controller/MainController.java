@@ -52,7 +52,7 @@ public class MainController {
 	ParkingTicketService parkingTicketService;
 	
 	@Autowired
-	PageCrawlerService modePageCrawler;
+	PageCrawlerService pageCrawlerService;
 	
 	@ResponseBody
 	@GetMapping("/cars")
@@ -71,8 +71,9 @@ public class MainController {
 		
 		if(earlyParkingInfoOfToday != null) {
 			parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
-		} 
-		List<ParkingInfo> parkingInfos  = modePageCrawler.getParkingTicketReservation(parkingInfo);
+		}
+		System.out.println(parkingInfo.getOrderTime());
+		List<ParkingInfo> parkingInfos  = pageCrawlerService.getParkingTicketReservation(parkingInfo);
 		List<CarInfoDto> carList = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 //		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
 //		List<ParkingInfo> parkingInfos  =crawlerService.convertAllCarInfoDtoToParkingInfos(carList); 
@@ -99,9 +100,13 @@ public class MainController {
 	
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
 		if(parkingInfos.size() > 0 ) {
-			List<CarInfoDto> carInfoDtos = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
-			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
-			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);			
+//			List<CarInfoDto> carInfoDtos = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
+//			carList = crawlerService.pushTicketToParkWebsite(carInfoDtos);
+//			parkingInfos = crawlerService.convertAllCarInfoDtoToParkingInfos(carList);			
+//			
+			pageCrawlerService.applyParkingTickets(parkingInfos);
+			carList = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
+			
 		} else {
 			carList = new ArrayList<CarInfoDto>();
 		}

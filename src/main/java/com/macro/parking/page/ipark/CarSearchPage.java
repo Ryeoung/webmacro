@@ -3,7 +3,9 @@ package com.macro.parking.page.ipark;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
@@ -11,9 +13,10 @@ import com.macro.parking.pageloaded.ipark.SearchCarPageLoaded;
 
 @Component
 public class CarSearchPage extends BasePage{
-	By cars = By.className("car-list");
+	By carList = By.className("car-list");
 	By choiceCarBtn = By.id("next");
 	By linkMainPage = By.id("goMain");
+	By cars = By.xpath("//*[@id=\"carList\"]/tr");
 	
 	private WebElement carElmt;	
 	private List<WebElement> carElmts;
@@ -23,23 +26,24 @@ public class CarSearchPage extends BasePage{
 
 
 	
-	public void load(String carNumber) {
+	public void load() {
         this.waitForPageLoad(new SearchCarPageLoaded(title, url));
+        this.waitForElementToAppear(carList);
         this.carElmts = this.waitForElementsToAppear(cars);
-        this.waitForElementsToAppear(this.choiceCarBtn);
-        this.waitForElementsToAppear(this.linkMainPage);
-        
+                
 	}
 	
 	public boolean isCarInParkingLot(String carNum) throws Exception{
 	    	boolean flag = false;
+	    	
+	    	for(int idx = 0, fin = this.carElmts.size(); idx < fin; idx++) {
+	        	By car = By.xpath("//*[@id=\"carList\"]/tr[" + (idx + 1) + "]/td[2]");
+	        	System.out.println("waitfor...... car");
 
-	        // 여기서 못 찾는 건 없다는 것
-	        for(int idx = 0, fin = this.carElmts.size(); idx < fin; idx++) {
-	        	By car = By.className("#carList > tr:nth-child(" + (idx + 1) + ") > td:nth-child(2)");
 	        	this.carElmt = this.waitForElementToAppear(car);
-	        	
 	        	String parkingCarNum = this.carElmt.getText();
+	        	System.out.println(parkingCarNum);
+
 	            if(carNum.equals(parkingCarNum) || 
 	            		carNum.indexOf(parkingCarNum) >= 0 || 
 	            		parkingCarNum.indexOf(carNum) >= 0) {
@@ -52,13 +56,11 @@ public class CarSearchPage extends BasePage{
 	 }
 	
 	public void clickChoiceCarBtn() {
-		this.waitForElementToBeClickAble(this.choiceCarBtn);
 		this.javascriptExcutor.executeScript("document.getElementById('next').click();");
 	}
 	
-	public void clickGoMainBtn() {
-		this.waitForElementToBeClickAble(this.linkMainPage);
-    	this.javascriptExcutor.executeScript("document.getElementById('goMain').click();");
+	public void clickGoMainBtn() {		
+		this.javascriptExcutor.executeScript("document.getElementById('headerTitle').click();");
 
 	}
 }

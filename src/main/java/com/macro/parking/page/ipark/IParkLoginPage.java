@@ -19,7 +19,11 @@ public class IParkLoginPage extends BasePage{
 	public void load() {
 		super.navigate(this.url);
 		super.waitForPageLoad(new LoginPageLoaded(this.title, this.url));
-		
+		try {
+			Thread.sleep(500);
+		} catch (Exception e) {
+			
+		}
     }
 
     

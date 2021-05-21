@@ -32,7 +32,7 @@ public class MainPageLoaded extends PageLoaded{
 	    	   
 	    System.out.println("main");
 	    System.out.println(
-	    		isCotainDisplayInTutorial + " " + size);
+	    		isDomAttached + " " + isCotainDisplayInTutorial + " " + size + " " + isCotainDisplayInInfo);
 	    
 	    return isDomAttached && isCotainDisplayInInfo && isCotainDisplayInTutorial ;
 	  }

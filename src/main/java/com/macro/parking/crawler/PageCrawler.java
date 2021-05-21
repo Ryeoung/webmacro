@@ -7,16 +7,19 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.Setter;
 
+@Setter
 public class PageCrawler {
 	protected WebDriver driver;
-	
+	protected String driverName;
+	protected String driverPath;
 	public void setupChromeDriver()  {
-	      //System.setProperty(driverName, path);
+	      System.setProperty(driverName, driverPath);
 		WebDriver driver = null;
 
 		try {
-	      WebDriverManager.chromedriver();
+//	      WebDriverManager.chromedriver();
 	      
 	      ChromeOptions options = new ChromeOptions();
 	      options.addArguments("--window-size=1366,768");
