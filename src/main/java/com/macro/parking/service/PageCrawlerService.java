@@ -51,16 +51,18 @@ public class PageCrawlerService {
 	}
    	public void getParkingTicketAndCar(ParkingInfo parkingInfo) {
    		String carNum = parkingInfo.getCar().getNumber();
+   		
    		Car car = carService.findByNumber(carNum);
 
 		if(car == null) {
 			car = carService.addCar(parkingInfo.getCar());
 		}
-		System.out.println(parkingInfo);
 		ParkingLot parkingLot = parkingLotService.findByName(parkingInfo.getParkingTicket().getParkingLot().getName());
 		System.out.println(parkingLot);
 		ParkingTicket parkingTicket = parkingTicketService.findByAppNameAndParkingLot(parkingInfo.getParkingTicket().getAppName(),  parkingLot);
-		
+		if(parkingTicket == null) {
+			System.out.println(carNum);
+		}
 		parkingInfo.setCar(car);
 		parkingInfo.setParkingTicket(parkingTicket);
    	}
