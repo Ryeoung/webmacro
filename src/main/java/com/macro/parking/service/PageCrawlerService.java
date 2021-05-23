@@ -13,6 +13,7 @@ import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
 import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.crawler.IParkingPageCralwer;
 import com.macro.parking.crawler.ModuPageCrawler;
 
@@ -46,7 +47,6 @@ public class PageCrawlerService {
 			List<ParkingInfo> parkingInfos = moduPageCrawler.getParkingTicketData(lastParkingInfo);
 			parkingInfos.forEach(parkingInfo -> this.getParkingTicketAndCar(parkingInfo));
 			moduPageCrawler.quit();
-			
 			return parkingInfos;
 	}
    	public void getParkingTicketAndCar(ParkingInfo parkingInfo) {

@@ -49,26 +49,32 @@ public class ModuPageCrawler extends PageCrawler{
 		List<ParkingInfo> totalParkingInfos = new LinkedList<ParkingInfo>();
 		List<ParkingInfo> crawledData = null;
 		reservationPage.load();
-		
-		do{
-			System.out.println("주차장 플렛폼 관리페이지에서 주차권 예약 정보 가져오기 ");
-			crawledData = reservationPage.crawlingForReservation(lastParkingInfo);
+		try {
 			
-			if(crawledData.size() > 0) {
-				totalParkingInfos.addAll(0,crawledData);
-			}
-			System.out.println(reservationPage.isFinished());
-			System.out.println("다음 페이지 ");
-			try {
-				reservationPage.clickNextPageBtn(); 
-			} catch(Exception e) {
+			do{
+				System.out.println("주차장 플렛폼 관리페이지에서 주차권 예약 정보 가져오기 ");
 				
-			}
-			
-			
-		} while(!reservationPage.isFinished());
-		
-		
+				Thread.sleep(500);
+				crawledData = reservationPage.crawlingForReservation(lastParkingInfo);
+				
+				if(crawledData.size() > 0) {
+					totalParkingInfos.addAll(0,crawledData);
+				}
+				System.out.println(reservationPage.isFinished());
+				System.out.println("다음 페이지 ");
+				try {
+					reservationPage.clickNextPageBtn(); 
+				} catch(Exception e) {
+					
+				}
+				
+				
+			} while(!reservationPage.isFinished());
+				
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		return totalParkingInfos;
 	}
     

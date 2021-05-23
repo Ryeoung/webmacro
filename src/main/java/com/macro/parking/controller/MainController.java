@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.modelmapper.ModelMapper;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +38,7 @@ import com.macro.parking.service.PageCrawlerService;
 import com.macro.parking.service.ParkingInfoService;
 import com.macro.parking.service.ParkingLotService;
 import com.macro.parking.service.ParkingTicketService;
+import com.macro.parking.utils.MapUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -54,6 +58,9 @@ public class MainController {
 	@Autowired
 	PageCrawlerService pageCrawlerService;
 	
+	@Autowired
+	ModelMapper mapper;
+	
 	@ResponseBody
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo() {
@@ -65,16 +72,17 @@ public class MainController {
 	@ResponseBody
 	@GetMapping("/newcars")
 	public List<CarInfoDto> getCarsBylast() {
-		ParkingInfo parkingInfo = null;
-		ParkingInfo earlyParkingInfoOfToday = null;
-		earlyParkingInfoOfToday = parkingInfoService.findEarlyParkingInfoByToday();
-		
-		if(earlyParkingInfoOfToday != null) {
-			parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
-		}
-		System.out.println(parkingInfo.getOrderTime());
+		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
+
 		List<ParkingInfo> parkingInfos  = pageCrawlerService.getParkingTicketReservation(parkingInfo);
-		List<CarInfoDto> carList = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
+		List<CarInfoDto> carList  = new LinkedList<CarInfoDto>();
+		for(ParkingInfo p: parkingInfos) {
+			System.out.println(p.getCar().getNumber() + " " + p.getAppFlag().getCode() + " " +
+					p.getOrderTime() + " " + p.getParkingTicket().getAppName() + " " 
+					+ p.getParkingTicket().getParkingLot().getName());
+			carList.add(mapper.map(p, CarInfoDto.class));
+		}
+//		List<CarInfoDto> carList = crawlerService.convertAllParkingInfoToCarInfoDtos(parkingInfos);
 //		List<CarInfoDto> carList = crawlerService.getDataFromModu(parkingInfo);
 //		List<ParkingInfo> parkingInfos  =crawlerService.convertAllCarInfoDtoToParkingInfos(carList); 
 		parkingInfoService.addAllTicket(parkingInfos);
