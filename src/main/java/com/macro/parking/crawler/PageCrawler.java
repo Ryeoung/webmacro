@@ -15,17 +15,19 @@ public class PageCrawler {
 	protected String driverName;
 	protected String driverPath;
 	public void setupChromeDriver()  {
-	      System.setProperty(driverName, driverPath);
+//	      System.setProperty(driverName, driverPath);
 		WebDriver driver = null;
 
 		try {
-//	      WebDriverManager.chromedriver();
-	      
+
+	      WebDriverManager.chromedriver().setup();
+
 	      ChromeOptions options = new ChromeOptions();
 	      options.addArguments("--window-size=1366,768");
 //	      options.addArguments("--headless");
 	      options.setProxy(null);
 	      options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+	      options.addArguments("--start-maximized");
 	      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
 	      capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 	      driver = new ChromeDriver(capabilities);

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 
 import com.macro.parking.map.CarInfoDtoMapper;
-import com.macro.parking.utils.MapUtils;
 
 @Configuration
 public class ModelMapperConfig {

@@ -6,14 +6,14 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
-import com.macro.parking.pageloaded.modu.LoginPageLoaded;
+import com.macro.parking.pageloaded.ipark.LoginPageLoaded;
 
 @Component
 public class IParkLoginPage extends BasePage{
 	private By txtId = By.id("id");
 	private By txtPassword = By.id("password");
 	
-    private String url = "https://members.iparking.co.kr/";
+    private String url = "http://members.iparking.co.kr/#!";
     private String title= "i PARKING - MEMBERS";
     
 	public void load() {

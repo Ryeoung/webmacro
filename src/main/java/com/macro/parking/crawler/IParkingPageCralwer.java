@@ -31,6 +31,15 @@ public class IParkingPageCralwer extends PageCrawler{
 		this.ticketApplyPage = ticketApplyPage;
 	}
 	
+	@Override
+	public void setupChromeDriver() {
+		super.setupChromeDriver();
+		
+		this.loginPage.init(this.driver);
+		this.mainPage.init(this.driver);
+		this.carSearchPage.init(this.driver);
+		this.ticketApplyPage.init(this.driver);
+	}
 	
 	public void load() {
 		loginPage.load();
@@ -113,14 +122,5 @@ public class IParkingPageCralwer extends PageCrawler{
         } 
 	   
 	}
-	@Override
-	public void setupChromeDriver() {
-		super.setupChromeDriver();
-		this.loginPage.init(this.driver);
-		this.mainPage.init(this.driver);
-		this.carSearchPage.init(this.driver);
-		this.ticketApplyPage.init(this.driver);
-	}
-
 
 }
