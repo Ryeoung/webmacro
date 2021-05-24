@@ -1,11 +1,12 @@
-package com.macro.parking.crawler.ipark;
+package com.macro.parking.pageloaded.ipark;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 
-import com.macro.parking.crawler.PageLoaded;
+import com.macro.parking.pageloaded.PageLoaded;
+
 
 public class LoginPageLoaded extends PageLoaded{
 	 public LoginPageLoaded(String expectedTitle, String expectedUrl) {

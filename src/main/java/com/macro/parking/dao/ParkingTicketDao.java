@@ -11,4 +11,5 @@ public interface ParkingTicketDao extends JpaRepository<ParkingTicket, Long>{
 	ParkingTicket findByAppNameAndParkingLot_ParkingLotId(String appName, int parkingLotId);
 	
 	List<ParkingTicket> findByParkingLot(ParkingLot parkingLot);
+	ParkingTicket findByAppNameAndParkingLot(String appName, ParkingLot parkingLot);
 }

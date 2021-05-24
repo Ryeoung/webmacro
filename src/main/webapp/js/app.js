@@ -16,9 +16,10 @@ import {
 
 class App {
     constructor() {
-        this.ticket = new Ticket();
+    	this.tab = new Tab();
+        this.ticket = new Ticket(this.tab);
         this.sort = new Sort();
-        this.tab = new Tab();
+                
         this.search = new Search(this.ticket);
         this.ticket.requestTickesOfToday();   
     }    

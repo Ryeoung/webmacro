@@ -21,12 +21,34 @@
 		<spring.version>4.3.5.RELEASE</spring.version>
 		<hibernate.version>5.3.11.Final</hibernate.version>
 		<hibernate.validator>5.4.1.Final</hibernate.validator>
+		<webdrivermanager.version>4.4.3</webdrivermanager.version>
 		<selenium.version>3.141.59</selenium.version>
+		<modelMapper.version>2.4.2</modelMapper.version>
 		<!-- jackson -->
 		<jackson2.version>2.9.4</jackson2.version>
 	</properties>
-
+	<!-- Model Mapper 사용하  -->
 	<dependencies>
+	<dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>2.7</version>
+	</dependency>
+	
+		<dependency>
+		  <groupId>org.modelmapper</groupId>
+		  <artifactId>modelmapper</artifactId>
+		  <version>2.4.2</version>
+		</dependency>
+
+	
+	<!--WebDriver manager - Selenium  -->
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>${webdrivermanager.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
@@ -187,11 +209,7 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.1</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
-		</dependency>
+		
 		<!-- Test 라이브러리 -->
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -213,6 +231,17 @@
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
 				defaults (may be moved to parent pom) -->
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.4.1</version>
+					<configuration>
+						<rules>
+							<dependencyConvergence></dependencyConvergence>
+						</rules>
+					</configuration>
+				</plugin>
+			
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>3.1.0</version>

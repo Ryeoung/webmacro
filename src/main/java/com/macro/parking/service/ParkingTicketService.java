@@ -30,4 +30,8 @@ public class ParkingTicketService {
 	public List<ParkingTicket> findByParkingLot(ParkingLot parkingLot) {
 		return parkingticketDao.findByParkingLot(parkingLot);
 	}
+	
+	public ParkingTicket findByAppNameAndParkingLot(String appName, ParkingLot parkingLot) {
+		return parkingticketDao.findByAppNameAndParkingLot(appName, parkingLot);
+	}
 }

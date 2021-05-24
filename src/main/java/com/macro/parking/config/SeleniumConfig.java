@@ -2,19 +2,20 @@ package com.macro.parking.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import com.macro.parking.crawler.WebCrawler;
+import com.macro.parking.page.ipark.CarSearchPage;
+import com.macro.parking.page.ipark.IParkLoginPage;
+import com.macro.parking.page.ipark.MainPage;
+import com.macro.parking.page.ipark.TicketApplyPage;
+import com.macro.parking.page.modu.ModuLoginPage;
+import com.macro.parking.crawler.IParkingPageCralwer;
+import com.macro.parking.crawler.ModuPageCrawler;
+import com.macro.parking.crawler.PageCrawler;
+import com.macro.parking.page.modu.ReservationPage;
 
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,51 +46,25 @@ public class SeleniumConfig {
 	
 
 	@Bean
-	public WebCrawler getWebCrawler() throws Exception {
-		WebCrawler webCrawler = new WebCrawler();
-		//webCrawler.setDriver(driver);
-		webCrawler.setDriverName(driverName);
-		webCrawler.setPath(path);
-		//webCrawler.setWait(wait);
-		webCrawler.setIParkUrl(iParkUrl);
-		webCrawler.setModuId(moduId);
-		webCrawler.setModuPw(moduPw);
-		webCrawler.setModuUrl(moduUrl);
-		webCrawler.setDriverName(driverName);
-		webCrawler.setPath(path);
-		return webCrawler;
-		
+	public ModuPageCrawler moduPage(ModuLoginPage moduLoginPage, ReservationPage reservationPage) {
+		ModuPageCrawler moduPage = new ModuPageCrawler(moduLoginPage, reservationPage);
+		moduPage.setId(moduId);
+		moduPage.setPassword(moduPw);
+		setDriverInfo(moduPage);
+		return moduPage;
 	}
-//	@Bean
-//	public WebDriverWait webDriverWait(WebDriver driver) throws Exception {
-//		return new WebDriverWait(driver, waitTime);
-//	}
+	
+	@Bean
+	public IParkingPageCralwer iparkPage(IParkLoginPage iParkLoginPage, MainPage mainPage, 
+											CarSearchPage carSearchPage, TicketApplyPage ticketApplyPage) {
+		IParkingPageCralwer iParkinPage = new IParkingPageCralwer(iParkLoginPage, mainPage, carSearchPage, ticketApplyPage);
+		setDriverInfo(iParkinPage);
 
-//    @Bean
-//    public WebDriver setupChromeDriver() throws Exception {
-//        System.setProperty(driverName, path);
-//        WebDriver driver = null;
-//        ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--window-size=1366,768");
-//        options.addArguments("--headless");
-//        options.setProxy(null);
-//        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-//        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-//        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-//
-//        try {
-//            /*
-//             *
-//             * @ params
-//             * option : headless
-//             *
-//             */
-//            driver = new ChromeDriver(capabilities);
-//        } catch (Exception e) {
-//            logger.error("### [driver error] msg: {}, cause: {}", e.getMessage(), e.getCause());
-//        }
-//
-//        return driver;
-//    }
-
+		return iParkinPage;
+	}
+	
+	public void setDriverInfo(PageCrawler pageCrawler) {
+		pageCrawler.setDriverName(this.driverName);
+		pageCrawler.setDriverPath(this.path);
+	}
 }

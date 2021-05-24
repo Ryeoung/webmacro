@@ -1,4 +1,4 @@
-package com.macro.parking.crawler;
+package com.macro.parking.pageloaded;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -41,7 +41,8 @@ public class PageLoaded implements ExpectedCondition<Boolean> {
 	    Boolean isTitleCorrect = driver.getTitle()
 	                                   .contains(expectedTitle);
 	    Boolean isUrlCorrect = driver.getCurrentUrl()
-	                                 .contains(expectedUrl);				
+	                                 .contains(expectedUrl);	
+	    
 	    return isJavascriptLoad && isTitleCorrect && isUrlCorrect;
 	}
 

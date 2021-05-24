@@ -72,7 +72,7 @@ body {
     align-items: center;
     width: 700px;
     min-height: 100px;
-    padding: 0 20px 20px 20px;
+    padding: 10px 20px 20px 20px;
 }
 .historyWord{
     display: flex;
@@ -81,6 +81,7 @@ body {
     align-items: center;
     background-color: pink;
     margin-right: 20px;
+    margin-bottom: 20px;
     border-radius: 20px;
     min-width: 90px;
     height: 30px;
@@ -144,7 +145,6 @@ body {
     font-size: 18px;
     width: 250px;
     height: 60px;
-    margin-bottom: 40px;
 }
 .checkAllCar:hover{
     background-color: pink;
@@ -160,6 +160,8 @@ button:hover{
     display: flex;
     width: 900px;
     flex-direction: row;
+    align-items:center;
+    height:100px;
     justify-content: space-between;
 }
 .tabContainer, .cardList ,#searchContainer{
@@ -208,7 +210,7 @@ button:hover{
 }
 
 #checked {
-    background-color: dimgrey;
+    background-color: darkgrey;
 }
 h2{
 	margin: 20px 0 10px 0;

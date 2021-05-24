@@ -1,4 +1,4 @@
-package com.macro.parking.crawler.ipark;
+package com.macro.parking.pageloaded.ipark;
 
 import java.util.List;
 
@@ -8,13 +8,13 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.macro.parking.crawler.PageLoaded;
+import com.macro.parking.pageloaded.PageLoaded;
+
 
 public class SearchCarPageLoaded extends PageLoaded{
-	private String carNum;
-	public SearchCarPageLoaded(String expectedTitle, String expectedUrl, String carNum) {
+	public SearchCarPageLoaded(String expectedTitle, String expectedUrl) {
 		super(expectedTitle, expectedUrl);
-		this.carNum = carNum;
+		
 	}
 	
 	 @Override
@@ -56,7 +56,7 @@ public class SearchCarPageLoaded extends PageLoaded{
 	    System.out.println(
 	    		isFinishedLoading + " " + size + " " + isExistcarInfoChild);
 	    
-	     return isDomAttached && (size == 20) && isFinishedLoading  && isExistcarInfoChild;
+	     return isDomAttached && (size >= 20) && isFinishedLoading  && isExistcarInfoChild;
 	  }
 
 
