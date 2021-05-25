@@ -13,10 +13,11 @@ public class IParkLoginPage extends BasePage{
 	private By txtId = By.id("id");
 	private By txtPassword = By.id("password");
 	
-    private String url = "http://members.iparking.co.kr/#!";
+    private String url;
     private String title= "i PARKING - MEMBERS";
     
-	public void load() {
+	public void load(String url) {
+		this.url = url;
 		super.navigate(this.url);
 		super.waitForPageLoad(new LoginPageLoaded(this.title, this.url));
 		try {

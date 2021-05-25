@@ -112,7 +112,7 @@ public class PageCrawlerService {
 
 		System.out.println(parkingLot.getName());
 		iparkPageCrawler.setupChromeDriver();
-		iparkPageCrawler.load();
+		iparkPageCrawler.load(parkingLot.getWebsite());
 		iparkPageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
 		iparkPageCrawler.applyParkingTicket(list);
 		

@@ -28,7 +28,7 @@ public class ParkingInfoService {
 	}
 	
 	public List<ParkingInfo> addAllTicket(List<ParkingInfo> parkingInfos) {
-		return parkingInfoDao.save(parkingInfos);
+		return parkingInfoDao.saveAll(parkingInfos);
 	}
 	
 	public List<ParkingInfo> updateAllParkingInfo(List<ParkingInfo> parkingInfos) {
@@ -36,7 +36,7 @@ public class ParkingInfoService {
 			updateParkingInfo(info);
 		}
 		System.out.println("바뀐 사이즈 " + parkingInfos.size());
-		return parkingInfoDao.save(parkingInfos);
+		return parkingInfoDao.saveAll(parkingInfos);
 	}
 	
 	@Transactional
