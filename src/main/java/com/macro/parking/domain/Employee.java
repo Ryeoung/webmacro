@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -12,7 +14,6 @@ import javax.persistence.*;
 @Table
 public class Employee {
 	@Id
-    @GeneratedValue
     @Column(name = "employee_id", nullable = false)
     private int employeeId;
 
@@ -40,7 +41,7 @@ public class Employee {
     @Column(name = "admin_password")
     private String admin_password ;
 
-    @ManyToOne
-    @JoinColumn(name = "parking_lot_id", insertable=false, updatable = false)
-    private ParkingLot parkingLot;
+    @OneToMany(mappedBy = "employee")
+    private List<Management> managements = new ArrayList<>();
+
 }

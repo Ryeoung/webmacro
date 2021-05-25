@@ -42,11 +42,10 @@ public class ParkingLot {
     @OneToMany(mappedBy = "parkingLot")
     private List<ParkingTicket> parkingTicket = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "parkingLot")
-    private List<Employee> employees = new ArrayList<>();
+    private List<Management> managements = new ArrayList<>();
 
-	@Override
+    @Override
 	public String toString() {
 		return "ParkingLot [parkingLotId=" + parkingLotId + ", name=" + name + ", website=" + website + ", webId="
 				+ webId + ", webPwd=" + webPwd + "]";

@@ -180,7 +180,7 @@ export class Ticket{
         
     getNewTicket(){
     	ajax({
-            url : `/parking/api/newcars`,
+            url : `/parking/api/new/cars`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
         }, this.makeCardOfCar.bind(this));
@@ -195,8 +195,8 @@ export class Ticket{
 
     clickEventHandlerAboutPushTicket(event) {
         ajax({
-            url : "/parking/api/register",
-            method : "POST",
+            url : "/parking/api/apply/cars",
+            method : "GET",
             contentType : "application/json; charset=utf-8",
         }, this.clickEventOfPushTicketSuccess.bind(this));
     }

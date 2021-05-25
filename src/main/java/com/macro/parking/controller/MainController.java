@@ -61,7 +61,7 @@ public class MainController {
 	}
 	
 	@ResponseBody
-	@GetMapping("/newcars")
+	@GetMapping("/new/cars")
 	public List<CarInfoDto> getCarsBylast() {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 
@@ -87,9 +87,8 @@ public class MainController {
 				.collect(Collectors.toList());		
 	}
 	
-	@PostMapping("/register")
-	public List<CarInfoDto> addTicket() {
-		
+	@GetMapping("/apply/cars")
+	public List<CarInfoDto> getApplyParkingTicket() {
 		List<CarInfoDto> carList = null;
 	
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
