@@ -41,8 +41,8 @@ public class IParkingPageCralwer extends PageCrawler{
 		this.ticketApplyPage.init(this.driver);
 	}
 	
-	public void load() {
-		loginPage.load();
+	public void load(String url) {
+		loginPage.load(url);
 	}
 	
 	public void login(String id, String pwd) {

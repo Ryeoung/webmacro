@@ -20,11 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:selenium.properties")
 public class SeleniumConfig {
     private static final Logger logger = LoggerFactory.getLogger(SeleniumConfig.class);
-    @Value("${ipark.url}")
-	private String iParkUrl;
 
 	@Value("${modu.id}")
 	private String moduId;
@@ -35,22 +33,11 @@ public class SeleniumConfig {
 	@Value("${modu.url}")
 	private String moduUrl;
 
-	@Value("${web.driver.name}")
-	private String driverName;
-	
-	@Value("${web.driver.path}")
-	private String path;
-	
-	@Value("${web.explicit.wait}")
-	private int waitTime;
-	
-
 	@Bean
 	public ModuPageCrawler moduPage(ModuLoginPage moduLoginPage, ReservationPage reservationPage) {
 		ModuPageCrawler moduPage = new ModuPageCrawler(moduLoginPage, reservationPage);
 		moduPage.setId(moduId);
 		moduPage.setPassword(moduPw);
-		setDriverInfo(moduPage);
 		return moduPage;
 	}
 	
@@ -58,13 +45,9 @@ public class SeleniumConfig {
 	public IParkingPageCralwer iparkPage(IParkLoginPage iParkLoginPage, MainPage mainPage, 
 											CarSearchPage carSearchPage, TicketApplyPage ticketApplyPage) {
 		IParkingPageCralwer iParkinPage = new IParkingPageCralwer(iParkLoginPage, mainPage, carSearchPage, ticketApplyPage);
-		setDriverInfo(iParkinPage);
 
 		return iParkinPage;
 	}
 	
-	public void setDriverInfo(PageCrawler pageCrawler) {
-		pageCrawler.setDriverName(this.driverName);
-		pageCrawler.setDriverPath(this.path);
-	}
+
 }
