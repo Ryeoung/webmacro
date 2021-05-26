@@ -1,20 +1,17 @@
 package com.macro.parking.controller;
 
-import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
+import com.macro.parking.utils.MapUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,16 +45,14 @@ public class MainController {
 	PageCrawlerService pageCrawlerService;
 	
 	@Autowired
-	ModelMapper mapper;
-	
+	MapUtils mapUtils;
+
 	@ResponseBody
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo() {
 		List<ParkingInfo > parkingInfos = parkingInfoService.findAllByToday();
 		System.out.println(parkingInfos.size());
-		return parkingInfos.stream()
-				.map(p -> mapper.map(p, CarInfoDto.class))
-				.collect(Collectors.toList());
+		return mapUtils.convertAllToDto(parkingInfos);
 	}
 	
 	@ResponseBody
@@ -66,9 +61,7 @@ public class MainController {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 
 		List<ParkingInfo> parkingInfos  = pageCrawlerService.getParkingTicketReservation(parkingInfo);
-		List<CarInfoDto> carList  = parkingInfos.stream()
-							.map(p -> mapper.map(p, CarInfoDto.class))
-							.collect(Collectors.toList());
+		List<CarInfoDto> carList  = mapUtils.convertAllToDto(parkingInfos);
 		parkingInfoService.addAllTicket(parkingInfos);
 		
 		System.out.println(carList.size());
@@ -82,9 +75,7 @@ public class MainController {
 		List<ParkingInfo> parkingInfos = parkingInfoService.findByParkingTicketAndCar(word, parkingTickets);
 		
 		System.out.println(parkingInfos.size());
-		return  parkingInfos.stream()
-				.map(p -> mapper.map(p, CarInfoDto.class))
-				.collect(Collectors.toList());		
+		return  mapUtils.convertAllToDto(parkingInfos);
 	}
 	
 	@GetMapping("/apply/cars")
@@ -94,9 +85,7 @@ public class MainController {
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
 		if(parkingInfos.size() > 0 ) {
 			pageCrawlerService.applyParkingTickets(parkingInfos);			
-			carList  = parkingInfos.stream()
-					.map(p -> mapper.map(p, CarInfoDto.class))
-					.collect(Collectors.toList());
+			carList  = mapUtils.convertAllToDto(parkingInfos);
 			
 		} else {
 			carList = new ArrayList<CarInfoDto>();
@@ -111,7 +100,7 @@ public class MainController {
 		ParkingInfo newParkingInfo = parkingInfoService.findByParkingInfoId(parkingInfoId);
 		newParkingInfo.setAppFlag(parkingInfo.getAppFlag());
 		parkingInfoService.updateParkingInfo(newParkingInfo);
-		CarInfoDto carInfoDto = mapper.map(newParkingInfo, CarInfoDto.class);
+		CarInfoDto carInfoDto = mapUtils.convertToDto(newParkingInfo);
 		return Arrays.asList(carInfoDto);
 		
 	}
