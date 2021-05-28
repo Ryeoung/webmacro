@@ -55,17 +55,17 @@ public class MainController {
 		return mapUtils.convertAllToDto(parkingInfos);
 	}
 	
-	@ResponseBody
 	@GetMapping("/new/cars")
 	public List<CarInfoDto> getCarsBylast() {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
-
+//		System.out.println(parkingInfo.getCar().getNumber());
 		List<ParkingInfo> parkingInfos  = pageCrawlerService.getParkingTicketReservation(parkingInfo);
 		List<CarInfoDto> carList  = mapUtils.convertAllToDto(parkingInfos);
 		parkingInfoService.addAllTicket(parkingInfos);
-		
+
 		System.out.println(carList.size());
 		return carList;
+//		return new ArrayList<CarInfoDto>();
 	}
 	
 	@GetMapping("/search")

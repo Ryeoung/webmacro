@@ -29,14 +29,14 @@ public class CarSearchPage extends BasePage{
 	public void load() {
         this.waitForPageLoad(new SearchCarPageLoaded(title, url));
         this.waitForElementToAppear(carList);
-        this.carElmts = this.waitForElementsToAppear(cars);
-                
+
 	}
 	
 	public boolean isCarInParkingLot(String carNum) throws Exception{
 	    	boolean flag = false;
-	    	
-	    	for(int idx = 0, fin = this.carElmts.size(); idx < fin; idx++) {
+			this.carElmts = this.driver.findElements(this.cars);
+
+		for(int idx = 0, fin = this.carElmts.size(); idx < fin; idx++) {
 	        	By car = By.xpath("//*[@id=\"carList\"]/tr[" + (idx + 1) + "]/td[2]");
 	        	System.out.println("waitfor...... car");
 
