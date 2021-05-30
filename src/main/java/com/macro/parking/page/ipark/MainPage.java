@@ -3,12 +3,13 @@ package com.macro.parking.page.ipark;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.MainPageLoaded;
 
-@Component
+@Component("iparkMainPage")
 public class MainPage extends BasePage{
 	By carNum = By.id("carNumber");
 	

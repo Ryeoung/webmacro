@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.TicketApplyPageLoaded;
 
-@Component
+@Component("iparkApplyPage")
 public class TicketApplyPage extends BasePage{
 	String ticketXpathExp = "//*[@id=\"productList\"]/tr";
 	

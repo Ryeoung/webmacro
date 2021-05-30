@@ -40,14 +40,5 @@ public class SeleniumConfig {
 		moduPage.setPassword(moduPw);
 		return moduPage;
 	}
-	
-	@Bean
-	public IParkingPageCralwer iparkPage(IParkLoginPage iParkLoginPage, MainPage mainPage, 
-											CarSearchPage carSearchPage, TicketApplyPage ticketApplyPage) {
-		IParkingPageCralwer iParkinPage = new IParkingPageCralwer(iParkLoginPage, mainPage, carSearchPage, ticketApplyPage);
-
-		return iParkinPage;
-	}
-	
 
 }
