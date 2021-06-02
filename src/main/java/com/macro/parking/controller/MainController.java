@@ -10,14 +10,7 @@ import java.util.stream.Collectors;
 import com.macro.parking.utils.MapUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import com.macro.parking.domain.ParkingInfo;
@@ -30,6 +23,7 @@ import com.macro.parking.service.ParkingLotService;
 import com.macro.parking.service.ParkingTicketService;
 
 @RestController
+@CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RequestMapping("/api")
 public class MainController {
 	@Autowired
