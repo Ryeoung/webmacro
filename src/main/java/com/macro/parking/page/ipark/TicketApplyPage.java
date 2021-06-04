@@ -69,8 +69,9 @@ public class TicketApplyPage extends BasePage{
             	Thread.sleep(500);
     	    	this.javascriptExcutor.executeScript("document.querySelector('#productList > tr:nth-child("+ ticketIdx + ") > td:nth-child(3) > button').click()");
                 //최종 확인 pop 승락 2번
-                
-    	    	this.waitForElementToBeClickAble(this.confirmPopup).click();
+				Thread.sleep(500);
+				this.waitForElementToBeClickAble(this.confirmPopup).click();
+				this.waitForConfirm();
     	    	this.waitForElementToBeClickAble(this.successBuyTicketPopup).click();
                                 
                 this.waitForBuyTicket();
@@ -81,7 +82,18 @@ public class TicketApplyPage extends BasePage{
         
         return false;
 	}
-	
+
+	private void waitForConfirm() {
+		wait.until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver input) {
+				By confirmMessage = By.id("popMessage");
+				return driver.findElement(confirmMessage).getText().contains("적용되었습니다.");
+
+			}
+		});
+	}
+
 	public void waitForBuyTicket() {
 		By emptyTicketList = this.emptyMyDcList;
 		wait.until(new ExpectedCondition<Boolean>() {
