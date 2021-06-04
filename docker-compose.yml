@@ -1,0 +1,35 @@
+version: "3.7"         #파일 규격 버전
+services:              #컨테이너 정의
+ mysql:                #서비스 이름
+  container_name: mysql     #컨테이너 이름
+  image: mysql:8.0.22        #컨테이너로 만들 이미지 <이름>:<버전>  <이름> <- 최신 버전으로 찾아서 pull
+  ports:                     # 외부에서 도커로 들어오는 포트:docker 내부 포트
+   - 3306:3306
+  volumes:                   #import parking디렉토리 내부 파일
+   - /Users/hong/dumps/docker/parking:/docker-entrypoint-initdb.d
+  command:
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_unicode_ci
+  environment:
+   MYSQL_ROOT_PASSWORD: fbrjsgml_2
+   MYSQL_USER: admin
+   MYSQL_DATABASE: parking
+   MYSQL_PASSWORD: 1234
+   TZ: Asia/Seoul
+
+ parking-service:
+  container_name: parking-service
+  build:
+   context: .
+   dockerfile: Dockerfile
+  environment:
+   MYSQL_ADDRESS: mysql
+   MYSQL_USERNAME: admin
+   MYSQL_PASSWORD: 1234
+  ports:
+   - 8080:8080
+  restart: always
+  links:
+   - mysql
+  depends_on:
+   - mysql
