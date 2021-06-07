@@ -1,11 +1,11 @@
-version: "3.7"         #파일 규격 버전
-services:              #컨테이너 정의
- mysql:                #서비스 이름
-  container_name: mysql     #컨테이너 이름
-  image: mysql:8.0.22        #컨테이너로 만들 이미지 <이름>:<버전>  <이름> <- 최신 버전으로 찾아서 pull
-  ports:                     # 외부에서 도커로 들어오는 포트:docker 내부 포트
+version: "3.7"
+services:
+ mysql:
+  container_name: mysql
+  image: mysql:8.0.22
+  ports:
    - 3306:3306
-  volumes:                   #import parking디렉토리 내부 파일
+  volumes:
    - /Users/hong/dumps/docker/parking:/docker-entrypoint-initdb.d
   command:
     - --character-set-server=utf8mb4
@@ -16,7 +16,27 @@ services:              #컨테이너 정의
    MYSQL_DATABASE: parking
    MYSQL_PASSWORD: 1234
    TZ: Asia/Seoul
+ 
+ chrome:
+    image: selenium/node-chrome:4.0.0-beta-4-prerelease-20210604
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "6900:5900"
 
+ selenium-hub:
+    image: selenium/hub:4.0.0-beta-4-prerelease-20210604
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
  parking-service:
   container_name: parking-service
   build:
