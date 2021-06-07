@@ -8,7 +8,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.Setter;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.URL;
 import java.util.List;
 
 @Setter
@@ -16,13 +18,14 @@ public class PageCrawler {
 	protected WebDriver driver;
 	protected String driverName;
 	protected String driverPath;
+	protected final String HOST_URL = "https://selenium-hub:4444/wd/hub";
 	public void setupChromeDriver()  {
 //	      System.setProperty(driverName, driverPath);
 		WebDriver driver = null;
 
 		try {
 
-  			WebDriverManager.chromedriver().setup();
+//  			WebDriverManager.chromedriver().setup();
 //	  		List<String> list = WebDriverManager.chromedriver().getDriverVersions();
 	  		ChromeOptions options = new ChromeOptions();
 	  		options.addArguments("--window-size=1920,1080");
@@ -32,8 +35,10 @@ public class PageCrawler {
 
 			options.setProxy(null);
 			options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-			options.addArguments("--start-maximized");
-			driver = new ChromeDriver(options);
+
+
+//			driver = new ChromeDriver(options);
+			driver = new RemoteWebDriver(new URL(HOST_URL), options);
 		} catch(Exception e) {
 			
 		}
