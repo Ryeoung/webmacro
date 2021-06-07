@@ -23,12 +23,12 @@ public class PageCrawler {
 		try {
 
   			WebDriverManager.chromedriver().setup();
-	  		List<String> list = WebDriverManager.chromedriver().getDriverVersions();
+//	  		List<String> list = WebDriverManager.chromedriver().getDriverVersions();
 	  		ChromeOptions options = new ChromeOptions();
 	  		options.addArguments("--window-size=1920,1080");
-	  		options.addArguments("--headless");
-	  		options.addArguments("--disable-gpu"); // gpu 가속 끄
-			options.addArguments("User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4044.122 Safari/537.36");
+//	  		options.addArguments("--headless");
+//	  		options.addArguments("--disable-gpu"); // gpu 가속 끄
+//			options.addArguments("User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4044.122 Safari/537.36");
 
 			options.setProxy(null);
 			options.setPageLoadStrategy(PageLoadStrategy.EAGER);
