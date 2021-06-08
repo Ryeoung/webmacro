@@ -40,7 +40,7 @@ public class PageCrawler {
 //			driver = new ChromeDriver(options);
 			driver = new RemoteWebDriver(new URL(HOST_URL), options);
 		} catch(Exception e) {
-			
+			e.printStackTrace();
 		}
 	      this.driver = driver;
 	}
