@@ -18,11 +18,16 @@ services:
    TZ: Asia/Seoul
  
  chrome:
-    image: selenium/node-chrome-debug
+    image: selenium/node-chrome
     depends_on:
       - selenium-hub
     environment:
       - HUB_HOST=selenium-hub
+      - HUB_PORT_4444_TCP_PORT=4444
+      - NODE_MAX_SESSION=4
+      - NODE_MAX_INSTANCES=4
+      - TZ=Asia/Seoul
+
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
@@ -41,7 +46,7 @@ services:
       - "6901:5900"
 
  firefox:
-    image: selenium/node-firefox-debug
+    image: selenium/node-firefox
     depends_on:
       - selenium-hub
     environment:
