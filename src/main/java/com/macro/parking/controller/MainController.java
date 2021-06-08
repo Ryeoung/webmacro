@@ -3,6 +3,7 @@ package com.macro.parking.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,7 +76,7 @@ public class MainController {
 	@GetMapping("/apply/cars")
 	public List<CarInfoDto> getApplyParkingTicket() {
 		List<CarInfoDto> carList = null;
-	
+
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
 		if(parkingInfos.size() > 0 ) {
 			pageCrawlerService.applyParkingTickets(parkingInfos);			
