@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Component("iptimeApplyPage")
 public class TicketApplyPage extends BasePage {
@@ -51,9 +52,8 @@ public class TicketApplyPage extends BasePage {
         List<WebElement> appliedTickets = this.driver.findElements(this.appliedTicketExp);
         if(appliedTickets.size() > 0) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
     public void waitForApplyCarNumTab(String carNum) {
         By targetCarNumExp = this.targetCarNumExp;
@@ -83,16 +83,21 @@ public class TicketApplyPage extends BasePage {
         }
     }
 
-    public void waitForApplyTicket() {
-        TicketApplyPage ticketApplyPage = this;
+    private void waitForApplyTicket() {
+        By appliedTicketExp = this.appliedTicketExp;
         this.wait.until(new ExpectedCondition<Boolean>() {
             @NullableDecl
             @Override
-            public Boolean apply(@NullableDecl WebDriver input) {
-                return ticketApplyPage.isExitAppliedTicket();
+            public Boolean apply(@NullableDecl WebDriver driver) {
+                List<WebElement> appliedTickets = driver.findElements(appliedTicketExp);
+                if(appliedTickets.size() > 0) {
+                    return true;
+                }
+                return false;
             }
         });
     }
+
 
     public boolean isSimilarTicketName(String t1, String t2) {
         if(t1.equals(t2) ||

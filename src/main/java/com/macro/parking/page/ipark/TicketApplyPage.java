@@ -100,10 +100,12 @@ public class TicketApplyPage extends BasePage{
 			@Override
 			public Boolean apply(WebDriver input) {
                 List<WebElement> emptyCheck = driver.findElements(emptyTicketList);
-				if(emptyCheck.size() == 0) {
-					return false;
+                //주차권이 있으면
+                if(emptyCheck.size() == 0) {
+					return true;
 				}
-                return true;
+
+                return false;
 			}
 		});
 
