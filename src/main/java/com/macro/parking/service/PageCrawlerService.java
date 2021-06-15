@@ -8,6 +8,7 @@ import java.util.List;
 import com.macro.parking.crawler.IptimePageCrawler;
 import com.macro.parking.crawler.PageCrawler;
 import com.macro.parking.enums.WebSite;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -120,7 +121,7 @@ public class PageCrawlerService {
 		PageCrawler pageCrawler = null;
 		if(WebSite.IPARK.isEqual(url)) {
 			pageCrawler = this.applyTicketToIpark(list, parkingLot);
-		} else {
+		} else if(WebSite.IPTIME.isEqual(url)) {
 			pageCrawler = this.applyTicketToIptime(list, parkingLot);
 		}
 
