@@ -5,8 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.macro.parking.crawler.IptimePageCrawler;
-import com.macro.parking.crawler.PageCrawler;
+import com.macro.parking.crawler.*;
 import com.macro.parking.enums.WebSite;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
-import com.macro.parking.crawler.IParkingPageCralwer;
-import com.macro.parking.crawler.ModuPageCrawler;
-
 
 
 @Service
@@ -41,6 +37,9 @@ public class PageCrawlerService {
 	
 	@Autowired
 	ParkingTicketService parkingTicketService;
+
+	@Autowired
+	AminoPageCrawler aminoPageCrawler;
 	
 	@Autowired
 	CarService carService;
@@ -123,6 +122,10 @@ public class PageCrawlerService {
 			pageCrawler = this.applyTicketToIpark(list, parkingLot);
 		} else if(WebSite.IPTIME.isEqual(url)) {
 			pageCrawler = this.applyTicketToIptime(list, parkingLot);
+		} else if(WebSite.아미노.isEqual(url)){
+			pageCrawler = this.applyTicketToAmino(list, parkingLot);
+		} else {
+			return;
 		}
 
 		pageCrawler.quit();
@@ -146,9 +149,16 @@ public class PageCrawlerService {
 		iparkPageCrawler.load(parkingLot.getWebsite());
 		iparkPageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
 		iparkPageCrawler.applyParkingTicket(list);
-
-		iparkPageCrawler.quit();
 		return iparkPageCrawler;
+	}
+
+	private PageCrawler applyTicketToAmino(List<ParkingInfo> list, ParkingLot parkingLot) {
+		System.out.println(parkingLot.getName());
+		aminoPageCrawler.setupChromeDriver();
+		aminoPageCrawler.load(parkingLot.getWebsite());
+		aminoPageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
+		aminoPageCrawler.applyParkingTicket(list);
+		return aminoPageCrawler;
 	}
 	
 }

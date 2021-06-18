@@ -90,7 +90,7 @@ public class IParkingPageCralwer extends PageCrawler{
 					this.carSearchPage.clickChoiceCarBtn();
 					
 					this.ticketApplyPage.load(parkingInfo.getParkingTicket().getWebName());
-					if(!this.ticketApplyPage.isHavingMyTicket()) {
+					if(this.ticketApplyPage.isHavingMyTicket()) {
 						//해당 차량의 주차권이 이미 존재하는 경우 
                         parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
 					} else {

@@ -2,7 +2,8 @@ package com.macro.parking.enums;
 
 public enum WebSite {
     IPARK("iparking"),
-    IPTIME("iptime");
+    IPTIME("iptime"),
+    아미노("211.218.0.250");
 
     String url;
 

@@ -42,7 +42,6 @@ public class MainController {
 	@Autowired
 	MapUtils mapUtils;
 
-	@ResponseBody
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo() {
 		List<ParkingInfo > parkingInfos = parkingInfoService.findAllByToday();
@@ -54,6 +53,7 @@ public class MainController {
 	public List<CarInfoDto> getCarsBylast() {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 //		System.out.println(parkingInfo.getCar().getNumber());
+
 		List<ParkingInfo> parkingInfos  = pageCrawlerService.getParkingTicketReservation(parkingInfo);
 		List<CarInfoDto> carList  = mapUtils.convertAllToDto(parkingInfos);
 		parkingInfoService.addAllTicket(parkingInfos);

@@ -38,11 +38,11 @@ public class TicketApplyPage extends BasePage{
 		
         List<WebElement> emptyCheck = this.driver.findElements(this.emptyMyDcList);
         if(emptyCheck.size() == 0) {
-        	System.out.println("주차권 없음 ");
-        	return false;
+        	System.out.println("주차권 있음 ");
+        	return true;
         } 
-        System.out.println("주차권 있음 ");
-        return true;
+        System.out.println("주차권 없음 ");
+        return false;
 	}
 	
 	public boolean buyParkingTicket() throws InterruptedException {
