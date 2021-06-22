@@ -23,7 +23,7 @@ public class PageCrawler {
 		WebDriver driver = null;
 
 		try {
-			WebDriverManager.chromedriver().setup();
+//			WebDriverManager.chromedriver().setup();
 	  		ChromeOptions options = new ChromeOptions();
 	  		options.addArguments("--window-size=1920,1080");
 	  		//도커 컨테이너에서 크롬 드라이브를 사용 시 /dev/shm 메모리가 부족해서 사용하지 않는 다고 표시
@@ -38,8 +38,8 @@ public class PageCrawler {
 			options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 
 
-			driver = new ChromeDriver(options);
-//			driver = new RemoteWebDriver(new URL(HOST_URL), options);
+//			driver = new ChromeDriver(options);
+			driver = new RemoteWebDriver(new URL(HOST_URL), options);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
