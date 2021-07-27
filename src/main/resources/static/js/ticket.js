@@ -14,6 +14,7 @@ export class Ticket{
 
         this.pushTicketBtn = document.getElementById("pushTicket");
         this.getTicketBtn = document.getElementById("getTicket");
+        this.repushTicketBtnb = document.getElementById("repushTicket");
         this.checkCards = Array.from(this.checkList.children);
 
         this.addClickEventToGetNewTickectBtn();
@@ -205,5 +206,13 @@ export class Ticket{
         this.checkList.innerHTML = "";
         this.tab.checkCntElmt.innerHTML = 0;
         this.makeCardOfCar(data);
+    }
+
+    addClickEventToRepushTickectBtn() {
+        ajax({
+           url : "/parking/api/apply/error/car",
+            method : "GET",
+            contentType : "application/json; charset=utf-8"
+        }, this.clickEventOfPushTicketSuccess.bind(this));
     }
 }

@@ -47,12 +47,16 @@ public class ParkingInfoService {
 		}
 		return oldParkingInfo;
 	}
-	public List<ParkingInfo> findAllWillCrawling() {
+	public List<ParkingInfo> findAllWillCrawling(StatusCodeType codeType) {
 		List<StatusCodeType> appFlags = new ArrayList<>();
-		appFlags.add(StatusCodeType.NO_CAR_ERROR);
-		appFlags.add(StatusCodeType.NOT_WORKING);
-		appFlags.add(StatusCodeType.SELENIUM_ERROR);
-		
+		if (codeType == null) {
+			appFlags.add(StatusCodeType.NO_CAR_ERROR);
+			appFlags.add(StatusCodeType.NOT_WORKING);
+			appFlags.add(StatusCodeType.SELENIUM_ERROR);
+		} else {
+			appFlags.add(codeType);
+		}
+
 		return parkingInfoDao.findByAppFlagInAndOrderTimeGreaterThanEqual(appFlags, getToday());
 	}
 	public ParkingInfo findEarlyParkingInfoByToday() {

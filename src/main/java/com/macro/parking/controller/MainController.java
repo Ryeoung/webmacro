@@ -3,13 +3,10 @@ package com.macro.parking.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-
+import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.utils.MapUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +47,7 @@ public class MainController {
 	}
 	
 	@GetMapping("/new/cars")
-	public List<CarInfoDto> getCarsBylast() {
+	public List<CarInfoDto> getCarsByRecent() {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 //		System.out.println(parkingInfo.getCar().getNumber());
 
@@ -75,17 +72,25 @@ public class MainController {
 	
 	@GetMapping("/apply/cars")
 	public List<CarInfoDto> getApplyParkingTicket() {
-		List<CarInfoDto> carList = null;
+		return applyParkingTicket(null);
+	}
 
-		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
+	@GetMapping("/apply/error/car")
+	public List<CarInfoDto> getApplyErrorParkingTicket() {
+		return applyParkingTicket(StatusCodeType.SELENIUM_ERROR);
+	}
+
+	public List<CarInfoDto> applyParkingTicket(StatusCodeType codeType) {
+		List<CarInfoDto> carList = null;
+		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling(codeType);
+
 		if(parkingInfos.size() > 0 ) {
-			pageCrawlerService.applyParkingTickets(parkingInfos);			
+			pageCrawlerService.applyParkingTickets(parkingInfos);
 			carList  = mapUtils.convertAllToDto(parkingInfos);
-			
+
 		} else {
 			carList = new ArrayList<CarInfoDto>();
 		}
-		
 		System.out.println(carList.size());
 		return carList;
 	}
