@@ -23,9 +23,10 @@ export class Ticket{
         this.checkCards = Array.from(this.checkList.children);
 
         this.progressBar = new ProgressBar(template, templateParser);
+
         this.addClickEventToGetNewTickectBtn();
         this.addClickEventToPushTicketBtn();
-        // this.addClickEventToRepushTickectBtn();
+        this.addClickEventToRepushTicketBtn();
 
         this.ticketStatusCode = {
             OK : "ok",
@@ -145,6 +146,9 @@ export class Ticket{
             return status;
         } else if(status === this.ticketStatusCode.SELENIUM_ERROR) {
             stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
+            let card = stateNode.parentElement.parentElement;
+            card.className += " serror";
+
         } else if(status === this.ticketStatusCode.OK) {
             stateNode.innerHTML = "주차확인 필요";
             return status;
@@ -193,7 +197,7 @@ export class Ticket{
     }
  
     
-    clickEventHandlerAboutCheckTicket(event, changed){
+    clickEventHandlerAboutCheckTicket(event, changeStatus){
     	let btn = event.currentTarget;
     	let card = btn.parentElement.parentElement;
     	let parkingInfoId = Number(card.dataset.id);
@@ -204,7 +208,7 @@ export class Ticket{
     	this.tab.updateTicketCnt(ticketCnt);
 
     	card.parentNode.removeChild(card);
-    	let appFlag = changed;
+    	let appFlag = changeStatus;
     	
     	ajax({
             url : `/parking/api/ticket/${parkingInfoId}`,
@@ -239,7 +243,6 @@ export class Ticket{
 
     clickEventHandlerAboutPushTicket(event) {
         let parkingLotDict = this.getParkingLotOfTicket(this.checkCards);
-        // progress bar setting
         let parkingLotCnt = Object.keys(parkingLotDict).length;
         if(parkingLotCnt === 0) {
             return;
@@ -250,11 +253,8 @@ export class Ticket{
 
         this.progressBar.popupProgressModal();
         this.requestPushTicketByParkingLot();
-        let totalResponseData = [];
-
-        // this.finishPushAllTickets(totalResponseData);
-
     }
+
     requestPushTicketByParkingLot() {
         let nextPushParkingLot = this.progressBar.getNextPushParkingLot();
         if(nextPushParkingLot === null) {
@@ -277,6 +277,8 @@ export class Ticket{
         cards.forEach((card) => {
             let childNode = Array.from(card.children);
             let parkingLotName = childNode[1].innerText;
+
+
             let cardId = card.dataset.id;
             if(!parkingLotDict[parkingLotName]) {
                 parkingLotDict[parkingLotName] = {
@@ -293,15 +295,36 @@ export class Ticket{
 
         return parkingLotDict;
     }
+    getSeleniumErrorCardObjects(parkingLotName = null) {
+        let seleniumErrorCards = document.getElementsByClassName("serror");
+        let cardObjects = [];
 
+        seleniumErrorCards.forEach( card => {
+            let parkingLotNameOfCurCard = Array.from(card.children)[4].innerText;
+            if(parkingLotName === null && parkingLotName === parkingLotNameOfCurCard) {
+                let cardObject = {}
+                cardObject[card.dataset.id] = card;
+                cardObjects.push(cardObject);
+            }
+        })
 
-    // addClickEventToRepushTickectBtn() {
-    //     this.repushTicketBtn.addEventListener("click", () => {
-    //         ajax({
-    //             url : "/parking/api/apply/error/car",
-    //             method : "GET",
-    //             contentType : "application/json; charset=utf-8"
-    //         }, this.clickEventOfPushTicketSuccess.bind(this));
-    //     });
+        return cardObjects;
+    }
+
+    addClickEventToRepushTicketBtn() {
+        let seleniumErrorCardsObject = this.getSeleniumErrorCardObjects();
+        if(seleniumErrorCardsObject.length <= 0) {
+            return;
+        }
+
+        this.repushTicketBtn.addEventListener("click", () => {
+            ajax({
+                url : "/parking/api/apply/error/car",
+                method : "GET",
+                contentType : "application/json; charset=utf-8"
+            }, (parkingInfos) => {
+                this.changeCardsFromParkingInfos(seleniumErrorCardsObject, parkingInfos);
+            });
+        });
 
 }
