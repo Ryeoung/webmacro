@@ -9,6 +9,9 @@
 </head>
 <body>
         <div class="container">
+			<div id = "alertMessageContainer">
+				<h4 class="totalProgressLabel"></h4>
+			</div>
 	         <div id="searchContainer">
 	            <div class="searchInputArea">
 	                <input type="text" id="searchInput" autocomplete="off">
@@ -59,7 +62,9 @@
 				<button class="modalCloseBtn">x</button>
 			</div>
 			<div class="modalTitle">
-				<h4 id="totalProgressLabel"><span></span>주차권 넣는 중....</h4>
+				<div>
+					<h4 class="totalProgressLabel"></h4>
+				</div>
 				<progress class="totalProgress pushTickets" max="100"></progress>
 			</div>
 		</div>

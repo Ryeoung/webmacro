@@ -4,13 +4,15 @@ export class ProgressBar {
     constructor(template, templateParser) {
         this.modal = document.getElementsByClassName("modal")[0];
         this.closeBtn = document.getElementsByClassName("modalCloseBtn")[0];
-        this.label =document.querySelector("#totalProgressLabel > span")
+        this.labels =document.querySelectorAll(".totalProgressLabel");
+        this.alertMessageBar = document.getElementById("alertMessageContainer");
         this.template = template;
         this.templateParser = templateParser;
 
 
         this.totalProgressBar = document.getElementsByClassName("totalProgress")[0];
         this.addClickEventAboutCloseBtn();
+        this.addClickEventAboutAlertMessage();
 
         this.willPushParkingLotObject = {}
         this.willPushParkingLotKeys = [];
@@ -27,14 +29,31 @@ export class ProgressBar {
     addClickEventAboutCloseBtn() {
         this.closeBtn.addEventListener("click", () => {
             this.modal.style.display = "none";
-        })
+            if(!this.isFinishOfProgress()) {
+                this.alertMessageBar.style.display = "flex";
+            } else {
+                this.alertMessageBar.style.display = "none";
+            }
+        });
+    }
+
+    addClickEventAboutAlertMessage(){
+        this.alertMessageBar.addEventListener("click", () => {
+            this.alertMessageBar.style.display = "none";
+            this.popupProgressModal();
+        });
+    }
+
+    isFinishOfProgress() {
+        if(this.nextPushTicketIdx >= this.willPushParkingLotKeys.length) {
+            return true;
+        }
     }
 
     setParkingLotObject (parkingLotDict = {}){
         this.willPushParkingLotObject = parkingLotDict;
         this.willPushParkingLotKeys = Object.keys(parkingLotDict);
         this.totalTicketCnt = this.getTotalTicketCnt(parkingLotDict);
-
     }
 
     getTotalTicketCnt(parkingLotDict = {}) {
@@ -46,10 +65,17 @@ export class ProgressBar {
     }
 
     getNextPushParkingLot() {
-        if(this.nextPushTicketIdx >= this.willPushParkingLotKeys.length) {
+        if(this.isFinishOfProgress()) {
             return null;
         }
         let key = this.willPushParkingLotKeys[this.nextPushTicketIdx++];
         return this.willPushParkingLotObject[key];
+    }
+
+
+    changeLabelText(comment = "") {
+        this.labels.forEach(label => {
+            label.textContent = comment;
+        });
     }
 }

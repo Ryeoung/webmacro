@@ -250,6 +250,7 @@ export class Ticket{
         this.progressBar.setParkingLotObject(parkingLotDict);
         this.progressBar.totalProgressBar.max =  this.progressBar.totalTicketCnt;
         this.progressBar.totalProgressBar.value = 0;
+        this.progressBar.nextPushTicketIdx = 0;
 
         this.progressBar.popupProgressModal();
         this.requestPushTicketByParkingLot();
@@ -258,9 +259,11 @@ export class Ticket{
     requestPushTicketByParkingLot() {
         let nextPushParkingLot = this.progressBar.getNextPushParkingLot();
         if(nextPushParkingLot === null) {
+            this.progressBar.changeLabelText(`주차권 발권 완료 `);
             return;
         }
-        this.progressBar.label.innerHTML = nextPushParkingLot.name;
+        this.progressBar.changeLabelText(`${nextPushParkingLot.name} 주차권 발권 중 .... `);
+
         ajax({
             url : `/parking/api/apply/parkingLot/${nextPushParkingLot.name}`,
             method : "GET",
@@ -299,7 +302,7 @@ export class Ticket{
         let seleniumErrorCards = document.getElementsByClassName("serror");
         let cardObjects = [];
 
-        seleniumErrorCards.forEach( card => {
+        Array.from(seleniumErrorCards).forEach( card => {
             let parkingLotNameOfCurCard = Array.from(card.children)[4].innerText;
             if(parkingLotName === null && parkingLotName === parkingLotNameOfCurCard) {
                 let cardObject = {}
@@ -326,5 +329,5 @@ export class Ticket{
                 this.changeCardsFromParkingInfos(seleniumErrorCardsObject, parkingInfos);
             });
         });
-
+    }
 }
