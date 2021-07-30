@@ -3,6 +3,7 @@ package com.macro.parking.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.macro.parking.enums.StatusCodeType;
@@ -41,7 +42,7 @@ public class MainController {
 
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo() {
-		List<ParkingInfo > parkingInfos = parkingInfoService.findAllByToday();
+		List<ParkingInfo> parkingInfos = parkingInfoService.findAllByToday();
 		System.out.println(parkingInfos.size());
 		return mapUtils.convertAllToDto(parkingInfos);
 	}
@@ -49,15 +50,14 @@ public class MainController {
 	@GetMapping("/new/cars")
 	public List<CarInfoDto> getCarsByRecent() {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
-//		System.out.println(parkingInfo.getCar().getNumber());
 
 		List<ParkingInfo> parkingInfos  = pageCrawlerService.getParkingTicketReservation(parkingInfo);
-		List<CarInfoDto> carList  = mapUtils.convertAllToDto(parkingInfos);
-		parkingInfoService.addAllTicket(parkingInfos);
+		parkingInfos = parkingInfoService.addAllTicket(parkingInfos);
 
+
+		List<CarInfoDto> carList  = mapUtils.convertAllToDto(parkingInfos);
 		System.out.println(carList.size());
 		return carList;
-//		return new ArrayList<CarInfoDto>();
 	}
 	
 	@GetMapping("/search")
@@ -72,17 +72,35 @@ public class MainController {
 	
 	@GetMapping("/apply/cars")
 	public List<CarInfoDto> getApplyParkingTicket() {
-		return applyParkingTicket(null);
+		return applyParkingTicket(null, null);
 	}
 
 	@GetMapping("/apply/error/car")
 	public List<CarInfoDto> getApplyErrorParkingTicket() {
-		return applyParkingTicket(StatusCodeType.SELENIUM_ERROR);
+		return applyParkingTicket(StatusCodeType.SELENIUM_ERROR, null);
 	}
 
-	public List<CarInfoDto> applyParkingTicket(StatusCodeType codeType) {
+
+	@GetMapping("/apply/parkingLot/{parkingLotName}")
+	public List<CarInfoDto> getApplyErrorParkingTicket(@PathVariable String parkingLotName) {
+		ParkingLot parkingLot = parkingLotService.findByName(parkingLotName);
+		System.out.println(parkingLot);
+		List<ParkingTicket> parkingTickets = parkingTicketService.findByParkingLot(parkingLot);
+		for(ParkingTicket pt: parkingTickets) {
+			System.out.println(pt);
+		}
+		return applyParkingTicket(null, parkingTickets);
+	}
+
+	public List<CarInfoDto> applyParkingTicket(StatusCodeType codeType, List<ParkingTicket> parkingTickets) {
 		List<CarInfoDto> carList = null;
-		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling(codeType);
+		List<ParkingInfo> parkingInfos = null;
+		if(parkingTickets == null) {
+			parkingInfos = parkingInfoService.findAllWillCrawling(codeType);
+		} else {
+			parkingInfos = parkingInfoService.findAllWillCrawling(codeType, parkingTickets);
+		}
+
 
 		if(parkingInfos.size() > 0 ) {
 			pageCrawlerService.applyParkingTickets(parkingInfos);
@@ -94,15 +112,14 @@ public class MainController {
 		System.out.println(carList.size());
 		return carList;
 	}
-	
+
+
 	@PutMapping("/ticket/{parkingInfoId}")
-	public List<CarInfoDto> checkTicket(@PathVariable int parkingInfoId, @RequestBody ParkingInfo parkingInfo) {
+	public CarInfoDto checkTicket(@PathVariable int parkingInfoId, @RequestBody ParkingInfo parkingInfo) {
 		ParkingInfo newParkingInfo = parkingInfoService.findByParkingInfoId(parkingInfoId);
 		newParkingInfo.setAppFlag(parkingInfo.getAppFlag());
 		parkingInfoService.updateParkingInfo(newParkingInfo);
 		CarInfoDto carInfoDto = mapUtils.convertToDto(newParkingInfo);
-		return Arrays.asList(carInfoDto);
-		
+		return carInfoDto;
 	}
-
 }

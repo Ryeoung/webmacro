@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel ="stylesheet" type="text/css" href="/parking/resources/css/style.css">
-    <title>자동화 작업</title>
+	<link rel ="stylesheet" type="text/css" href="/parking/resources/css/modal.css">
+	<title>자동화 작업</title>
 </head>
 <body>
         <div class="container">
@@ -52,6 +53,17 @@
         	<div class="cardList tabContent" id = "cancel">
         	</div>
     </div>
+	<div class="modal">
+		<div class="modalContent">
+			<div class="modalClose">
+				<button class="modalCloseBtn">x</button>
+			</div>
+			<div class="modalTitle">
+				<h4 id="totalProgressLabel"><span></span>주차권 넣는 중....</h4>
+				<progress class="totalProgress pushTickets" max="100"></progress>
+			</div>
+		</div>
+	</div>
 </body>
 <script src= "/parking/resources/js/lib/handlebars.min-v4.7.2.js"></script>
 <script type="module" src="/parking/resources/js/app.js"></script>

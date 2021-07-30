@@ -48,6 +48,17 @@ public class ParkingInfoService {
 		return oldParkingInfo;
 	}
 	public List<ParkingInfo> findAllWillCrawling(StatusCodeType codeType) {
+		List<StatusCodeType> appFlags = this.getStatusCodeTypeOfWillCrawling(codeType);
+		return parkingInfoDao.findByAppFlagInAndOrderTimeGreaterThanEqual(appFlags, getToday());
+	}
+
+	public List<ParkingInfo> findAllWillCrawling(StatusCodeType codeType, List<ParkingTicket> parkingTickets) {
+		List<StatusCodeType> appFlags = this.getStatusCodeTypeOfWillCrawling(codeType);
+
+		return parkingInfoDao.findByAppFlagInAndParkingTicketInAndOrderTimeGreaterThanEqual(appFlags,parkingTickets, getToday());
+	}
+
+	public List<StatusCodeType> getStatusCodeTypeOfWillCrawling(StatusCodeType codeType) {
 		List<StatusCodeType> appFlags = new ArrayList<>();
 		if (codeType == null) {
 			appFlags.add(StatusCodeType.NO_CAR_ERROR);
@@ -57,7 +68,7 @@ public class ParkingInfoService {
 			appFlags.add(codeType);
 		}
 
-		return parkingInfoDao.findByAppFlagInAndOrderTimeGreaterThanEqual(appFlags, getToday());
+		return appFlags;
 	}
 	public ParkingInfo findEarlyParkingInfoByToday() {
 		return parkingInfoDao.findTopByOrderTimeGreaterThanEqual(getToday());

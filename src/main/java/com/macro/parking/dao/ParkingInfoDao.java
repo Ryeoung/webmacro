@@ -18,6 +18,7 @@ public interface ParkingInfoDao extends JpaRepository<ParkingInfo, Long>{
 	ParkingInfo findByParkingInfoId(int parkingInfoId);
 	
 	List<ParkingInfo> findByAppFlagInAndOrderTimeGreaterThanEqual(List<StatusCodeType> appFlags, LocalDateTime cur);
+	List<ParkingInfo> findByAppFlagInAndParkingTicketInAndOrderTimeGreaterThanEqual(List<StatusCodeType> appFlags,List<ParkingTicket> parkingTickets, LocalDateTime cur);
 	List<ParkingInfo> findByOrderTimeGreaterThanEqual(LocalDateTime cur);
 	List<ParkingInfo> findByOrderTimeGreaterThanEqualAndParkingTicketInOrCar_NumberLike(LocalDateTime cur, List<ParkingTicket> parkingTickets, String carNumber);
 

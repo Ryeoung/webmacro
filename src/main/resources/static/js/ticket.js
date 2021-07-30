@@ -4,6 +4,11 @@ import template from "./template.js";
 
 import templateParser from "./templateParser.js";
 
+
+import {
+    ProgressBar
+} from "./progressBar.js";
+
 export class Ticket{
     constructor(tab) {
         this.checkList = document.getElementById("check");
@@ -14,13 +19,24 @@ export class Ticket{
 
         this.pushTicketBtn = document.getElementById("pushTicket");
         this.getTicketBtn = document.getElementById("getTicket");
-        this.repushTicketBtnb = document.getElementById("repushTicket");
+        this.repushTicketBtn = document.getElementById("repushTicket");
         this.checkCards = Array.from(this.checkList.children);
 
+        this.progressBar = new ProgressBar(template, templateParser);
         this.addClickEventToGetNewTickectBtn();
         this.addClickEventToPushTicketBtn();
-        
+        // this.addClickEventToRepushTickectBtn();
 
+        this.ticketStatusCode = {
+            OK : "ok",
+            SELENIUM_ERROR : "fail01",
+            NO_CAR_ERROR : "fail02",
+            TICKET_EXIST_ERROR : "fail03",
+            NOT_WORKING : "noting",
+            CHECK_TICKET : "check",
+            CANCEL : "cancel"
+
+        }
     }
     
     
@@ -29,7 +45,7 @@ export class Ticket{
             url : "/parking/api/cars",
             method : "GET",
             contentType : "application/json; charset=utf-8"
-        }, this.makeCardOfCar.bind(this));
+        }, this.attachCards.bind(this));
         
     }
     
@@ -41,7 +57,7 @@ export class Ticket{
             data : word
         },(data) => {
         	this.deleteAllTicketList();
-        	this.makeCardOfCar(data);
+        	this.attachCards(data);
         });
     }
     
@@ -57,86 +73,116 @@ export class Ticket{
          this.tab.cancelCntElmt.innerHTML = 0;
     }
     
-    makeCardOfCar(data) {
+    attachCards(data) {
         let carInfos = data;
         let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);
         let cards = templateParser.stringToElement(resultHTML);
-        let ticketCnt = {
-    			check: 0,
-    			checked: 0,
-    			ready: 0,
-    			cancel: 0
-        };
         
-        cards.childNodes.forEach(card => {
-        	this.moveCardAboutCode(card , ticketCnt);
-        });
-        
-        this.tab.updateTicketCnt(ticketCnt);
+        this.makeCards(cards);
         
         this.checkCards = Array.from(this.checkList.children);
     }
 
-    
-    moveCardAboutCode(card, ticketCnt){
-    	const OK = "ok";
-        const SELENIUM_ERROR = "fail01";
-        const NO_CAR_ERROR = "fail02";
-        const TICKET_EXIST_ERROR = "fail03";
-        const NOT_WORKING = "noting"
-        const CHECK_TICKET = "check";
-        const CANCEL = "cancel";
+    makeCards(cards) {
+        cards.childNodes.forEach(card => {
+            let childNodeOfCard = Array.from(card.children);
+            let cardStatus = this.makeCard(childNodeOfCard, null)
+            this.moveCardFromTabToTab(card, cardStatus);
+        });
+    }
 
-    	let cardData = {};
-        
-        let childNode = Array.from(card.children);
-        let checkBtn = childNode[5].children[0];
-        let deleteBtn = childNode[5].children[1];
-        
+    changeCardsFromParkingInfos(cardsObject, parkingInfos) {
+        parkingInfos.forEach(parkingInfo => {
+            let card = cardsObject[parkingInfo.parkingInfoId];
+            this.changeCardFromParkingInfo(card, parkingInfo);
+        });
+    }
+
+    changeCardFromParkingInfo(card, parkingInfo) {
+        let childNodeOfCard = Array.from(card.children);
+        let cardStatus = this.makeCard(childNodeOfCard, parkingInfo.code);
+        this.moveCardFromTabToTab(card, cardStatus);
+    }
+
+    moveCardFromTabToTab(card, cardStatus) {
+        let ticketCnt = {
+            check: 0,
+            checked: 0,
+            ready: 0,
+            cancel: 0
+        };
+
+        this.moveCardAboutCode(card , cardStatus,  ticketCnt);
+        this.tab.updateTicketCnt(ticketCnt);
+    }
+
+    makeCard(childNodeOfCard, statusData) {
+        let checkBtn = childNodeOfCard[5].children[0];
+        let deleteBtn = childNodeOfCard[5].children[1];
+
         checkBtn.addEventListener("click", (event) => {
-        	this.clickEventHandlerAboutCheckTicket(event, {appFlag : 'CHECK_TICKET'});
+            this.clickEventHandlerAboutCheckTicket(event, {appFlag : 'CHECK_TICKET'});
         });
         deleteBtn.addEventListener("click", (event) => {
-        	this.clickEventHandlerAboutCheckTicket(event, {appFlag : 'CANCEL'});
+            this.clickEventHandlerAboutCheckTicket(event, {appFlag : 'CANCEL'});
         });
-        
-        let stateNode = childNode[4];
+        let status = ""
+        let stateNode = childNodeOfCard[4];
 
-        let status = stateNode.innerHTML;
-        if(status === TICKET_EXIST_ERROR) {
+        if(statusData) {
+            status = statusData;
+        } else {
+            status = stateNode.innerHTML;
+        }
+
+        if(status === this.ticketStatusCode.TICKET_EXIST_ERROR) {
             stateNode.innerHTML = "주차권이 이미 존재";
             this.hideBtn(deleteBtn);
+            return status;
+        } else if(status == this.ticketStatusCode.CHECK_TICKET) {
+            stateNode.innerHTML = "주차 완료";
+            this.hideBtn(checkBtn, deleteBtn);
+            return status;
+        } else if(status === this.ticketStatusCode.SELENIUM_ERROR) {
+            stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
+        } else if(status === this.ticketStatusCode.OK) {
+            stateNode.innerHTML = "주차확인 필요";
+            return status;
+        } else if(status === this.ticketStatusCode.NO_CAR_ERROR) {
+            stateNode.innerHTML = "차가 아직 안 왔습니다.";
+        } else if(status == this.ticketStatusCode.NOT_WORKING) {
+            stateNode.innerHTML = "";
+        } else if(status == this.ticketStatusCode.CANCEL) {
+            stateNode.innerHTML = "취소";
+            this.hideBtn(deleteBtn, checkBtn);
+            return status;
+        }
+
+        return status;
+    }
+
+    moveCardAboutCode(card, status, ticketCnt){
+        if(status === this.ticketStatusCode.TICKET_EXIST_ERROR) {
             ticketCnt.checked += 1;
             this.checkedList.prepend(card);
-            return;
-        } else if(status == CHECK_TICKET) {
-        	stateNode.innerHTML = "주차 완료";
-        	this.hideBtn(checkBtn, deleteBtn);
+            return ;
+        } else if(status == this.ticketStatusCode.CHECK_TICKET) {
         	ticketCnt.checked += 1;
         	this.checkedList.prepend(card);
-            return;
-        } else if(status === SELENIUM_ERROR) {
-            stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
-        } else if(status === OK) {
-            stateNode.innerHTML = "주차확인 필요";
+            return ;
+        } else if(status === this.ticketStatusCode.OK) {
             ticketCnt.ready += 1;
             this.readyToCheckList.prepend(card);
-            return;
-        } else if(status === NO_CAR_ERROR) {
-        	stateNode.innerHTML = "차가 아직 안 왔습니다.";
-        } else if(status == NOT_WORKING) {
-        	stateNode.innerHTML = "";
-        } else if(status == CANCEL) {
-        	stateNode.innerHTML = "취소";
-            this.hideBtn(deleteBtn, checkBtn);
+            return ;
+        }  else if(status == this.ticketStatusCode.CANCEL) {
             ticketCnt.cancel += 1;
             this.cancelList.prepend(card);
-            return;
+            return ;
         }
-        
-       
-        ticketCnt.check += 1;
-        this.checkList.prepend(card);
+        if(!card.parentElement) {
+            ticketCnt.check += 1;
+            this.checkList.prepend(card);
+        }
     }
     
     hideBtn(...btns){
@@ -153,8 +199,8 @@ export class Ticket{
     	let parkingInfoId = Number(card.dataset.id);
 
     	let ticketCnt = {};
-    	ticketCnt[card.parentNode.getAttribute("id")] = -1;
-    	
+    	let tabId = card.parentNode.getAttribute("id");
+    	ticketCnt[tabId] = -1;
     	this.tab.updateTicketCnt(ticketCnt);
 
     	card.parentNode.removeChild(card);
@@ -165,26 +211,23 @@ export class Ticket{
             method : "PUT",
             contentType : "application/json; charset=utf-8",
             data : appFlag
-        }, this.makeCardOfCar.bind(this));
-        
+        }, (parkingInfo) => {
+            this.changeCardFromParkingInfo(card, parkingInfo);
+    	});
     }
    
 
     addClickEventToGetNewTickectBtn() {
-    	this.getTicketBtn.addEventListener("click", 
-    			this.clickEventhandlerAboutGetNewTicket.bind(this));
+    	this.getTicketBtn.addEventListener("click",
+            this.getNewTicket.bind(this));
     }
-    
-    clickEventhandlerAboutGetNewTicket() {
-    	this.getNewTicket();
-    }
-        
+
     getNewTicket(){
     	ajax({
             url : `/parking/api/new/cars`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
-        }, this.makeCardOfCar.bind(this));
+        }, this.attachCards.bind(this));
     }
 
     
@@ -195,24 +238,70 @@ export class Ticket{
     }
 
     clickEventHandlerAboutPushTicket(event) {
+        let parkingLotDict = this.getParkingLotOfTicket(this.checkCards);
+        // progress bar setting
+        let parkingLotCnt = Object.keys(parkingLotDict).length;
+        if(parkingLotCnt === 0) {
+            return;
+        }
+        this.progressBar.setParkingLotObject(parkingLotDict);
+        this.progressBar.totalProgressBar.max =  this.progressBar.totalTicketCnt;
+        this.progressBar.totalProgressBar.value = 0;
+
+        this.progressBar.popupProgressModal();
+        this.requestPushTicketByParkingLot();
+        let totalResponseData = [];
+
+        // this.finishPushAllTickets(totalResponseData);
+
+    }
+    requestPushTicketByParkingLot() {
+        let nextPushParkingLot = this.progressBar.getNextPushParkingLot();
+        if(nextPushParkingLot === null) {
+            return;
+        }
+        this.progressBar.label.innerHTML = nextPushParkingLot.name;
         ajax({
-            url : "/parking/api/apply/cars",
+            url : `/parking/api/apply/parkingLot/${nextPushParkingLot.name}`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
-        }, this.clickEventOfPushTicketSuccess.bind(this));
+        }, (parkingInfos) => {
+            this.progressBar.totalProgressBar.value += nextPushParkingLot.count;
+            this.changeCardsFromParkingInfos(nextPushParkingLot.elmts, parkingInfos);
+            this.requestPushTicketByParkingLot();
+        });
+
+    }
+    getParkingLotOfTicket(cards) {
+        let parkingLotDict = {};
+        cards.forEach((card) => {
+            let childNode = Array.from(card.children);
+            let parkingLotName = childNode[1].innerText;
+            let cardId = card.dataset.id;
+            if(!parkingLotDict[parkingLotName]) {
+                parkingLotDict[parkingLotName] = {
+                    name : parkingLotName,
+                    count : 1,
+                    elmts : {}
+                };
+            } else {
+                parkingLotDict[parkingLotName].count += 1;
+            }
+            parkingLotDict[parkingLotName].elmts[cardId] = card;
+
+        });
+
+        return parkingLotDict;
     }
 
-    clickEventOfPushTicketSuccess(data) {
-        this.checkList.innerHTML = "";
-        this.tab.checkCntElmt.innerHTML = 0;
-        this.makeCardOfCar(data);
-    }
 
-    addClickEventToRepushTickectBtn() {
-        ajax({
-           url : "/parking/api/apply/error/car",
-            method : "GET",
-            contentType : "application/json; charset=utf-8"
-        }, this.clickEventOfPushTicketSuccess.bind(this));
-    }
+    // addClickEventToRepushTickectBtn() {
+    //     this.repushTicketBtn.addEventListener("click", () => {
+    //         ajax({
+    //             url : "/parking/api/apply/error/car",
+    //             method : "GET",
+    //             contentType : "application/json; charset=utf-8"
+    //         }, this.clickEventOfPushTicketSuccess.bind(this));
+    //     });
+
 }
