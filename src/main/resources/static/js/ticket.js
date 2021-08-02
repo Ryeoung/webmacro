@@ -93,17 +93,6 @@ export class Ticket{
     }
 
     changeCardsFromParkingInfos(cardsObject, parkingInfos) {
-        // 발권할 주차권에 발권된 주차권을 뺀다.....
-        // 만약 해당 차량이 없어서 주차권이 발권되 지 않아도 뺀다. 이후에 주차권이 move할 때 다시 더해주기 때문에
-        let ticketCnt = {
-            check: 0,
-            checked: -parkingInfos.length,
-            ready: 0,
-            cancel: 0
-        };
-        
-        this.tab.updateTicketCnt(ticketCnt);
-
         parkingInfos.forEach(parkingInfo => {
             let card = cardsObject[parkingInfo.parkingInfoId];
             this.changeCardFromParkingInfo(card, parkingInfo);
@@ -113,17 +102,21 @@ export class Ticket{
     changeCardFromParkingInfo(card, parkingInfo) {
         let childNodeOfCard = Array.from(card.children);
         let cardStatus = this.makeCard(childNodeOfCard, parkingInfo.code);
-        this.moveCardFromTabToTab(card, cardStatus);
-    }
-
-    moveCardFromTabToTab(card, cardStatus) {
+        // 발권할 주차권에 발권된 주차권을 뺀다.....
+        // 만약 해당 차량이 없어서 주차권이 발권되 지 않아도 뺀다. 이후에 주차권이 move할 때 다시 더해주기 때문에
         let ticketCnt = {
-            check: 0,
+            check: -1,
             checked: 0,
             ready: 0,
             cancel: 0
         };
+        this.moveCardFromTabToTab(card, cardStatus, ticketCnt);
+    }
 
+    moveCardFromTabToTab(card, cardStatus, ticketCnt = {   check: 0,
+                                                                checked: 0,
+                                                                ready: 0,
+                                                                cancel: 0 }) {
         this.moveCardAboutCode(card , cardStatus,  ticketCnt);
         this.tab.updateTicketCnt(ticketCnt);
     }
@@ -195,9 +188,9 @@ export class Ticket{
             return ;
         }
         if(!card.parentElement) {
-            ticketCnt.check += 1;
             this.checkList.prepend(card);
         }
+        ticketCnt.check += 1;
     }
     
     hideBtn(...btns){
