@@ -146,7 +146,7 @@ export class Ticket{
             return status;
         } else if(status === this.ticketStatusCode.SELENIUM_ERROR) {
             stateNode.innerHTML = "해당 티켓에 관한 시스템 에러가 발생";
-            let card = stateNode.parentElement.parentElement;
+            let card = stateNode.parentElement;
             card.className += " serror";
 
         } else if(status === this.ticketStatusCode.OK) {
@@ -304,7 +304,7 @@ export class Ticket{
 
         Array.from(seleniumErrorCards).forEach( card => {
             let parkingLotNameOfCurCard = Array.from(card.children)[4].innerText;
-            if(parkingLotName === null && parkingLotName === parkingLotNameOfCurCard) {
+            if(parkingLotName === null || parkingLotName === parkingLotNameOfCurCard) {
                 let cardObject = {}
                 cardObject[card.dataset.id] = card;
                 cardObjects.push(cardObject);
@@ -315,12 +315,12 @@ export class Ticket{
     }
 
     addClickEventToRepushTicketBtn() {
-        let seleniumErrorCardsObject = this.getSeleniumErrorCardObjects();
-        if(seleniumErrorCardsObject.length <= 0) {
-            return;
-        }
-
         this.repushTicketBtn.addEventListener("click", () => {
+            let seleniumErrorCardsObject = this.getSeleniumErrorCardObjects();
+            if(seleniumErrorCardsObject.length <= 0) {
+                return;
+            }
+
             ajax({
                 url : "/parking/api/apply/error/car",
                 method : "GET",
