@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel ="stylesheet" type="text/css" href="/parking/resources/css/style.css">
-	<link rel ="stylesheet" type="text/css" href="/parking/resources/css/modal.css">
+    <link rel ="stylesheet" type="text/css" href="/parking/resources/main/css/style.css">
+	<link rel ="stylesheet" type="text/css" href="/parking/resources/main/css/modal.css">
 	<title>자동화 작업</title>
 </head>
 <body>
-        <div class="container">
+	<div id= "sheepContainer" data-include-path = "/parking/resources/sheep/index.html"></div>
+	<div id="gradientBorder"></div>
+	<div class="container">
 			<div id = "alertMessageContainer">
 				<h4 class="totalProgressLabel"></h4>
 			</div>
@@ -70,6 +72,6 @@
 		</div>
 	</div>
 </body>
-<script src= "/parking/resources/js/lib/handlebars.min-v4.7.2.js"></script>
-<script type="module" src="/parking/resources/js/app.js"></script>
+<script src= "/parking/resources/main/js/lib/handlebars.min-v4.7.2.js"></script>
+<script type="module" src="/parking/resources/main/js/app.js"></script>
 </html>

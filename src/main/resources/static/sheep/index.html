@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sheep</title>
-    <link rel="stylesheet" type = "text/css" href = "style.css">
+    <link rel="stylesheet" type = "text/css" href = "/parking/resources/sheep/css/style.css">
 </head>
 <body>
-    <script type="module" src="app.js"></script>
+    <canvas></canvas>
 </body>
+<script type="module">
+    import {
+        SheepApp
+    } from '/parking/resources/sheep/js/app.js';
+
+    new SheepApp();
+</script>
 </html>

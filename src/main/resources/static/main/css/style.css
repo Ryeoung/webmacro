@@ -183,6 +183,19 @@ button:hover{
     cursor: pointer;
 }
 
+#sheepContainer {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    background-color: #ffcaec;
+}
+#gradientBorder{
+    width: 100%;
+    height: 40px;
+    background-image: linear-gradient(to bottom, #ff4674, #ffffff);
+}
+
+
 .ticketBtn{
     background-color:black;
     border-color: black;

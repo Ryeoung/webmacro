@@ -8,13 +8,12 @@ import {
 
 import {
     Sun
-} from './sun.js';
+} from '../sun.js';
 
-class App {
+export class SheepApp {
     constructor() {
-        this.canvas = document.createElement('canvas');
+        this.canvas = document.getElementsByTagName("canvas")[0];
         this.ctx = this.canvas.getContext('2d');
-        document.body.appendChild(this.canvas);
         this.sun = new Sun();
         
         this.hills = [
@@ -32,8 +31,8 @@ class App {
     }
 
     resize() {
-        this.stageWidth = document.body.clientWidth;
-        this.stageHeight = document.body.clientHeight;
+        this.stageWidth = this.canvas.parentElement.clientWidth;
+        this.stageHeight = this.canvas.parentElement.clientHeight;
 
         //레티나 디스플레이는 픽셀이 2배
         this.canvas.width = this.stageWidth * 2;
@@ -63,6 +62,6 @@ class App {
 
 }
 
-window.onload = () => {
-    new App();
-}
+// window.onload = () => {
+//     new App();
+// }

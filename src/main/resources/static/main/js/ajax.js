@@ -8,7 +8,7 @@ export default function ajax(request, callback) {
 	const INTERNAL_SERVER_ERROR = 500;
 	const BAD_REQUEST =400;
 	const UNAUTHORIZED_ERROR = 401;
-	
+	const JSON_CONTEXT_TYPE = "application/json; charset=utf-8";
 	if (typeof callback !== "function") {
 		alert("callback(이/가) 함수가 아닙니다.");
 		return;
@@ -18,7 +18,13 @@ export default function ajax(request, callback) {
 	xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState === DONE) {
-			let data = JSON.parse(this.responseText);
+			let data;
+			if(request.contentType === JSON_CONTEXT_TYPE) {
+				data = JSON.parse(this.responseText);
+			} else {
+				data = this.responseText;
+			}
+
 			if (xhttp.status === OK) {
 				callback(data);
 			} else if (xhttp.status === NOT_FOUND || xhttp.status === INTERNAL_SERVER_ERROR || xhttp.status === BAD_REQUEST){

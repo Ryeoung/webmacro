@@ -1,16 +1,11 @@
-import ajax from "./ajax.js";
-
 import template from "./template.js";
-
-import templateParser from "./templateParser.js";
-
 
 import {
     ProgressBar
 } from "./progressBar.js";
 
 export class Ticket{
-    constructor(tab) {
+    constructor(tab, ajax, templateParser) {
         this.checkList = document.getElementById("check");
         this.checkedList = document.getElementById("checked");
         this.readyToCheckList = document.getElementById("ready");
@@ -21,6 +16,9 @@ export class Ticket{
         this.getTicketBtn = document.getElementById("getTicket");
         this.repushTicketBtn = document.getElementById("repushTicket");
         this.checkCards = Array.from(this.checkList.children);
+
+        this.ajax = ajax;
+        this.templateParser = templateParser;
 
         this.progressBar = new ProgressBar(template, templateParser);
 
@@ -42,7 +40,7 @@ export class Ticket{
     
     
     requestTickesOfToday() {
-        ajax({
+        this.ajax({
             url : "/parking/api/cars",
             method : "GET",
             contentType : "application/json; charset=utf-8"
@@ -51,7 +49,7 @@ export class Ticket{
     }
     
     requestTicketsOfSearchWord(word) {
-    	ajax({
+    	this.ajax({
             url : `/parking/api/search?word=${word}`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
@@ -76,8 +74,8 @@ export class Ticket{
     
     attachCards(data) {
         let carInfos = data;
-        let resultHTML = templateParser.getResultHTML(template.cardTemplate, carInfos);
-        let cards = templateParser.stringToElement(resultHTML);
+        let resultHTML = this.templateParser.getResultHTML(template.cardTemplate, carInfos);
+        let cards = this.templateParser.stringToElement(resultHTML);
         
         this.makeCards(cards);
         
@@ -214,7 +212,7 @@ export class Ticket{
     	card.parentNode.removeChild(card);
     	let appFlag = changeStatus;
     	
-    	ajax({
+    	this.ajax({
             url : `/parking/api/ticket/${parkingInfoId}`,
             method : "PUT",
             contentType : "application/json; charset=utf-8",
@@ -231,7 +229,7 @@ export class Ticket{
     }
 
     getNewTicket(){
-    	ajax({
+    	this.ajax({
             url : `/parking/api/new/cars`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
@@ -270,7 +268,7 @@ export class Ticket{
         }
         this.progressBar.changeLabelText(`${nextPushParkingLot.name} 주차권 발권 중 .... `);
 
-        ajax({
+        this.ajax({
             url : `/parking/api/apply/parkingLot/${nextPushParkingLot.name}`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
