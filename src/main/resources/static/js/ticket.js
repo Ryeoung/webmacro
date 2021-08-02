@@ -236,13 +236,15 @@ export class Ticket{
 
     
     addClickEventToPushTicketBtn(){
-        this.pushTicketBtn.addEventListener("click", 
-        this.clickEventHandlerAboutPushTicket.bind(this));
+        this.pushTicketBtn.addEventListener("click", () => {
+                let parkingLotDict = this.getParkingLotOfTicket(this.checkCards);
+                this.pushTicketsByParkingLotDict(parkingLotDict);
+            }
+        );
     
     }
 
-    clickEventHandlerAboutPushTicket(event) {
-        let parkingLotDict = this.getParkingLotOfTicket(this.checkCards);
+    pushTicketsByParkingLotDict(parkingLotDict = {}) {
         let parkingLotCnt = Object.keys(parkingLotDict).length;
         if(parkingLotCnt === 0) {
             return;
@@ -298,36 +300,28 @@ export class Ticket{
 
         return parkingLotDict;
     }
-    getSeleniumErrorCardObjects(parkingLotName = null) {
-        let seleniumErrorCards = document.getElementsByClassName("serror");
-        let cardObjects = [];
+    getSeleniumErrorCards(parkingLotName = null) {
+        let seleniumErrorCards = Array.from(document.getElementsByClassName("serror"));
+        if( parkingLotName === null) {
+            return seleniumErrorCards;
+        }
 
+        let cards = [];
         Array.from(seleniumErrorCards).forEach( card => {
             let parkingLotNameOfCurCard = Array.from(card.children)[4].innerText;
-            if(parkingLotName === null || parkingLotName === parkingLotNameOfCurCard) {
-                let cardObject = {}
-                cardObject[card.dataset.id] = card;
-                cardObjects.push(cardObject);
+            if(parkingLotName === parkingLotNameOfCurCard) {
+                cards.push(card);
             }
-        })
+        });
 
-        return cardObjects;
+        return cards;
     }
 
     addClickEventToRepushTicketBtn() {
         this.repushTicketBtn.addEventListener("click", () => {
-            let seleniumErrorCardsObject = this.getSeleniumErrorCardObjects();
-            if(seleniumErrorCardsObject.length <= 0) {
-                return;
-            }
-
-            ajax({
-                url : "/parking/api/apply/error/car",
-                method : "GET",
-                contentType : "application/json; charset=utf-8"
-            }, (parkingInfos) => {
-                this.changeCardsFromParkingInfos(seleniumErrorCardsObject, parkingInfos);
-            });
+            let seleniumErrorCards = this.getSeleniumErrorCards();
+            let parkingLotDict = this.getParkingLotOfTicket(seleniumErrorCards);
+            this.pushTicketsByParkingLotDict(parkingLotDict);
         });
     }
 }
