@@ -87,7 +87,7 @@ public class ReservationPage extends BasePage{
 	public void waitForNextPageLoad() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd\nHH:mm:ss");
 		String reservationTimeStr = this.firstDataOfPage.getOrderTime().format(formatter);
-		this.waitForTextToDisappear(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr[1]/td[2]/div/span/a"), reservationTimeStr);
+		this.waitForTextToDisappear(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/td[1]/div/span"), reservationTimeStr);
 	}
 	
 	public void clickPageBtnByPageNum(int pageNum) {
@@ -143,7 +143,7 @@ public class ReservationPage extends BasePage{
 	public ParkingInfo convertReservationElmtToCarInfoDto( int rowIdx) {
 
         By txtReservationTime = By.xpath(this.rowXPathExp  + "["+(rowIdx + 1) +"]"+"/td[1]/div/span");
-        By txtParkingLot = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[2]/div/span/a");
+        By txtParkingLot = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[2]/div/a");
         By txtCarNum = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[3]/div/span");
         By txtParkingTicketName = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[4]/div[2]/div[1]/span");
         

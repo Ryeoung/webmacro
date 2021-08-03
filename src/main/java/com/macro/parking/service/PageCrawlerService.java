@@ -1,9 +1,6 @@
 package com.macro.parking.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import com.macro.parking.crawler.*;
 import com.macro.parking.enums.WebSite;
@@ -49,19 +46,31 @@ public class PageCrawlerService {
 			moduPageCrawler.load();
    			moduPageCrawler.login();
 			List<ParkingInfo> parkingInfos = moduPageCrawler.getParkingTicketData(lastParkingInfo);
-			parkingInfos.forEach(parkingInfo -> this.getParkingTicketAndCar(parkingInfo));
 			moduPageCrawler.quit();
-			return parkingInfos;
+
+		List<ParkingInfo> resultParkingInfos = new LinkedList<>();
+
+			parkingInfos.forEach((parkingInfo) -> {
+				if(this.getParkingTicketAndCar(parkingInfo)) {
+					resultParkingInfos.add(parkingInfo);
+				}
+			});
+
+			return resultParkingInfos;
 	}
-   	public void getParkingTicketAndCar(ParkingInfo parkingInfo) {
+   	public boolean getParkingTicketAndCar(ParkingInfo parkingInfo) {
    		String carNum = parkingInfo.getCar().getNumber();
-   		
    		Car car = carService.findByNumber(carNum);
+
+   		if(parkingInfo.getParkingTicket().getAppName().equals("월정기권")) {
+   			return false;
+		}
 
 		if(car == null) {
 			car = carService.addCar(parkingInfo.getCar());
 		}
 		ParkingLot parkingLot = parkingLotService.findByName(parkingInfo.getParkingTicket().getParkingLot().getName());
+
 		System.out.println(parkingLot);
 		ParkingTicket parkingTicket = parkingTicketService.findByAppNameAndParkingLot(parkingInfo.getParkingTicket().getAppName(),  parkingLot);
 		if(parkingTicket == null) {
@@ -69,6 +78,8 @@ public class PageCrawlerService {
 		}
 		parkingInfo.setCar(car);
 		parkingInfo.setParkingTicket(parkingTicket);
+
+		return true;
    	}
    	
    	

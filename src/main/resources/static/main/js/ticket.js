@@ -44,7 +44,7 @@ export class Ticket{
             url : "/parking/api/cars",
             method : "GET",
             contentType : "application/json; charset=utf-8"
-        }, this.attachCards.bind(this));
+        }, this.makeCards.bind(this));
         
     }
     
@@ -56,7 +56,7 @@ export class Ticket{
             data : word
         },(data) => {
         	this.deleteAllTicketList();
-        	this.attachCards(data);
+        	this.makeCards(data);
         });
     }
     
@@ -72,43 +72,44 @@ export class Ticket{
          this.tab.cancelCntElmt.innerHTML = 0;
     }
     
-    attachCards(data) {
+    makeCards(data) {
         let carInfos = data;
         let resultHTML = this.templateParser.getResultHTML(template.cardTemplate, carInfos);
         let cards = this.templateParser.stringToElement(resultHTML);
         
-        this.makeCards(cards);
+        this.makeCardElements(cards);
         
         this.checkCards = Array.from(this.checkList.children);
     }
 
-    makeCards(cards) {
+    makeCardElements(cards) {
         cards.childNodes.forEach(card => {
-            let childNodeOfCard = Array.from(card.children);
-            let cardStatus = this.makeCard(childNodeOfCard, null)
-            this.moveCardFromTabToTab(card, cardStatus);
+            this.updateCardElement(card);
         });
     }
 
-    changeCardsFromParkingInfos(cardsObject, parkingInfos) {
-        parkingInfos.forEach(parkingInfo => {
-            let card = cardsObject[parkingInfo.parkingInfoId];
-            this.changeCardFromParkingInfo(card, parkingInfo);
-        });
-    }
-
-    changeCardFromParkingInfo(card, parkingInfo) {
-        let childNodeOfCard = Array.from(card.children);
-        let cardStatus = this.makeCard(childNodeOfCard, parkingInfo.code);
-        // 발권할 주차권에 발권된 주차권을 뺀다.....
-        // 만약 해당 차량이 없어서 주차권이 발권되 지 않아도 뺀다. 이후에 주차권이 move할 때 다시 더해주기 때문에
+    updateCardElement(card, statusData = null) {
+        let cardStatus = this.makeChildrenElementsOfCard(card, statusData);
         let ticketCnt = {
-            check: -1,
+            check: 0,
             checked: 0,
             ready: 0,
             cancel: 0
         };
+
+        if(card.parentElement) {
+            let cardListId = card.parentElement.id;
+            ticketCnt[cardListId] = -1;
+        }
+
         this.moveCardFromTabToTab(card, cardStatus, ticketCnt);
+    }
+
+    changeCardsElementsByParkingInfos(cardsObject, parkingInfos) {
+        parkingInfos.forEach(parkingInfo => {
+            let card = cardsObject[parkingInfo.parkingInfoId];
+            this.updateCardElement(card, parkingInfo.code);
+        });
     }
 
     moveCardFromTabToTab(card, cardStatus, ticketCnt = {   check: 0,
@@ -119,7 +120,9 @@ export class Ticket{
         this.tab.updateTicketCnt(ticketCnt);
     }
 
-    makeCard(childNodeOfCard, statusData) {
+    makeChildrenElementsOfCard(card, statusData = null) {
+        let childNodeOfCard = Array.from(card.children);
+
         let checkBtn = childNodeOfCard[5].children[0];
         let deleteBtn = childNodeOfCard[5].children[1];
 
@@ -204,12 +207,7 @@ export class Ticket{
     	let card = btn.parentElement.parentElement;
     	let parkingInfoId = Number(card.dataset.id);
 
-    	let ticketCnt = {};
-    	let tabId = card.parentNode.getAttribute("id");
-    	ticketCnt[tabId] = -1;
-    	this.tab.updateTicketCnt(ticketCnt);
-
-    	card.parentNode.removeChild(card);
+    	// card.parentNode.removeChild(card);
     	let appFlag = changeStatus;
     	
     	this.ajax({
@@ -218,7 +216,7 @@ export class Ticket{
             contentType : "application/json; charset=utf-8",
             data : appFlag
         }, (parkingInfo) => {
-            this.changeCardFromParkingInfo(card, parkingInfo);
+            this.updateCardElement(card, parkingInfo);
     	});
     }
    
@@ -233,7 +231,7 @@ export class Ticket{
             url : `/parking/api/new/cars`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
-        }, this.attachCards.bind(this));
+        }, this.makeCards.bind(this));
     }
 
     
@@ -274,7 +272,7 @@ export class Ticket{
             contentType : "application/json; charset=utf-8",
         }, (parkingInfos) => {
             this.progressBar.totalProgressBar.value += nextPushParkingLot.count;
-            this.changeCardsFromParkingInfos(nextPushParkingLot.elmts, parkingInfos);
+            this.changeCardsElementsByParkingInfos(nextPushParkingLot.elmts, parkingInfos);
             this.requestPushTicketByParkingLot();
         });
 

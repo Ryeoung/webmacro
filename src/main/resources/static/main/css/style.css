@@ -164,17 +164,17 @@ button:hover{
     height:100px;
     justify-content: space-between;
 }
-.tabContainer, .cardList ,#searchContainer, #alertMessageContainer{
+.tabContainer, .cardList ,#searchContainer{
     width: 1100px;
 }
 
 #alertMessageContainer {
     display: none;
+    width: 100%;
     background: #1F85FF;
     color: white;
     position: fixed;
     height: 70px;
-    margin-top: -100px;
     justify-content: center;
     align-items: center;
     z-index: 1;
