@@ -216,7 +216,7 @@ export class Ticket{
             contentType : "application/json; charset=utf-8",
             data : appFlag
         }, (parkingInfo) => {
-            this.updateCardElement(card, parkingInfo);
+            this.updateCardElement(card, parkingInfo.code);
     	});
     }
    
