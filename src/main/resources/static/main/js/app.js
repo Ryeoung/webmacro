@@ -24,7 +24,7 @@ class App {
         this.sort = new Sort();
                 
         this.search = new Search(this.ticket);
-        this.ticket.requestTickesOfToday();
+        this.ticket.requestTicketsOfToday();
         this.addLoadSheepHtml();
     }
 

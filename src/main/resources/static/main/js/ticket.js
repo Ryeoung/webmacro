@@ -39,7 +39,7 @@ export class Ticket{
     }
     
     
-    requestTickesOfToday() {
+    requestTicketsOfToday() {
         this.ajax({
             url : "/parking/api/cars",
             method : "GET",
@@ -181,7 +181,7 @@ export class Ticket{
             return ;
         } else if(status === this.ticketStatusCode.OK) {
             ticketCnt.ready += 1;
-            this.readyToCheckList.prepend(card);
+            this.readyToCheckList.append(card);
             return ;
         }  else if(status == this.ticketStatusCode.CANCEL) {
             ticketCnt.cancel += 1;
