@@ -227,11 +227,17 @@ export class Ticket{
     }
 
     getNewTicket(){
+        let loading = document.getElementById("loading");
+        loading.style.display = "flex";
+
     	this.ajax({
             url : `/parking/api/new/cars`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
-        }, this.makeCards.bind(this));
+        }, (data) => {
+    	    this.makeCards(data);
+            loading.style.display = "none";
+        });
     }
 
     
@@ -277,7 +283,7 @@ export class Ticket{
         });
 
     }
-    getParkingLotOfTicket(cards) {
+    getParkingLotOfTicket(cards = []) {
         let parkingLotDict = {};
         cards.forEach((card) => {
             let childNode = Array.from(card.children);
