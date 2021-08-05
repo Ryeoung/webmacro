@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.TicketApplyPageLoaded;
 
-@Component
+@Component("iparkApplyPage")
 public class TicketApplyPage extends BasePage{
 	String ticketXpathExp = "//*[@id=\"productList\"]/tr";
 	
@@ -38,11 +38,11 @@ public class TicketApplyPage extends BasePage{
 		
         List<WebElement> emptyCheck = this.driver.findElements(this.emptyMyDcList);
         if(emptyCheck.size() == 0) {
-        	System.out.println("주차권 없음 ");
-        	return false;
+        	System.out.println("주차권 있음 ");
+        	return true;
         } 
-        System.out.println("주차권 있음 ");
-        return true;
+        System.out.println("주차권 없음 ");
+        return false;
 	}
 	
 	public boolean buyParkingTicket() throws InterruptedException {
@@ -69,8 +69,9 @@ public class TicketApplyPage extends BasePage{
             	Thread.sleep(500);
     	    	this.javascriptExcutor.executeScript("document.querySelector('#productList > tr:nth-child("+ ticketIdx + ") > td:nth-child(3) > button').click()");
                 //최종 확인 pop 승락 2번
-                
-    	    	this.waitForElementToBeClickAble(this.confirmPopup).click();
+				Thread.sleep(500);
+				this.waitForElementToBeClickAble(this.confirmPopup).click();
+				this.waitForConfirm();
     	    	this.waitForElementToBeClickAble(this.successBuyTicketPopup).click();
                                 
                 this.waitForBuyTicket();
@@ -81,17 +82,30 @@ public class TicketApplyPage extends BasePage{
         
         return false;
 	}
-	
+
+	private void waitForConfirm() {
+		wait.until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver input) {
+				By confirmMessage = By.id("popMessage");
+				return driver.findElement(confirmMessage).getText().contains("적용되었습니다.");
+
+			}
+		});
+	}
+
 	public void waitForBuyTicket() {
 		By emptyTicketList = this.emptyMyDcList;
 		wait.until(new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver input) {
                 List<WebElement> emptyCheck = driver.findElements(emptyTicketList);
-				if(emptyCheck.size() == 0) {
-					return false;
+                //주차권이 있으면
+                if(emptyCheck.size() == 0) {
+					return true;
 				}
-                return true;
+
+                return false;
 			}
 		});
 

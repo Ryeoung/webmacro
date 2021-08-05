@@ -87,7 +87,7 @@ public class ReservationPage extends BasePage{
 	public void waitForNextPageLoad() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd\nHH:mm:ss");
 		String reservationTimeStr = this.firstDataOfPage.getOrderTime().format(formatter);
-		this.waitForTextToDisappear(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/tr[1]/td[2]/div/span/a"), reservationTimeStr);
+		this.waitForTextToDisappear(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/td[1]/div/span"), reservationTimeStr);
 	}
 	
 	public void clickPageBtnByPageNum(int pageNum) {
@@ -142,9 +142,8 @@ public class ReservationPage extends BasePage{
 	
 	public ParkingInfo convertReservationElmtToCarInfoDto( int rowIdx) {
 
-        CarInfoDto dto = new CarInfoDto();
         By txtReservationTime = By.xpath(this.rowXPathExp  + "["+(rowIdx + 1) +"]"+"/td[1]/div/span");
-        By txtParkingLot = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[2]/div/span/a");
+        By txtParkingLot = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[2]/div/a");
         By txtCarNum = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[3]/div/span");
         By txtParkingTicketName = By.xpath(this.rowXPathExp + "["+(rowIdx + 1) +"]"+"/td[4]/div[2]/div[1]/span");
         
@@ -155,20 +154,17 @@ public class ReservationPage extends BasePage{
         String dateTimeStr = reservationTimeElmt.getText().replaceAll("\\n", " ");
         LocalDateTime orderTime = LocalDateTime.parse(dateTimeStr,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        dto.setDate(orderTime);
        parkingInfo.setOrderTime(orderTime);
        
        //주차권
        String appName = this.waitForElementToAppear(txtParkingTicketName).getText();
-       dto.setAppTicketName(appName);
        ParkingTicket parkingTicket = new ParkingTicket();
        parkingTicket.setAppName(appName);
        parkingInfo.setParkingTicket(parkingTicket);
         
        //장소
         String parkingLotName = this.waitForElementToAppear(txtParkingLot).getText();
-        dto.setParkingLotName(parkingLotName);
-        
+
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName(parkingLotName);
         parkingInfo.getParkingTicket().setParkingLot(parkingLot);
@@ -178,7 +174,6 @@ public class ReservationPage extends BasePage{
         String carNum = carNums[0];
         Car car = new Car();
         car.setNumber(carNum);
-        dto.setCarNum(carNum);
         parkingInfo.setCar(car);
         parkingInfo.setAppFlag(StatusCodeType.NOT_WORKING);
         

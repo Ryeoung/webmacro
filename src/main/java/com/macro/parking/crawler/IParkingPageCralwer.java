@@ -12,7 +12,11 @@ import com.macro.parking.page.ipark.TicketApplyPage;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+@Component
 @Setter
 @Getter
 public class IParkingPageCralwer extends PageCrawler{
@@ -20,10 +24,10 @@ public class IParkingPageCralwer extends PageCrawler{
 	private final MainPage mainPage;
 	private final CarSearchPage carSearchPage;
 	private final TicketApplyPage ticketApplyPage;
-	
 
-	public IParkingPageCralwer(IParkLoginPage loginPage, MainPage mainPage, CarSearchPage carSearchPage,
-			TicketApplyPage ticketApplyPage) {
+	@Autowired
+	public IParkingPageCralwer(IParkLoginPage loginPage, @Qualifier("iparkMainPage") MainPage mainPage, CarSearchPage carSearchPage,
+							   @Qualifier("iparkApplyPage") TicketApplyPage ticketApplyPage) {
 		super();
 		this.loginPage = loginPage;
 		this.mainPage = mainPage;
@@ -86,7 +90,7 @@ public class IParkingPageCralwer extends PageCrawler{
 					this.carSearchPage.clickChoiceCarBtn();
 					
 					this.ticketApplyPage.load(parkingInfo.getParkingTicket().getWebName());
-					if(!this.ticketApplyPage.isHavingMyTicket()) {
+					if(this.ticketApplyPage.isHavingMyTicket()) {
 						//해당 차량의 주차권이 이미 존재하는 경우 
                         parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
 					} else {

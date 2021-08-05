@@ -1,10 +1,10 @@
 package com.macro.parking.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
+import com.macro.parking.crawler.*;
+import com.macro.parking.enums.WebSite;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +12,6 @@ import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
-import com.macro.parking.dto.CarInfoDto;
-import com.macro.parking.enums.StatusCodeType;
-import com.macro.parking.crawler.IParkingPageCralwer;
-import com.macro.parking.crawler.ModuPageCrawler;
-
 
 
 @Service
@@ -27,6 +22,9 @@ public class PageCrawlerService {
 	
 	@Autowired
 	IParkingPageCralwer iparkPageCrawler;
+
+	@Autowired
+	IptimePageCrawler iptimePageCrawler;
 	
 	@Autowired
 	ParkingLotService parkingLotService;
@@ -36,6 +34,9 @@ public class PageCrawlerService {
 	
 	@Autowired
 	ParkingTicketService parkingTicketService;
+
+	@Autowired
+	AminoPageCrawler aminoPageCrawler;
 	
 	@Autowired
 	CarService carService;
@@ -45,19 +46,31 @@ public class PageCrawlerService {
 			moduPageCrawler.load();
    			moduPageCrawler.login();
 			List<ParkingInfo> parkingInfos = moduPageCrawler.getParkingTicketData(lastParkingInfo);
-			parkingInfos.forEach(parkingInfo -> this.getParkingTicketAndCar(parkingInfo));
 			moduPageCrawler.quit();
-			return parkingInfos;
+
+		List<ParkingInfo> resultParkingInfos = new LinkedList<>();
+
+			parkingInfos.forEach((parkingInfo) -> {
+				if(this.getParkingTicketAndCar(parkingInfo)) {
+					resultParkingInfos.add(parkingInfo);
+				}
+			});
+
+			return resultParkingInfos;
 	}
-   	public void getParkingTicketAndCar(ParkingInfo parkingInfo) {
+   	public boolean getParkingTicketAndCar(ParkingInfo parkingInfo) {
    		String carNum = parkingInfo.getCar().getNumber();
-   		
    		Car car = carService.findByNumber(carNum);
+
+   		if(parkingInfo.getParkingTicket().getAppName().equals("월정기권")) {
+   			return false;
+		}
 
 		if(car == null) {
 			car = carService.addCar(parkingInfo.getCar());
 		}
 		ParkingLot parkingLot = parkingLotService.findByName(parkingInfo.getParkingTicket().getParkingLot().getName());
+
 		System.out.println(parkingLot);
 		ParkingTicket parkingTicket = parkingTicketService.findByAppNameAndParkingLot(parkingInfo.getParkingTicket().getAppName(),  parkingLot);
 		if(parkingTicket == null) {
@@ -65,21 +78,15 @@ public class PageCrawlerService {
 		}
 		parkingInfo.setCar(car);
 		parkingInfo.setParkingTicket(parkingTicket);
+
+		return true;
    	}
    	
    	
    	
 	
 	public void applyParkingTickets(List<ParkingInfo> parkingInfos){
-		List<ParkingInfo> sortedParkingInfo = new ArrayList<>(parkingInfos);
-		Collections.sort(sortedParkingInfo, new Comparator<ParkingInfo>() {
-
-			@Override
-			public int compare(ParkingInfo o1, ParkingInfo o2) {
-				return o1.getParkingTicket().getParkingLot().getName().
-						compareTo(o2.getParkingTicket().getParkingLot().getName());
-			}
-		});
+		List<ParkingInfo> sortedParkingInfo = this.sortByParkingLotName(parkingInfos);
 		
 		ParkingInfo pre = sortedParkingInfo.get(0);
 		ParkingInfo cur = null;
@@ -104,24 +111,65 @@ public class PageCrawlerService {
 		this.addTicketByParkingLot(subList);
 		
 	}
-	
+	public List<ParkingInfo> sortByParkingLotName(List<ParkingInfo> parkingInfos) {
+		List<ParkingInfo> sortedParkingInfo = new ArrayList<>(parkingInfos);
+		Collections.sort(sortedParkingInfo, new Comparator<ParkingInfo>() {
+
+			@Override
+			public int compare(ParkingInfo o1, ParkingInfo o2) {
+				return o1.getParkingTicket().getParkingLot().getName().
+						compareTo(o2.getParkingTicket().getParkingLot().getName());
+			}
+		});
+		return sortedParkingInfo;
+	}
 	private void addTicketByParkingLot(List<ParkingInfo> list) {
 		ParkingInfo parkingInfo = list.get(0);
-//		ParkingLot parkingLot = parkingLotService.findByName(carInfoDto.getParkingLotName());
 		ParkingLot parkingLot = parkingInfo.getParkingTicket().getParkingLot();
+		String url = parkingLot.getWebsite();
 
+		PageCrawler pageCrawler = null;
+		if(WebSite.IPARK.isEqual(url)) {
+			pageCrawler = this.applyTicketToIpark(list, parkingLot);
+		} else if(WebSite.IPTIME.isEqual(url)) {
+			pageCrawler = this.applyTicketToIptime(list, parkingLot);
+		} else if(WebSite.아미노.isEqual(url)){
+			pageCrawler = this.applyTicketToAmino(list, parkingLot);
+		} else {
+			return;
+		}
+
+		pageCrawler.quit();
+		parkingInfoService.updateAllParkingInfo(list);
+
+	}
+
+	private PageCrawler applyTicketToIptime(List<ParkingInfo> list, ParkingLot parkingLot) {
+		System.out.println(parkingLot.getName());
+		iptimePageCrawler.setupChromeDriver();
+		iptimePageCrawler.load(parkingLot.getWebsite());
+		iptimePageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
+		iptimePageCrawler.goToApplyTab();
+		iptimePageCrawler.applyTickets(list);
+		return iptimePageCrawler;
+   	}
+
+	private PageCrawler applyTicketToIpark(List<ParkingInfo> list, ParkingLot parkingLot) {
 		System.out.println(parkingLot.getName());
 		iparkPageCrawler.setupChromeDriver();
 		iparkPageCrawler.load(parkingLot.getWebsite());
 		iparkPageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
 		iparkPageCrawler.applyParkingTicket(list);
-		
-		//		
-//		crawler.addTicketByParkingLot(list, parkingLot.getWebId(), parkingLot.getWebPwd());
-//		List<ParkingInfo> parkingInfos = convertAllCarInfoDtoToParkingInfos(list);
-		parkingInfoService.updateAllParkingInfo(list);
-		iparkPageCrawler.quit();
-		
+		return iparkPageCrawler;
+	}
+
+	private PageCrawler applyTicketToAmino(List<ParkingInfo> list, ParkingLot parkingLot) {
+		System.out.println(parkingLot.getName());
+		aminoPageCrawler.setupChromeDriver();
+		aminoPageCrawler.load(parkingLot.getWebsite());
+		aminoPageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
+		aminoPageCrawler.applyParkingTicket(list);
+		return aminoPageCrawler;
 	}
 	
 }

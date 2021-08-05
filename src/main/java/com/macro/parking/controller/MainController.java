@@ -1,26 +1,15 @@
 package com.macro.parking.controller;
 
-import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-
-import org.modelmapper.ModelMapper;
+import com.macro.parking.enums.StatusCodeType;
+import com.macro.parking.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import com.macro.parking.domain.ParkingInfo;
@@ -33,6 +22,7 @@ import com.macro.parking.service.ParkingLotService;
 import com.macro.parking.service.ParkingTicketService;
 
 @RestController
+@CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RequestMapping("/api")
 public class MainController {
 	@Autowired
@@ -48,29 +38,24 @@ public class MainController {
 	PageCrawlerService pageCrawlerService;
 	
 	@Autowired
-	ModelMapper mapper;
-	
-	@ResponseBody
+	MapUtils mapUtils;
+
 	@GetMapping("/cars")
 	public List<CarInfoDto> getCarInfo() {
-		List<ParkingInfo > parkingInfos = parkingInfoService.findAllByToday();
+		List<ParkingInfo> parkingInfos = parkingInfoService.findAllByToday();
 		System.out.println(parkingInfos.size());
-		return parkingInfos.stream()
-				.map(p -> mapper.map(p, CarInfoDto.class))
-				.collect(Collectors.toList());
+		return mapUtils.convertAllToDto(parkingInfos);
 	}
 	
-	@ResponseBody
-	@GetMapping("/newcars")
-	public List<CarInfoDto> getCarsBylast() {
+	@GetMapping("/new/cars")
+	public List<CarInfoDto> getCarsByRecent() {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
 
 		List<ParkingInfo> parkingInfos  = pageCrawlerService.getParkingTicketReservation(parkingInfo);
-		List<CarInfoDto> carList  = parkingInfos.stream()
-							.map(p -> mapper.map(p, CarInfoDto.class))
-							.collect(Collectors.toList());
-		parkingInfoService.addAllTicket(parkingInfos);
-		
+		parkingInfos = parkingInfoService.addAllTicket(parkingInfos);
+
+
+		List<CarInfoDto> carList  = mapUtils.convertAllToDto(parkingInfos);
 		System.out.println(carList.size());
 		return carList;
 	}
@@ -82,39 +67,59 @@ public class MainController {
 		List<ParkingInfo> parkingInfos = parkingInfoService.findByParkingTicketAndCar(word, parkingTickets);
 		
 		System.out.println(parkingInfos.size());
-		return  parkingInfos.stream()
-				.map(p -> mapper.map(p, CarInfoDto.class))
-				.collect(Collectors.toList());		
+		return  mapUtils.convertAllToDto(parkingInfos);
 	}
 	
-	@PostMapping("/register")
-	public List<CarInfoDto> addTicket() {
-		
+	@GetMapping("/apply/cars")
+	public List<CarInfoDto> getApplyParkingTicket() {
+		return applyParkingTicket(null, null);
+	}
+
+	@GetMapping("/apply/error/car")
+	public List<CarInfoDto> getApplyErrorParkingTicket() {
+		return applyParkingTicket(StatusCodeType.SELENIUM_ERROR, null);
+	}
+
+
+	@GetMapping("/apply/parkingLot/{parkingLotName}")
+	public List<CarInfoDto> getApplyErrorParkingTicket(@PathVariable String parkingLotName) {
+		ParkingLot parkingLot = parkingLotService.findByName(parkingLotName);
+		System.out.println(parkingLot);
+		List<ParkingTicket> parkingTickets = parkingTicketService.findByParkingLot(parkingLot);
+		for(ParkingTicket pt: parkingTickets) {
+			System.out.println(pt);
+		}
+		return applyParkingTicket(null, parkingTickets);
+	}
+
+	public List<CarInfoDto> applyParkingTicket(StatusCodeType codeType, List<ParkingTicket> parkingTickets) {
 		List<CarInfoDto> carList = null;
-	
-		List<ParkingInfo> parkingInfos = parkingInfoService.findAllWillCrawling();
+		List<ParkingInfo> parkingInfos = null;
+		if(parkingTickets == null) {
+			parkingInfos = parkingInfoService.findAllWillCrawling(codeType);
+		} else {
+			parkingInfos = parkingInfoService.findAllWillCrawling(codeType, parkingTickets);
+		}
+
+
 		if(parkingInfos.size() > 0 ) {
-			pageCrawlerService.applyParkingTickets(parkingInfos);			
-			carList  = parkingInfos.stream()
-					.map(p -> mapper.map(p, CarInfoDto.class))
-					.collect(Collectors.toList());
-			
+			pageCrawlerService.applyParkingTickets(parkingInfos);
+			carList  = mapUtils.convertAllToDto(parkingInfos);
+
 		} else {
 			carList = new ArrayList<CarInfoDto>();
 		}
-		
 		System.out.println(carList.size());
 		return carList;
 	}
-	
+
+
 	@PutMapping("/ticket/{parkingInfoId}")
-	public List<CarInfoDto> checkTicket(@PathVariable int parkingInfoId, @RequestBody ParkingInfo parkingInfo) {
+	public CarInfoDto checkTicket(@PathVariable int parkingInfoId, @RequestBody ParkingInfo parkingInfo) {
 		ParkingInfo newParkingInfo = parkingInfoService.findByParkingInfoId(parkingInfoId);
 		newParkingInfo.setAppFlag(parkingInfo.getAppFlag());
 		parkingInfoService.updateParkingInfo(newParkingInfo);
-		CarInfoDto carInfoDto = mapper.map(newParkingInfo, CarInfoDto.class);
-		return Arrays.asList(carInfoDto);
-		
+		CarInfoDto carInfoDto = mapUtils.convertToDto(newParkingInfo);
+		return carInfoDto;
 	}
-
 }

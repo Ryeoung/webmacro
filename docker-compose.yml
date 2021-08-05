@@ -1,0 +1,85 @@
+version: "3.7"
+services:
+ mysql:
+  container_name: mysql
+  image: mysql:8.0.22
+  ports:
+   - "3306:3306"
+  volumes:
+   - ./init_sql:/docker-entrypoint-initdb.d
+   - ./sql:/var/lib/mysql
+  command:
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_unicode_ci
+  environment:
+   MYSQL_ROOT_PASSWORD: fbrjsgml_2
+   MYSQL_USER: admin
+   MYSQL_DATABASE: parking
+   MYSQL_PASSWORD: 1234
+   TZ: Asia/Seoul
+ 
+ chrome:
+    image: selenium/node-chrome-debug
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT_4444_TCP_PORT=4444
+      - NODE_MAX_SESSION=4
+      - NODE_MAX_INSTANCES=4
+      - TZ=Asia/Seoul
+
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "6900:5900"
+
+# edge:
+#    image: selenium/node-edge:91.0
+#    depends_on:
+#      - selenium-hub
+#    environment:
+#      - SE_EVENT_BUS_HOST=selenium-hub
+#      - SE_EVENT_BUS_PUBLISH_PORT=4442
+#      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+#    ports:
+#      - "6901:5900"
+
+# firefox:
+#    image: selenium/node-firefox
+#    depends_on:
+#      - selenium-hub
+#    environment:
+#      - SE_EVENT_BUS_HOST=selenium-hub
+#      - SE_EVENT_BUS_PUBLISH_PORT=4442
+#      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+#    ports:
+#      - "6902:5900"
+
+ selenium-hub:
+   image: selenium/hub
+   container_name: selenium-hub
+   ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+
+ parking-service:
+  container_name: parking-service
+  build:
+   context: .
+   dockerfile: Dockerfile
+  environment:
+   MYSQL_ADDRESS: mysql
+   MYSQL_USERNAME: admin
+   MYSQL_PASSWORD: 1234
+  ports:
+   - "8080:8080"
+  restart: always
+  links:
+   - mysql
+   - selenium-hub
+  depends_on:
+   - mysql
+   - selenium-hub

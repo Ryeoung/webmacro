@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel ="stylesheet" type="text/css" href="/parking/resources/css/style.css">
-    <title>자동화 작업</title>
+    <link rel ="stylesheet" type="text/css" href="/parking/resources/main/css/style.css">
+	<link rel ="stylesheet" type="text/css" href="/parking/resources/main/css/modal.css">
+	<title>자동화 작업</title>
 </head>
 <body>
-        <div class="container">
+	<div id = "alertMessageContainer">
+		<h4 class="totalProgressLabel"></h4>
+	</div>
+	<div id= "sheepContainer" data-include-path = "/parking/resources/sheep/index.html"></div>
+	<div id="gradientBorder"></div>
+	<div class="container">
 	         <div id="searchContainer">
 	            <div class="searchInputArea">
 	                <input type="text" id="searchInput" autocomplete="off">
@@ -19,8 +25,8 @@
 	        </div>
         	<div class="btnContainer">
         	     <button class="checkAllCar" id="getTicket">주차권 새로고침</button>
-            	<button class="checkAllCar" id="pushTicket">아이파크에 주차권 넣기</button>
-           		<button class="checkAllCar" id="checkTicket">주차권 선택하기</button>
+            	<button class="checkAllCar" id="pushTicket">차량에 주차권 넣기</button>
+           		<button class="checkAllCar" id="repushTicket">차량에 주차권 넣기(에러)</button>
         	</div>
         	<div class="tabContainer">
         		<div class="tabLink" data-tab-id="ready" id="defaultTab">현장 발권된 주차권(<span>0</span>)</div>
@@ -52,7 +58,20 @@
         	<div class="cardList tabContent" id = "cancel">
         	</div>
     </div>
+	<div class="modal">
+		<div class="modalContent">
+			<div class="modalClose">
+				<button class="modalCloseBtn">x</button>
+			</div>
+			<div class="modalTitle">
+				<div>
+					<h4 class="totalProgressLabel"></h4>
+				</div>
+				<progress class="totalProgress pushTickets" max="100"></progress>
+			</div>
+		</div>
+	</div>
 </body>
-<script src= "/parking/resources/js/lib/handlebars.min-v4.7.2.js"></script>
-<script type="module" src="/parking/resources/js/app.js"></script>
+<script src= "/parking/resources/main/js/lib/handlebars.min-v4.7.2.js"></script>
+<script type="module" src="/parking/resources/main/js/app.js"></script>
 </html>
