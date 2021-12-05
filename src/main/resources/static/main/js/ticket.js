@@ -39,7 +39,7 @@ export class Ticket{
     }
     
     
-    requestTickesOfToday() {
+    requestTicketsOfToday() {
         this.ajax({
             url : "/parking/api/cars",
             method : "GET",
@@ -181,7 +181,7 @@ export class Ticket{
             return ;
         } else if(status === this.ticketStatusCode.OK) {
             ticketCnt.ready += 1;
-            this.readyToCheckList.prepend(card);
+            this.readyToCheckList.append(card);
             return ;
         }  else if(status == this.ticketStatusCode.CANCEL) {
             ticketCnt.cancel += 1;
@@ -227,11 +227,17 @@ export class Ticket{
     }
 
     getNewTicket(){
+        let loading = document.getElementById("loading");
+        loading.style.display = "flex";
+
     	this.ajax({
             url : `/parking/api/new/cars`,
             method : "GET",
             contentType : "application/json; charset=utf-8",
-        }, this.makeCards.bind(this));
+        }, (data) => {
+    	    this.makeCards(data);
+            loading.style.display = "none";
+        });
     }
 
     
@@ -277,7 +283,7 @@ export class Ticket{
         });
 
     }
-    getParkingLotOfTicket(cards) {
+    getParkingLotOfTicket(cards = []) {
         let parkingLotDict = {};
         cards.forEach((card) => {
             let childNode = Array.from(card.children);

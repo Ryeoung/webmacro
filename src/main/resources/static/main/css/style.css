@@ -244,3 +244,49 @@ button:hover{
 h2{
 	margin: 20px 0 10px 0;
 }
+#loading{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#loadingLabel {
+    font-weight: 600;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+#loadingBox{
+    border-radius: 10%;
+    overflow: hidden;
+    min-width: 100px;
+    min-height: 100px;
+    height: 220px;
+    width: 220px;
+
+    background-color: black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+}
+
+#loadingImg{
+    width: 85%;
+    height: 85%;
+    object-fit: cover;
+
+}
