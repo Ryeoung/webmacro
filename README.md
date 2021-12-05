@@ -34,3 +34,8 @@
 - 오류난 주차권 처리
 - 차량, 주차권, 주차장 검색 기능
 
+## 사용한 기술
+- spring boot 2.4.4
+- hibernate 5.3.11
+- webdrivermanger 4.4.3 -> WebDriver를 자동 업데이트 하는 데 이용
+- selenium 3.141.59 -> 동적 크롤링 목적
