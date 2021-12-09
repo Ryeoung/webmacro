@@ -5,7 +5,6 @@ import java.util.List;
 
 
 import com.macro.parking.domain.ParkingInfo;
-import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.page.modu.ModuLoginPage;
 import com.macro.parking.page.modu.ReservationPage;
 

@@ -7,16 +7,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.domain.Car;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
-import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.modu.TicketReservationInfoPageLoaded;

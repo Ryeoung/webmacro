@@ -3,19 +3,16 @@ package com.macro.parking.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.macro.parking.dao.ParkingInfoDao;
 import com.macro.parking.domain.ParkingInfo;
 import com.macro.parking.domain.ParkingTicket;
-import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 
 @Service

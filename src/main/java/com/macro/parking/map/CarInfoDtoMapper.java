@@ -5,11 +5,11 @@ import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.domain.ParkingInfo;
-import com.macro.parking.dto.CarInfoDto;
+import com.macro.parking.dto.TicketDto;
 import com.macro.parking.enums.StatusCodeType;
 
 @Component
-public class CarInfoDtoMapper  extends PropertyMap<ParkingInfo, CarInfoDto>{
+public class CarInfoDtoMapper  extends PropertyMap<ParkingInfo, TicketDto>{
 
 	@Override
 	protected void configure() {

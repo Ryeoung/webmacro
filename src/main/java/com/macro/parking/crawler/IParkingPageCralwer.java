@@ -3,7 +3,6 @@ package com.macro.parking.crawler;
 import java.util.List;
 
 import com.macro.parking.domain.ParkingInfo;
-import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.page.ipark.CarSearchPage;
 import com.macro.parking.page.ipark.IParkLoginPage;
