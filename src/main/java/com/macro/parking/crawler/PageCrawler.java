@@ -19,6 +19,10 @@ public class PageCrawler {
 	protected String driverName;
 	protected String driverPath;
 	protected final String HOST_URL = "http://selenium-hub:4444/wd/hub";
+
+	/**
+	 *  웹 드라이버를 가져온다.
+	 */
 	public void setupChromeDriver()  {
 		WebDriver driver = null;
 
@@ -45,11 +49,17 @@ public class PageCrawler {
 		}
 	      this.driver = driver;
 	}
-	
+
+	/**
+	 * 웹 크롤링을 멉춘다.
+	 */
 	public void quit() {
 		this.driver.quit();
 	}
-	
+
+	/**
+	 * 웹 드라이버를  닫는다.
+	 */
 	public void close() {
 		this.driver.close();
 	}

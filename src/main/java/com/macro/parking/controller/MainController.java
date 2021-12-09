@@ -38,13 +38,21 @@ public class MainController {
 	@Autowired
 	MapUtils mapUtils;
 
+	/**
+	 * @return List<TicketDto>
+	 *
+	 *  오늘 예약 된 주차권을 모두 가져온다.
+	 */
 	@GetMapping("/cars")
 	public List<TicketDto> getCarInfo() {
 		List<ParkingInfo> parkingInfos = parkingInfoService.findAllByToday();
-		System.out.println(parkingInfos.size());
 		return mapUtils.convertAllToDto(parkingInfos);
 	}
-	
+
+	/**
+	 * @return List<TicketDto>
+	 *     예약된 주차권 업데이트
+	 */
 	@GetMapping("/new/cars")
 	public List<TicketDto> getCarsByRecent() {
 		ParkingInfo parkingInfo = parkingInfoService.findlatelyParkingInfoByToday();
@@ -57,39 +65,60 @@ public class MainController {
 		System.out.println(carList.size());
 		return carList;
 	}
-	
+
+	/**
+	 * @param word 검색어
+	 * @return List<TicketDto>
+	 *
+	 *     주차장, 주차권, 주차 정보 테이블에서 검색어와 일치된 정보가 있는 지 확인하고
+	 *     있으면 가져온다.
+	 */
 	@GetMapping("/search")
 	public List<TicketDto> getCarInfoDtoBySearchWord(@RequestParam("word") String word) {
 		List<ParkingLot> parkingLots = parkingLotService.findByNameLike(word);
 		List<ParkingTicket> parkingTickets = parkingTicketService.findByParkingLots(parkingLots);
 		List<ParkingInfo> parkingInfos = parkingInfoService.findByParkingTicketAndCar(word, parkingTickets);
-		
-		System.out.println(parkingInfos.size());
 		return  mapUtils.convertAllToDto(parkingInfos);
 	}
-	
+
+	/**
+	 * @return List<TicketDto>
+	 *     주차장 사이트에 자동으로 주차권을 넣는다.
+	 */
 	@GetMapping("/apply/cars")
 	public List<TicketDto> getApplyParkingTicket() {
 		return applyParkingTicket(null, null);
 	}
 
+	/**
+	 * @return List<TicketDto>
+	 *
+	 *     자동으로 주차권을 넣는 과정에서 에러가 난 주차권을 다시 넣는다.
+	 */
 	@GetMapping("/apply/error/car")
 	public List<TicketDto> getApplyErrorParkingTicket() {
 		return applyParkingTicket(StatusCodeType.SELENIUM_ERROR, null);
 	}
 
 
+	/**
+	 * @param parkingLotName 주차장 이름
+	 * @return List<TicketDto>
+	 *     입력받은 주차장에 예약된 주차권을 넣는다.
+	 */
 	@GetMapping("/apply/parkingLot/{parkingLotName}")
 	public List<TicketDto> getApplyErrorParkingTicket(@PathVariable String parkingLotName) {
 		ParkingLot parkingLot = parkingLotService.findByName(parkingLotName);
-		System.out.println(parkingLot);
 		List<ParkingTicket> parkingTickets = parkingTicketService.findByParkingLot(parkingLot);
-		for(ParkingTicket pt: parkingTickets) {
-			System.out.println(pt);
-		}
 		return applyParkingTicket(null, parkingTickets);
 	}
 
+	/**
+	 * @param codeType 주차권 상태
+	 * @param parkingTickets 주차장에 넣을 주차권
+	 * @return List<TicketDto>
+	 *     예약된 주차권 상태에 따라 현재 넣을 주차권을 받아와 자동으로 주차 관리사이트에 주차권을 넣는다.
+	 */
 	public List<TicketDto> applyParkingTicket(StatusCodeType codeType, List<ParkingTicket> parkingTickets) {
 		List<TicketDto> carList = null;
 		List<ParkingInfo> parkingInfos = null;
@@ -107,11 +136,16 @@ public class MainController {
 		} else {
 			carList = new ArrayList<TicketDto>();
 		}
-		System.out.println(carList.size());
 		return carList;
 	}
 
 
+	/**
+	 * @param parkingInfoId 주차 정보 기본키
+	 * @param parkingInfo 주차정보
+	 * @return TicketDto
+	 * 		입력받은 주차권 상태로 바꾼다.
+	 */
 	@PutMapping("/ticket/{parkingInfoId}")
 	public TicketDto checkTicket(@PathVariable int parkingInfoId, @RequestBody ParkingInfo parkingInfo) {
 		ParkingInfo newParkingInfo = parkingInfoService.findByParkingInfoId(parkingInfoId);

@@ -12,7 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-
+/**
+ * 모두의 주차장에 예약된 주차권을 가지고 오는 클래스
+ */
 @Setter
 @Getter
 public class ModuPageCrawler extends PageCrawler{
@@ -22,29 +24,47 @@ public class ModuPageCrawler extends PageCrawler{
 	private String id;
 	private String password;
 
+	/**
+	 * @param loginPage 로그인 페이지
+	 * @param reservationPage 예약된 주차권이 있는 페이지
+	 *
+	 */
 	public ModuPageCrawler(ModuLoginPage loginPage, ReservationPage reservationPage) {
 		this.loginPage = loginPage;
 		this.reservationPage = reservationPage;
 	}
-	
+
+	/**
+	 * 크롬 드라이버 주입
+	 */
 	@Override
 	public void setupChromeDriver() {
 		super.setupChromeDriver();
 		this.loginPage.init(this.driver);
 		this.reservationPage.init(this.driver);
 	}
-	
+
+	/**
+	 * 모두의 주차장 로그인 페이지로 간다.
+	 */
 	public void load() {
 		this.loginPage.load();
 	}
 
+	/**
+	 * 모두의 주차장 로그인
+	 */
 	public void login() {
 		this.loginPage.fillUserInfo(this.id, this.password);
 		this.loginPage.login();
 	}
-	
+
+	/**
+	 * @param lastParkingInfo 현재 데이터베이스에 있는 최신 주차권 정보
+	 * @return List<ParkingInfo>
+	 *     입력 받은 주차권 이후로 예약된 주차권 정보를 크롤링해서 가져온다.
+	 */
 	public List<ParkingInfo> getParkingTicketData(ParkingInfo lastParkingInfo){
-//		List<CarInfoDto> totalCrawledData = new LinkedList<CarInfoDto>();
 		List<ParkingInfo> totalParkingInfos = new LinkedList<ParkingInfo>();
 		List<ParkingInfo> crawledData = null;
 		reservationPage.load();

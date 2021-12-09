@@ -8,6 +8,12 @@ import com.macro.parking.enums.StatusCodeType;
 @Converter
 public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeType, Integer> {
 
+	/**
+	 * @param attribute  주차권 코드
+	 * @return Integer
+	 *
+	 * 	데이터베이스에 넣을 주차권 상태를 정수로 변환하여 저장.
+	 */
 	@Override
 	public Integer convertToDatabaseColumn(StatusCodeType attribute) {
 
@@ -28,6 +34,12 @@ public class StatusCodeTypeConverter implements AttributeConverter<StatusCodeTyp
 		
 	}
 
+	/**
+	 * @param dbData 주차권 상태 정보
+	 * @return StatusCodeType
+	 *
+	 * 		데이터베이스에서 받아온 주차권 상태 정보를 Enum으로 변환
+환 */
 	@Override
 	public StatusCodeType convertToEntityAttribute(Integer dbData) {
 		if( dbData == null || dbData == 0) {
