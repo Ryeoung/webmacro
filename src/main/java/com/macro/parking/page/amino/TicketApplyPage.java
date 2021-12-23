@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * 아미노 주차권 발권 페이지 객체
+ */
 @Component("aminoTicketApplyPage")
 public class TicketApplyPage extends BasePage {
     By modalConfirmOkBtnBy = By.className("modal-btn");
-    By carInputBy = By.id("schCarNo");
-    By carSearchBtnBy = By.className("btnS1_1 btn");
     By searchedCarNumBy = By.className("cellselected");
     By ticketsBy = By.cssSelector("a[name='btnDscntType']");
     By appliedTicketBy = By.cssSelector("#gridDtl tr.ev_dhx_skyblue > td:nth-child(2)");
@@ -28,16 +29,29 @@ public class TicketApplyPage extends BasePage {
 
     List<WebElement> ticketElmts;
 
+    /**
+     * 페이지 로드
+     */
     public void load() {
         this.waitForElementToAppear(this.modalConfirmOkBtnBy).click();
     }
 
+    /**
+     * @param carNum 차량 넘버
+     *   차량 넘버 검색
+     */
     public void searchCar(String carNum) {
         this.carInputElmt.clear();
         this.carInputElmt.sendKeys(carNum);
         this.carSearchBtnElmt.click();
     }
 
+    /**
+     * @param carNum 차량 넘버
+     * @return boolean
+     *
+     *  차량이 존재하는 지 확인
+     */
     public boolean isExistCar(String carNum) {
         List<WebElement> searchedCar = this.driver.findElements(searchedCarNumBy);
         if(searchedCar.size() > 0) {
@@ -48,6 +62,13 @@ public class TicketApplyPage extends BasePage {
         this.waitForElementToAppear(this.modalConfirmOkBtnBy).click();
         return false;
     }
+
+    /**
+     * @param ticketName 주차권 이름
+     * @return boolean
+     *
+     *  해당 주차권이 이미 존재하는 지 확인
+     */
     public boolean isHavingTicket(String ticketName) {
         //td[title='ticketName']
         List<WebElement> appliedTicket = this.driver.findElements(this.appliedTicketBy);
@@ -57,17 +78,23 @@ public class TicketApplyPage extends BasePage {
 
         return false;
     }
-    public boolean applyTicket(String findTicketName) {
+
+    /**
+     * @param applyTicketName 발권할 주차권 이름
+     * @return boolean
+     *  주차권 발차
+     */
+    public boolean applyTicket(String applyTicketName) {
         this.ticketElmts = this.waitForElementsToAppear(this.ticketsBy);
 
         for(WebElement ticketElmt: this.ticketElmts) {
             String ticketName = ticketElmt.getText();
-            if(ticketName.equals(findTicketName) ||
-                    ticketName.indexOf(findTicketName) >= 0 ||
-                    findTicketName.indexOf(ticketName) >= 0){
+            if(ticketName.equals(applyTicketName) ||
+                    ticketName.indexOf(applyTicketName) >= 0 ||
+                    applyTicketName.indexOf(ticketName) >= 0){
                 ticketElmt.click();
                 this.waitForElementToAppear(this.modalConfirmOkBtnBy).click();
-                this.waitForApplyTicket(findTicketName);
+                this.waitForApplyTicket(applyTicketName);
                 return true;
             }
         }
@@ -75,6 +102,10 @@ public class TicketApplyPage extends BasePage {
         return false;
     }
 
+    /**
+     * @param ticketName 주차권 이름
+     *    주차권이 들어갔는 지 확인
+     */
     public void waitForApplyTicket(String ticketName){
         By appliedTicketBy = this.appliedTicketBy;
         this.wait.until(new ExpectedCondition<Boolean>() {

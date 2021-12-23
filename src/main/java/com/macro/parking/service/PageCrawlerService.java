@@ -4,7 +4,6 @@ import java.util.*;
 
 import com.macro.parking.crawler.*;
 import com.macro.parking.enums.WebSite;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,9 @@ import com.macro.parking.domain.ParkingLot;
 import com.macro.parking.domain.ParkingTicket;
 
 
+/**
+ * 페이지 크롤링 service
+ */
 @Service
 public class PageCrawlerService {
 	
@@ -40,7 +42,12 @@ public class PageCrawlerService {
 	
 	@Autowired
 	CarService carService;
-	
+
+	/**
+	 * @param lastParkingInfo 현재까지 최신 주차 예약 정보
+	 * @return List<ParkingInfo>
+	 *  현재까지 최신 주차 예약 정보부터 실시간 주차 예약 정보 크롤링해 갱신
+	 */
    	public List<ParkingInfo> getParkingTicketReservation(ParkingInfo lastParkingInfo) {
    			moduPageCrawler.setupChromeDriver();
 			moduPageCrawler.load();
@@ -48,17 +55,23 @@ public class PageCrawlerService {
 			List<ParkingInfo> parkingInfos = moduPageCrawler.getParkingTicketData(lastParkingInfo);
 			moduPageCrawler.quit();
 
-		List<ParkingInfo> resultParkingInfos = new LinkedList<>();
+			List<ParkingInfo> resultParkingInfos = new LinkedList<>();
 
 			parkingInfos.forEach((parkingInfo) -> {
-				if(this.getParkingTicketAndCar(parkingInfo)) {
+				if(this.getParkingInfo(parkingInfo)) {
 					resultParkingInfos.add(parkingInfo);
 				}
 			});
 
 			return resultParkingInfos;
 	}
-   	public boolean getParkingTicketAndCar(ParkingInfo parkingInfo) {
+
+	/**
+	 * @param parkingInfo 주차 정보 객체
+	 * @return boolean
+	 *  주차 정보 객체로 관계 테이블 정보 얻기
+	 */
+   	public boolean getParkingInfo(ParkingInfo parkingInfo) {
    		String carNum = parkingInfo.getCar().getNumber();
    		Car car = carService.findByNumber(carNum);
 
@@ -71,20 +84,17 @@ public class PageCrawlerService {
 		}
 		ParkingLot parkingLot = parkingLotService.findByName(parkingInfo.getParkingTicket().getParkingLot().getName());
 
-		System.out.println(parkingLot);
 		ParkingTicket parkingTicket = parkingTicketService.findByAppNameAndParkingLot(parkingInfo.getParkingTicket().getAppName(),  parkingLot);
-		if(parkingTicket == null) {
-			System.out.println(carNum);
-		}
 		parkingInfo.setCar(car);
 		parkingInfo.setParkingTicket(parkingTicket);
-
 		return true;
    	}
-   	
-   	
-   	
-	
+
+
+	/**
+	 * @param parkingInfos 주차 예약 정보
+	 *  주차권 발권 하기
+	 */
 	public void applyParkingTickets(List<ParkingInfo> parkingInfos){
 		List<ParkingInfo> sortedParkingInfo = this.sortByParkingLotName(parkingInfos);
 		
@@ -111,6 +121,12 @@ public class PageCrawlerService {
 		this.addTicketByParkingLot(subList);
 		
 	}
+
+	/**
+	 * @param parkingInfos 주차 정보 객체들
+	 * @return List<ParkingInfo>
+	 *   주차장 이름으로 정렬
+	 */
 	public List<ParkingInfo> sortByParkingLotName(List<ParkingInfo> parkingInfos) {
 		List<ParkingInfo> sortedParkingInfo = new ArrayList<>(parkingInfos);
 		Collections.sort(sortedParkingInfo, new Comparator<ParkingInfo>() {
@@ -123,52 +139,75 @@ public class PageCrawlerService {
 		});
 		return sortedParkingInfo;
 	}
-	private void addTicketByParkingLot(List<ParkingInfo> list) {
-		ParkingInfo parkingInfo = list.get(0);
+
+	/**
+	 * @param parkingInfos 주차 정보
+	 *   주차 정보 내 주차장 이름을 기준으로 주차권 발권 기능
+	 */
+	private void addTicketByParkingLot(List<ParkingInfo> parkingInfos) {
+		ParkingInfo parkingInfo = parkingInfos.get(0);
 		ParkingLot parkingLot = parkingInfo.getParkingTicket().getParkingLot();
 		String url = parkingLot.getWebsite();
 
 		PageCrawler pageCrawler = null;
 		if(WebSite.IPARK.isEqual(url)) {
-			pageCrawler = this.applyTicketToIpark(list, parkingLot);
+			pageCrawler = this.applyTicketToIpark(parkingInfos, parkingLot);
 		} else if(WebSite.IPTIME.isEqual(url)) {
-			pageCrawler = this.applyTicketToIptime(list, parkingLot);
+			pageCrawler = this.applyTicketToIptime(parkingInfos, parkingLot);
 		} else if(WebSite.아미노.isEqual(url)){
-			pageCrawler = this.applyTicketToAmino(list, parkingLot);
+			pageCrawler = this.applyTicketToAmino(parkingInfos, parkingLot);
 		} else {
 			return;
 		}
 
 		pageCrawler.quit();
-		parkingInfoService.updateAllParkingInfo(list);
+		parkingInfoService.updateAllParkingInfo(parkingInfos);
 
 	}
 
-	private PageCrawler applyTicketToIptime(List<ParkingInfo> list, ParkingLot parkingLot) {
-		System.out.println(parkingLot.getName());
+	/**
+	 * @param parkingInfos 주차 정보
+	 * @param parkingLot 주차장
+	 * @return PageCrawler
+	 *
+	 *  iptime 관리 사이트에서 주차권 발권 기능
+	 */
+	private PageCrawler applyTicketToIptime(List<ParkingInfo> parkingInfos, ParkingLot parkingLot) {
 		iptimePageCrawler.setupChromeDriver();
 		iptimePageCrawler.load(parkingLot.getWebsite());
 		iptimePageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
 		iptimePageCrawler.goToApplyTab();
-		iptimePageCrawler.applyTickets(list);
+		iptimePageCrawler.applyTickets(parkingInfos);
 		return iptimePageCrawler;
    	}
 
-	private PageCrawler applyTicketToIpark(List<ParkingInfo> list, ParkingLot parkingLot) {
-		System.out.println(parkingLot.getName());
+	/**
+	 * @param parkingInfos 주차 정보
+	 * @param parkingLot 주차장
+	 * @return PageCrawler
+	 *
+	 *  ipark 관리 사이트에서 주차권 발권 기능
+	 */
+	private PageCrawler applyTicketToIpark(List<ParkingInfo> parkingInfos, ParkingLot parkingLot) {
 		iparkPageCrawler.setupChromeDriver();
 		iparkPageCrawler.load(parkingLot.getWebsite());
 		iparkPageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
-		iparkPageCrawler.applyParkingTicket(list);
+		iparkPageCrawler.applyParkingTicket(parkingInfos);
 		return iparkPageCrawler;
 	}
 
-	private PageCrawler applyTicketToAmino(List<ParkingInfo> list, ParkingLot parkingLot) {
-		System.out.println(parkingLot.getName());
+	/**
+	 * @param parkingInfos 주차 정보
+	 * @param parkingLot 주차장
+	 * @return PageCrawler
+	 *
+	 *  amino 관리 사이트에서 주차권 발권 기능
+	 */
+	private PageCrawler applyTicketToAmino(List<ParkingInfo> parkingInfos, ParkingLot parkingLot) {
 		aminoPageCrawler.setupChromeDriver();
 		aminoPageCrawler.load(parkingLot.getWebsite());
 		aminoPageCrawler.login(parkingLot.getWebId(), parkingLot.getWebPwd());
-		aminoPageCrawler.applyParkingTicket(list);
+		aminoPageCrawler.applyParkingTicket(parkingInfos);
 		return aminoPageCrawler;
 	}
 	

@@ -11,12 +11,20 @@ import org.openqa.selenium.WebElement;
 import com.macro.parking.pageloaded.PageLoaded;
 
 
+/**
+ * 주차 검색 페이지 로드
+ */
 public class SearchCarPageLoaded extends PageLoaded{
 	public SearchCarPageLoaded(String expectedTitle, String expectedUrl) {
 		super(expectedTitle, expectedUrl);
 		
 	}
-	
+
+	/**
+	 * @param driver 웹 드라이버
+	 * @return Boolean
+	 * html 요소드를 살펴 페이지 로드 여부 확인
+	 */
 	 @Override
 	  public Boolean apply(WebDriver  driver) {
 	    Boolean isDomAttached = isDomAttachPage(driver);
@@ -51,11 +59,6 @@ public class SearchCarPageLoaded extends PageLoaded{
 	    	return false;
 	    }
 
-	    
-		    System.out.println("car search");
-	    System.out.println(
-	    		isFinishedLoading + " " + size + " " + isExistcarInfoChild);
-	    
 	     return isDomAttached && (size >= 20) && isFinishedLoading  && isExistcarInfoChild;
 	  }
 

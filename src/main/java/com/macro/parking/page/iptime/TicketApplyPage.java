@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * 주차권 발권 페이지
+ */
 @Component("iptimeApplyPage")
 public class TicketApplyPage extends BasePage {
     By carNumTxtExp = By.id("f_carno-inputEl");
@@ -28,7 +31,14 @@ public class TicketApplyPage extends BasePage {
     WebElement carSearchBtn;
 
 
-    public boolean searchCarByCarNum (String carNum) throws Exception {
+    /**
+     * @param carNum 차람 넘버
+     * @return
+     * @throws Exception
+     *
+     *  차량 입차 여부 확인
+     */
+    public boolean isExistCar(String carNum) throws Exception {
         this.carNumInput = this.waitForElementToAppear(this.carNumTxtExp);
         this.carSearchBtn = this.waitForElementToAppear(this.carSearchBtnExp);
 
@@ -45,16 +55,30 @@ public class TicketApplyPage extends BasePage {
             return false;
         }
     }
+
+    /**
+     * 차량 번호 지우기
+     */
     public void clearCarSearchInput() {
         this.carNumInput.clear();
     }
-    public boolean isExitAppliedTicket() {
+
+    /**
+     * @return boolean
+     *  티켓이 존재하는 지 확인
+     */
+    public boolean isHavingTicket() {
         List<WebElement> appliedTickets = this.driver.findElements(this.appliedTicketExp);
         if(appliedTickets.size() > 0) {
             return true;
         }
         return false;
     }
+
+    /**
+     * @param carNum 차량 넘버
+     *   차량 넘버거 페이지에 로드될 때까지 확인
+     */
     public void waitForApplyCarNumTab(String carNum) {
         By targetCarNumExp = this.targetCarNumExp;
         this.wait.until(new ExpectedCondition<Boolean>() {
@@ -66,15 +90,18 @@ public class TicketApplyPage extends BasePage {
         });
     }
 
-    public void applyTicket(String webTicketName) {
+    /**
+     * @param applyTicketName
+     *  주차권 발권
+     */
+    public void applyTicket(String applyTicketName) {
         WebElement applyTicketContainer = this.waitForElementToAppear(this.applyTicketContainerExp);
         applyTicketContainer.click();
 
         List<WebElement> applyTickets = this.waitForElementsToAppear(this.applyTicketsExp);
         for(WebElement ticket: applyTickets) {
             String ticketName = ticket.getText();
-            System.out.println(ticketName);
-            if(this.isSimilarTicketName(ticketName, webTicketName)) {
+            if(this.isSimilarTicketName(ticketName, applyTicketName)) {
                 ticket.click();
                 this.waitForElementToBeClickAble(this.applyBtnExp).click();
                 this.waitForApplyTicket();
@@ -83,6 +110,9 @@ public class TicketApplyPage extends BasePage {
         }
     }
 
+    /**
+     * 주차권 발권까지 기다리기
+     */
     private void waitForApplyTicket() {
         By appliedTicketExp = this.appliedTicketExp;
         this.wait.until(new ExpectedCondition<Boolean>() {
@@ -99,6 +129,12 @@ public class TicketApplyPage extends BasePage {
     }
 
 
+    /**
+     * @param t1 티켓1
+     * @param t2 티켓 2
+     * @return boolean
+     *  티켓 이름이 같거나 둘 중 하나가 다른 하나의 일부분일 경우
+     */
     public boolean isSimilarTicketName(String t1, String t2) {
         if(t1.equals(t2) ||
                 t1.indexOf(t2) > 0 ||

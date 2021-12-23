@@ -11,6 +11,11 @@ public enum WebSite {
         this.url = url;
     }
 
+    /**
+     * @param url 입력받은 url
+     * @return boolean
+     *  입력받은 url(www.~.~.com)에 enum의 url이 들어가는 지 확인하여 동일하지 반환한다.
+     */
     public boolean isEqual(String url) {
         if(url.indexOf(this.url) > 0) {
             return true;

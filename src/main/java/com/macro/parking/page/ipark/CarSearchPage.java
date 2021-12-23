@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.SearchCarPageLoaded;
 
+/**
+ * 차량 검색 페이지 객체
+ */
 @Component
 public class CarSearchPage extends BasePage{
 	By carList = By.className("car-list");
-	By choiceCarBtn = By.id("next");
-	By linkMainPage = By.id("goMain");
 	By cars = By.xpath("//*[@id=\"carList\"]/tr");
 	
 	private WebElement carElmt;	
@@ -25,14 +26,21 @@ public class CarSearchPage extends BasePage{
     private String title= "i PARKING - MEMBERS";
 
 
-	
+	/**
+	 * 주차권 페이지 로드
+	 */
 	public void load() {
         this.waitForPageLoad(new SearchCarPageLoaded(title, url));
         this.waitForElementToAppear(carList);
 
 	}
-	
-	public boolean isCarInParkingLot(String carNum) throws Exception{
+
+	/**
+	 * @param carNum
+	 * @return boolean
+	 * 	차량이 존재하는 지 확인
+	 */
+	public boolean isExistCar(String carNum){
 	    	boolean flag = false;
 			this.carElmts = this.driver.findElements(this.cars);
 
@@ -54,12 +62,18 @@ public class CarSearchPage extends BasePage{
 	        }
 	        return flag;
 	 }
-	
+
+	/**
+	 * 차량 선택 버튼 클릭
+	 */
 	public void clickChoiceCarBtn() {
 		this.javascriptExcutor.executeScript("document.getElementById('next').click();");
 	}
-	
-	public void clickGoMainBtn() {		
+
+	/**
+	 * 메인 페이지 버튼 클릭
+	 */
+	public void clickGoMainBtn() {
 		this.javascriptExcutor.executeScript("document.getElementById('headerTitle').click();");
 
 	}

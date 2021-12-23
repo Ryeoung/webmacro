@@ -18,6 +18,9 @@ import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.modu.TicketReservationInfoPageLoaded;
 
+/**
+ * 주차권 예약 페이지
+ */
 @Component
 public class ReservationPage extends BasePage{
 	String rowXPathExp = "/html/body/div/ui-view/partner/table[2]/tbody/tr";
@@ -38,7 +41,10 @@ public class ReservationPage extends BasePage{
 	
 	private int curPage;
 	private boolean isFinished;
-	
+
+	/**
+	 * 주차권 예약 페이지 로드
+	 */
 	public void load() {
 		this.waitForPageLoad(new TicketReservationInfoPageLoaded(this.title, this.url));
 		this.curPage = 1;
@@ -49,23 +55,37 @@ public class ReservationPage extends BasePage{
 		
 		
 	}
-	
+
+	/**
+	 * 예약 페이지 pagenavigate 번호 로드까지 확인
+	 */
 	public void waitForPageBtnElmtsToApper() {
 		this.pageBtnElmts = this.waitForElementsToAppear(this.pageBtns);
 	
 	}
+
+	/**
+	 * @return ParkingInfo
+	 *  첫번째 줄 예약 정보 가져오기
+	 */
 	public ParkingInfo getFirstDataOfPage() {
         return this.convertReservationElmtToCarInfoDto(0);
 	}
-	
+
+	/**
+	 * 예약 정보 html element 로드까지 확인
+	 */
 	public void waitForReservationElmtsToApper() {
 		this.reservationElmts = this.waitForElementsToAppear(this.reservation);
 		
 	}
-	
+
+	/**
+	 * @throws InterruptedException
+	 * 다음 페이지 버튼 클릭
+	 */
 	public void clickNextPageBtn() throws InterruptedException {
 		if(this.isFinished) {
-			System.out.println("다음 페이지로  때 끝일 경우  ");
 			return;
 		}
 		
@@ -80,20 +100,33 @@ public class ReservationPage extends BasePage{
 		
 		this.firstDataOfPage = getFirstDataOfPage();
 	}
-	
+
+	/**
+	 *  다음 예약 정보 페이지가 로드 될때 까지 확인
+	 */
 	public void waitForNextPageLoad() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd\nHH:mm:ss");
 		String reservationTimeStr = this.firstDataOfPage.getOrderTime().format(formatter);
 		this.waitForTextToDisappear(By.xpath("/html/body/div/ui-view/partner/table[2]/tbody/td[1]/div/span"), reservationTimeStr);
 	}
-	
+
+	/**
+	 * @param pageNum 페이지 넘버
+	 *   페이지 넘버 클릭
+	 */
 	public void clickPageBtnByPageNum(int pageNum) {
 		int  btnIdx = (pageNum - 1) % 5;
 		this.waitForElementToBeClickAble(this.pageBtnElmts.get(btnIdx).findElement(By.tagName("a"))).click();
 	}
-	
+
+	/**
+	 * @param lastParkingInfo 이전 최신 예약 주차 정보
+	 * @return List<ParkingInfo>
+	 *   첫 예약 주차 정보 데이터 부터
+	 *   이전 최신 예약 주차 정보까지 크롤링
+	 */
 	public List<ParkingInfo> crawlingForReservation(ParkingInfo lastParkingInfo) {
-//		List<CarInfoDto> carInfoDtos = new LinkedList<CarInfoDto>();
+
 		List<ParkingInfo> parkingInfos = new LinkedList<ParkingInfo>();
 		
 		LocalDateTime toDayStartTime = LocalDate.now().atStartOfDay();
@@ -104,24 +137,12 @@ public class ReservationPage extends BasePage{
             By txtState = By.xpath(this.rowXPathExp +"["+(rowIdx + 1) +"]"+"/td[7]");
      		String stateStr = this.waitForElementToAppear(txtState).getText();
 
-//             CarInfoDto dto = this.convertReservationElmtToCarInfoDto(rowIdx);
      		ParkingInfo parkingInfo = this.convertReservationElmtToCarInfoDto(rowIdx);
 
-     		//최신 데이터와 비
-//             if((lastParkingInfo != null && dto.isEqual(lastParkingInfo))
-//            		 || dto.getDate().isBefore(toDayStartTime)) {
-////            	 System.out.println((lastParkingInfo != null && dto.isEqual(lastParkingInfo)));
-////            	 System.out.println(dto.getDate().isBefore(toDayStartTime));
-////            	 System.out.println(dto);
-//            	 this.isFinished = true;
-//             	break;
-//             }
+
      		 
      		 if((lastParkingInfo != null && lastParkingInfo.isEqual(parkingInfo))
             		 || parkingInfo.getOrderTime().isBefore(toDayStartTime)) {
-//            	 System.out.println((lastParkingInfo != null && dto.isEqual(lastParkingInfo)));
-//            	 System.out.println(dto.getDate().isBefore(toDayStartTime));
-//            	 System.out.println(dto);
             	 this.isFinished = true;
              	break;
              }
@@ -136,7 +157,13 @@ public class ReservationPage extends BasePage{
         
 		return parkingInfos;
 	}
-	
+
+	/**
+	 * @param rowIdx 줄 넘버
+	 * @return ParkingInfo
+	 *
+	 *  해당 줄 넘버에 예약 정보 토대로 주차 정보 객체(ParkingInfo)로 변환
+	 */
 	public ParkingInfo convertReservationElmtToCarInfoDto( int rowIdx) {
 
         By txtReservationTime = By.xpath(this.rowXPathExp  + "["+(rowIdx + 1) +"]"+"/td[1]/div/span");

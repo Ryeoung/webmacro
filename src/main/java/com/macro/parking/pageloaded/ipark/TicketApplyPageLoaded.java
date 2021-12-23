@@ -10,6 +10,9 @@ import org.openqa.selenium.WebElement;
 
 import com.macro.parking.pageloaded.PageLoaded;
 
+/**
+ * 주차권 발권 페이지 로드
+ */
 public class TicketApplyPageLoaded  extends PageLoaded{
 	private String ticketName;
 	private String ticketXpath = "//*[@id=\"productList\"]/tr";
@@ -17,9 +20,13 @@ public class TicketApplyPageLoaded  extends PageLoaded{
 	public TicketApplyPageLoaded(String expectedTitle, String expectedUrl, String ticketName) {
 		super(expectedTitle, expectedUrl);
 		this.ticketName = ticketName;
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @param driver 웹 드라이버
+	 * @return Boolean
+	 * html 요소드를 살펴 페이지 로드 여부 확인
+	 */
 	@Override
 	  public Boolean apply(WebDriver  driver) {
 	    Boolean isDomAttached = isDomAttachPage(driver);
@@ -55,12 +62,7 @@ public class TicketApplyPageLoaded  extends PageLoaded{
 	    } catch(StaleElementReferenceException | NullPointerException e) {
 	    	return false;
 	    }
-	   
-	    
-	    System.out.println("ticket applys");
-	    System.out.println(ticketName + " " +
-	    		isFinishedLoading + " " + size + isExisitTicket);
-	    
+
 	     return  isDomAttached && (size >= 25) && isFinishedLoading && isExisitTicket;
 	  }
 }

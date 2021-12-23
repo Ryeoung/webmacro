@@ -51,7 +51,7 @@ public class MainController {
 
 	/**
 	 * @return List<TicketDto>
-	 *     예약된 주차권 업데이트
+	 *     새롭게 예약된 주차권 업데이트
 	 */
 	@GetMapping("/new/cars")
 	public List<TicketDto> getCarsByRecent() {
@@ -107,7 +107,7 @@ public class MainController {
 	 *     입력받은 주차장에 예약된 주차권을 넣는다.
 	 */
 	@GetMapping("/apply/parkingLot/{parkingLotName}")
-	public List<TicketDto> getApplyErrorParkingTicket(@PathVariable String parkingLotName) {
+	public List<TicketDto> getAppliedParkingTicketByParkingLotName(@PathVariable String parkingLotName) {
 		ParkingLot parkingLot = parkingLotService.findByName(parkingLotName);
 		List<ParkingTicket> parkingTickets = parkingTicketService.findByParkingLot(parkingLot);
 		return applyParkingTicket(null, parkingTickets);

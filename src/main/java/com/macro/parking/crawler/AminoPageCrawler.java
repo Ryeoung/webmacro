@@ -55,7 +55,7 @@ public class AminoPageCrawler extends PageCrawler{
      *  로그인
      */
     public void login(String id, String pwd) {
-        loginPage.fillLogin(id, pwd);
+        loginPage.fillUserInfo(id, pwd);
         loginPage.clickLoginBtn();
     }
 

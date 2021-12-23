@@ -1,13 +1,10 @@
 package com.macro.parking.config;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 
-import com.macro.parking.map.CarInfoDtoMapper;
+import com.macro.parking.map.TicketDtoMapper;
 
 @Configuration
 public class ModelMapperConfig {
@@ -15,7 +12,7 @@ public class ModelMapperConfig {
 	@Bean
 	public ModelMapper modelMapper() {
 		ModelMapper modelMapper =  new ModelMapper();
-		 modelMapper.addMappings(new CarInfoDtoMapper());
+		 modelMapper.addMappings(new TicketDtoMapper());
 
 		//필드명이 같을 경우에만 적용
 		modelMapper.getConfiguration().setImplicitMappingEnabled(false);

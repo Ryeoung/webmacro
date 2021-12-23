@@ -89,8 +89,8 @@ public class IptimePageCrawler extends PageCrawler{
                 parkingInfo  = parkingInfos.get(idx);
 
 
-                if(this.ticketApplyPage.searchCarByCarNum(parkingInfo.getCar().getNumber())) {
-                   if(this.ticketApplyPage.isExitAppliedTicket()) {
+                if(this.ticketApplyPage.isExistCar(parkingInfo.getCar().getNumber())) {
+                   if(this.ticketApplyPage.isHavingTicket()) {
                        parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
                    } else {
                        this.ticketApplyPage.applyTicket(parkingInfo.getParkingTicket().getWebName());

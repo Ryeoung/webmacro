@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.MainPageLoaded;
 
+/**
+ * 아이파크 메인 페이지
+ */
 @Component("iparkMainPage")
 public class MainPage extends BasePage{
 	By carNum = By.id("carNumber");
@@ -16,20 +19,27 @@ public class MainPage extends BasePage{
 	WebElement inputCarNum;
     String title = "i PARKING - MEMBERS";
     String url= "members.iparking.co.kr/html/home.html";
-    
+
+    /**
+     * 페이지 로드
+     */
     public void load() {
     	this.waitForPageLoad(new MainPageLoaded(title, url));
         this.deletePopUp();
     }
-    
+
+    /**
+     * popup창 제거
+     */
     public void deletePopUp() {
-//    	wait.until(ExpectedConditions.)
-    	//wait.until(ExpectedConditions.elementToBeClickable(By.id("goHome"))).click();
     	this.javascriptExcutor.executeScript("document.getElementById('information').style.display = 'none';" +
     			"document.getElementById('tutorial').style.display = 'none';");
-    	//wait.until(ExpectedConditions.elementToBeClickable(By.id("start"))).click();
     }
-    
+
+    /**
+     * @param carNumber
+     * 차량 검색
+     */
     public void searchCarNum(String carNumber) {
     	inputCarNum = this.waitForElementToAppear(this.carNum);
     	
@@ -40,6 +50,11 @@ public class MainPage extends BasePage{
 
     	
     }
+
+    /**
+     * @param parkingLotName 주차장 이름
+     *  같은 영업장 주차장 선택
+     */
     public void selectParkingLot(String parkingLotName) {
     	Select parkingLotSelect = new Select(driver.findElement(By.id("storeSelect")));
         if(parkingLotName.equals("하이파킹 마제스타시티")) {

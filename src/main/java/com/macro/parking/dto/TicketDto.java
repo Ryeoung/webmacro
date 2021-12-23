@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * view로 전달할 티켓 DTO
+ */
 @Setter
 @Getter
 @ToString
@@ -22,7 +25,12 @@ public class TicketDto {
 	private String code;
 	private String webTicketName;
 	private boolean checkApp;
-	
+
+	/**
+	 * @param dto 비교할 dto
+	 * @return boolean
+	 * 	매개변수로 온 Dto가 동일한지 확인한다.
+	 */
 	public boolean isEqual(TicketDto dto) {
 		if(dto.getDate().isEqual(this.getDate()) && 
         		dto.getParkingLotName().equals(this.getParkingLotName()) && 
@@ -34,16 +42,5 @@ public class TicketDto {
 		
 		return false;
 	}
-	public boolean isEqual(ParkingInfo parkingInfo) {
-		
-		TicketDto dto = new TicketDto();
-		dto.setCarNum(parkingInfo.getCar().getNumber());
-		dto.setWebTicketName(parkingInfo.getParkingTicket().getWebName());
-		dto.setAppTicketName(parkingInfo.getParkingTicket().getAppName());
-		dto.setParkingLotName(parkingInfo.getParkingTicket().getParkingLot().getName());
-		dto.setDate(parkingInfo.getOrderTime());
-		return isEqual(dto);
-	}
-	
 	
 }

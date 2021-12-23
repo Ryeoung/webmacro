@@ -10,12 +10,20 @@ import org.openqa.selenium.WebElement;
 
 import com.macro.parking.pageloaded.PageLoaded;
 
+/**
+ * 주차권 발권 페이지 로드
+ */
 public class TicketReservationInfoPageLoaded extends PageLoaded{
 
 	public TicketReservationInfoPageLoaded(String expectedTitle, String expectedUrl) {
 		super(expectedTitle, expectedUrl);
 	}
-	
+
+	/**
+	 * @param driver 웹 드라이버
+	 * @return Boolean
+	 * html 요소드를 살펴 페이지 로드 여부 확인
+	 */
 	@Override
 	  public Boolean apply(WebDriver  driver) {
 	    
@@ -40,10 +48,7 @@ public class TicketReservationInfoPageLoaded extends PageLoaded{
 	    } catch(Exception e) {
 	    	return false;
 	    }
-	   	   
-	    
-	   System.out.println("주차권  page");
-	   System.out.println( " "+size + isDomAttached + " ");
+
 	    return isDomAttached && (size >= 4) && isNoneDisPlayOfLoadingImg;
 	  }
 

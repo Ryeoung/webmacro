@@ -56,7 +56,7 @@ public class ModuPageCrawler extends PageCrawler{
 	 */
 	public void login() {
 		this.loginPage.fillUserInfo(this.id, this.password);
-		this.loginPage.login();
+		this.loginPage.clickLoginBtn();
 	}
 
 	/**
