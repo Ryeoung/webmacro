@@ -15,7 +15,11 @@ public class IParkLoginPage extends BasePage{
 	
     private String url;
     private String title= "i PARKING - MEMBERS";
-    
+
+	/**
+	 * @param url
+	 * url로 로드
+	 */
 	public void load(String url) {
 		this.url = url;
 		super.navigate(this.url);
@@ -27,7 +31,12 @@ public class IParkLoginPage extends BasePage{
 		}
     }
 
-    
+
+	/**
+	 * @param id
+	 * @param pwd
+	 *  로그인 정보 입력
+	 */
     public void fillUserInfo(String id, String pwd) {
     	this.waitForElementToAppear(this.txtId);
     	this.waitForElementToAppear(this.txtPassword);
@@ -38,7 +47,14 @@ public class IParkLoginPage extends BasePage{
     	this.waitForFillUserInfo(this.txtId, this.txtPassword, id, pwd);
     	 	    	
     }
-    
+
+	/**
+	 * @param idLocator
+	 * @param pwdLocator
+	 * @param id
+	 * @param pwd
+	 *  로그인 정보 입력 완료까지 wait
+	 */
     private void waitForFillUserInfo(By idLocator, By pwdLocator, String id, String pwd) {
     	
     	wait.until(new ExpectedCondition<Boolean>() {
@@ -50,8 +66,11 @@ public class IParkLoginPage extends BasePage{
                }
            });
     }
-    
-    public void login() {
+
+	/**
+	 * 로그인 버튼 클릭
+	 */
+    public void clickLoginBtn() {
     	this.javascriptExcutor.executeScript("document.getElementById('login').click();");
 
     }

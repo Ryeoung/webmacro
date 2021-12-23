@@ -7,12 +7,20 @@ import org.openqa.selenium.WebDriver;
 
 import com.macro.parking.pageloaded.PageLoaded;
 
+/**
+ * 로그인 페이지 로드
+ */
 public class LoginPageLoaded extends PageLoaded{
 
 	public LoginPageLoaded(String expectedTitle, String expectedUrl) {
 		super(expectedTitle, expectedUrl);
 	}
-	
+
+	/**
+	 * @param driver 웹 드라이버
+	 * @return Boolean
+	 * html 요소드를 살펴 페이지 로드 여부 확인
+	 */
 	  @Override
 	  public Boolean apply(WebDriver  driver) {
 	    
@@ -31,10 +39,7 @@ public class LoginPageLoaded extends PageLoaded{
 	    } catch(Exception e) {
 	    	return false;
 	    }
-	   	   
-	    
-	   System.out.println("login page");
-	   System.out.println( " "+size + isDomAttached + " ");
+
 	    return isDomAttached && (size >= 4) ;
 	  }
 }

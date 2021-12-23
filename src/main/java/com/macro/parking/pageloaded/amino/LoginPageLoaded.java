@@ -6,10 +6,19 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * 아미노 로드 페이지
+ */
 public class LoginPageLoaded extends PageLoaded {
     public LoginPageLoaded(String expectedTitle, String expectedUrl) {
         super(expectedTitle, expectedUrl);
     }
+
+    /**
+     * @param driver 웹 드라이버
+     * @return Boolean
+     * html 요소드를 살펴 페이지 로드 여부 확인
+     */
     @Override
     public Boolean apply(WebDriver driver) {
 
@@ -28,10 +37,6 @@ public class LoginPageLoaded extends PageLoaded {
         } catch(Exception e) {
             return false;
         }
-
-
-        System.out.println("login page");
-        System.out.println(isDomAttached + " " + size);
         return isDomAttached && (size >= 7);
     }
 

@@ -3,16 +3,17 @@ package com.macro.parking.page.ipark;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.stereotype.Component;
 
 import com.macro.parking.page.BasePage;
 import com.macro.parking.pageloaded.ipark.TicketApplyPageLoaded;
 
+/**
+ *  아이파크 주차권 발권 페이지
+ */
 @Component("iparkApplyPage")
 public class TicketApplyPage extends BasePage{
 	String ticketXpathExp = "//*[@id=\"productList\"]/tr";
@@ -27,30 +28,39 @@ public class TicketApplyPage extends BasePage{
     private String title= "i PARKING - MEMBERS";
     String url = "members.iparking.co.kr/html/discount-ticket-apply.html";
     String ticketName;
+
+	/**
+	 * @param ticketName 주차권 이름
+	 *   주차권 페이지 로드
+	 */
 	public void load(String ticketName) {
 		this.ticketName = ticketName;
 		this.waitForPageLoad(new TicketApplyPageLoaded(title, url, ticketName));
 		this.waitForElementsToAppear(this.myTicketList);
 		
 	}
-	
+
+	/**
+	 * @return boolean
+	 * 이미 발권된 주차권이 있는 지 확인
+	 */
 	public boolean isHavingMyTicket() {
 		
         List<WebElement> emptyCheck = this.driver.findElements(this.emptyMyDcList);
         if(emptyCheck.size() == 0) {
-        	System.out.println("주차권 있음 ");
         	return true;
         } 
-        System.out.println("주차권 없음 ");
         return false;
 	}
-	
-	public boolean buyParkingTicket() throws InterruptedException {
-		String ticketXpath = "";
+
+	/**
+	 * @return boolean
+	 * @throws InterruptedException
+	 *  주차권 발권
+	 */
+	public boolean applyParkingTicket() throws InterruptedException {
         String ticketName = "";
-        System.out.println("주차권 사기 진입 ");
         this.waitForElementToAppear(this.ticketList);
-        System.out.println("해당 주차장 주차권 로드  ");
 
         
         List<WebElement> saleTickets = this.waitForElementsToAppear(tickets);
@@ -58,10 +68,8 @@ public class TicketApplyPage extends BasePage{
         for(WebElement ticket :saleTickets) {
         	ticketIdx += 1;
         	By ticketNameClassName = By.xpath(this.ticketXpathExp + "[" + ticketIdx +  "]/td[1]");
-            System.out.println("주차권 찾는 중 ");
         	ticketName = this.waitForElementToAppear(ticketNameClassName).getText();
-            System.out.println("주차권 있음 " + ticketName);
-        	
+
         	
             if(this.ticketName.equals(ticketName)) {
             	 //주차권 구입 버튼
@@ -74,7 +82,7 @@ public class TicketApplyPage extends BasePage{
 				this.waitForConfirm();
     	    	this.waitForElementToBeClickAble(this.successBuyTicketPopup).click();
                                 
-                this.waitForBuyTicket();
+                this.waitForApplyTicket();
                 return true;
             }
            
@@ -83,6 +91,9 @@ public class TicketApplyPage extends BasePage{
         return false;
 	}
 
+	/**
+	 * 주차권 발권 확인 pop창 로드 될 때까지 wait
+	 */
 	private void waitForConfirm() {
 		wait.until(new ExpectedCondition<Boolean>() {
 			@Override
@@ -94,7 +105,10 @@ public class TicketApplyPage extends BasePage{
 		});
 	}
 
-	public void waitForBuyTicket() {
+	/**
+	 * 주차권 발권 까지 wait
+	 */
+	public void waitForApplyTicket() {
 		By emptyTicketList = this.emptyMyDcList;
 		wait.until(new ExpectedCondition<Boolean>() {
 			@Override
@@ -110,7 +124,10 @@ public class TicketApplyPage extends BasePage{
 		});
 
 	}
-	
+
+	/**
+	 * 홈 버튼 클릭
+	 */
 	public void clickGoHomeBtn(){
     	this.javascriptExcutor.executeScript("document.getElementById('goMain').click();");
 	}

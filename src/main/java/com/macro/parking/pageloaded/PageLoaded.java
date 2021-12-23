@@ -4,7 +4,10 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
-public class PageLoaded implements ExpectedCondition<Boolean> {		
+/**
+ * 페이지 로드 객체
+ */
+public class PageLoaded implements ExpectedCondition<Boolean> {
 	  String expectedTitle;
 	  String expectedUrl;
 		
@@ -12,23 +15,13 @@ public class PageLoaded implements ExpectedCondition<Boolean> {
 	    this.expectedTitle = expectedTitle;	
 	    this.expectedUrl = expectedUrl;
 	  }
-	  
-	  public String getExpectedTitle() {
-		return expectedTitle;
-	}
 
-	public void setExpectedTitle(String expectedTitle) {
-		this.expectedTitle = expectedTitle;
-	}
 
-	public String getExpectedUrl() {
-		return expectedUrl;
-	}
-
-	public void setExpectedUrl(String expectedUrl) {
-		this.expectedUrl = expectedUrl;
-	}
-
+	/**
+	 * @param driver 웹 드라이버
+	 * @return Boolean
+	 * html 요소드를 살펴 페이지 로드 여부 확인
+	 */
 	@Override
 	 public Boolean apply(WebDriver  driver) {
 		return isDomAttachPage(driver);
@@ -42,7 +35,7 @@ public class PageLoaded implements ExpectedCondition<Boolean> {
 	                                   .contains(expectedTitle);
 	    Boolean isUrlCorrect = driver.getCurrentUrl()
 	                                 .contains(expectedUrl);
-		System.out.println(isTitleCorrect + " " + isUrlCorrect);
+
 	    return isJavascriptLoad && isTitleCorrect && isUrlCorrect;
 	}
 

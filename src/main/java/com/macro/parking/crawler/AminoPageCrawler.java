@@ -11,10 +11,18 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * 아미노 크롤링 클래스
+ */
 @Component
 public class AminoPageCrawler extends PageCrawler{
     private final AminoLoginPage loginPage;
     private final TicketApplyPage ticketApplyPage;
+
+    /**
+     * @param loginPage 로그인 페이지
+     * @param ticketApplyPage 주차권 넣는 페이지
+     */
     @Autowired
     public AminoPageCrawler(AminoLoginPage loginPage,
                             @Qualifier("aminoTicketApplyPage") TicketApplyPage ticketApplyPage) {
@@ -23,6 +31,9 @@ public class AminoPageCrawler extends PageCrawler{
         this.ticketApplyPage = ticketApplyPage;
     }
 
+    /**
+     * 크롬 웹 드라이버 주입
+     */
     @Override
     public void setupChromeDriver() {
         super.setupChromeDriver();
@@ -30,16 +41,29 @@ public class AminoPageCrawler extends PageCrawler{
         this.ticketApplyPage.init(this.driver);
     }
 
+    /**
+     * @param url
+     *  해당 url로 접속
+     */
     public void load(String url) {
         loginPage.load(url);
     }
 
+    /**
+     * @param id
+     * @param pwd
+     *  로그인
+     */
     public void login(String id, String pwd) {
-        loginPage.fillLogin(id, pwd);
+        loginPage.fillUserInfo(id, pwd);
         loginPage.clickLoginBtn();
     }
 
 
+    /**
+     * @param parkingInfos 주차권을 넣을 주차 정보
+보    *  해당 주차 정보를 보고 주차권을 넣는다.
+     */
     public void applyParkingTicket(List<ParkingInfo> parkingInfos) {
         int idx = 0;
 

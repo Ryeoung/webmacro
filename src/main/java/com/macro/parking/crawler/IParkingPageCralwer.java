@@ -3,7 +3,6 @@ package com.macro.parking.crawler;
 import java.util.List;
 
 import com.macro.parking.domain.ParkingInfo;
-import com.macro.parking.dto.CarInfoDto;
 import com.macro.parking.enums.StatusCodeType;
 import com.macro.parking.page.ipark.CarSearchPage;
 import com.macro.parking.page.ipark.IParkLoginPage;
@@ -16,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+/**
+ * 아이파크(주차장 관리사이트)를 동적 크롤링(자동화)하여 주차권을 넣는다.
+ */
 @Component
 @Setter
 @Getter
@@ -25,6 +27,14 @@ public class IParkingPageCralwer extends PageCrawler{
 	private final CarSearchPage carSearchPage;
 	private final TicketApplyPage ticketApplyPage;
 
+	/**
+	 * @param loginPage 로그인 페이지
+	 * @param mainPage 메인 페이지
+	 * @param carSearchPage 차량 검색 페이지
+	 * @param ticketApplyPage 주차권 넣는 페이지
+	 *
+	 *   크롤러 초기화 각 페이지 객체를 초기화 해준다.
+	 */
 	@Autowired
 	public IParkingPageCralwer(IParkLoginPage loginPage, @Qualifier("iparkMainPage") MainPage mainPage, CarSearchPage carSearchPage,
 							   @Qualifier("iparkApplyPage") TicketApplyPage ticketApplyPage) {
@@ -34,7 +44,10 @@ public class IParkingPageCralwer extends PageCrawler{
 		this.carSearchPage = carSearchPage;
 		this.ticketApplyPage = ticketApplyPage;
 	}
-	
+
+	/**
+	 * 각 페이지 객체에 웹 드라이버 주입
+	 */
 	@Override
 	public void setupChromeDriver() {
 		super.setupChromeDriver();
@@ -44,18 +57,34 @@ public class IParkingPageCralwer extends PageCrawler{
 		this.carSearchPage.init(this.driver);
 		this.ticketApplyPage.init(this.driver);
 	}
-	
+
+	/**
+	 * @param url 시작 사이트
+	 *
+	 *  해당 사이트에 입력 받은 url로 접속한다.
+	 */
 	public void load(String url) {
 		loginPage.load(url);
 	}
-	
+
+	/**
+	 * @param id 아이디
+	 * @param pwd 비밀번호
+	 *
+	 *  로그인
+	 */
 	public void login(String id, String pwd) {
 		loginPage.fillUserInfo(id, pwd);
 
-		loginPage.login();
+		loginPage.clickLoginBtn();
 	}
-	
 
+
+	/**
+	 * @param parkingInfos 주차 정보
+	 *
+	 *  현재 주차정보를 가지고 주차권을 넣는다.
+	 */
 	public void applyParkingTicket(List<ParkingInfo> parkingInfos) {
 		int idx = 0;
 		
@@ -84,7 +113,7 @@ public class IParkingPageCralwer extends PageCrawler{
 				
 				this.carSearchPage.load();
 				
-				if(this.carSearchPage.isCarInParkingLot(carNumber)) {
+				if(this.carSearchPage.isExistCar(carNumber)) {
 					//차 있는 경우 
 					//해당 차량 주차권 정보로 가기
 					this.carSearchPage.clickChoiceCarBtn();
@@ -94,7 +123,7 @@ public class IParkingPageCralwer extends PageCrawler{
 						//해당 차량의 주차권이 이미 존재하는 경우 
                         parkingInfo.setAppFlag(StatusCodeType.TICKET_EXIST_ERROR);
 					} else {
-						if(this.ticketApplyPage.buyParkingTicket()) {
+						if(this.ticketApplyPage.applyParkingTicket()) {
 							//해당 차량이 구매한 주차권을 구매한 경우 
 							parkingInfo.setAppFlag(StatusCodeType.SUCCESS);
 						}

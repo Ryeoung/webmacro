@@ -8,11 +8,20 @@ import org.openqa.selenium.WebDriver;
 import com.macro.parking.pageloaded.PageLoaded;
 
 
+/**
+ * 메인 페이지 로드
+ */
 public class MainPageLoaded extends PageLoaded{
 	 
 	public MainPageLoaded(String expectedTitle, String expectedUrl) {
 		super(expectedTitle, expectedUrl);
 	}
+
+	/**
+	 * @param driver
+	 * @return Boolean
+	 * html 요소드를 살펴 페이지 로드 여부 확인
+	 */
 	 @Override
 	  public Boolean apply(WebDriver  driver) {
 		
@@ -28,11 +37,6 @@ public class MainPageLoaded extends PageLoaded{
 		    } catch(StaleElementReferenceException e) {
 		    	return false;
 		    }
-	    
-	    	   
-	    System.out.println("main");
-	    System.out.println(
-	    		isDomAttached + " " + isCotainDisplayInTutorial + " " + size + " " + isCotainDisplayInInfo);
 	    
 	    return isDomAttached && isCotainDisplayInInfo && isCotainDisplayInTutorial ;
 	  }

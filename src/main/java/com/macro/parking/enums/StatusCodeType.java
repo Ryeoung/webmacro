@@ -1,5 +1,8 @@
 package com.macro.parking.enums;
 
+/**
+ * 요청의 결과를 표시하는 코드
+ */
 public enum StatusCodeType {
 	SUCCESS("ok"),
 	CHECK_TICKET("check"),
@@ -18,30 +21,14 @@ public enum StatusCodeType {
 		
 		return code;
 	}
-	
-	public static String getCode(StatusCodeType attribute) {
-		
-		if (attribute.isEqual(StatusCodeType.NOT_WORKING)) {
-			return StatusCodeType.NOT_WORKING.getCode();
-			
-		} else if(attribute.isEqual(StatusCodeType.SELENIUM_ERROR)) {
-			return StatusCodeType.SELENIUM_ERROR.getCode();
-			
-		} else if(attribute.isEqual(StatusCodeType.NO_CAR_ERROR)){
-			return  StatusCodeType.NO_CAR_ERROR.getCode();
-			
-		} else if(attribute.isEqual(StatusCodeType.TICKET_EXIST_ERROR)) {
-			return  StatusCodeType.TICKET_EXIST_ERROR.getCode();
-			
-		} else if(attribute.isEqual(StatusCodeType.SUCCESS)) {
-			return  StatusCodeType.SUCCESS.getCode();
-			
-		} else if(attribute.isEqual(StatusCodeType.CHECK_TICKET)) {
-			return  StatusCodeType.CHECK_TICKET.getCode();
-		}
-		return StatusCodeType.CANCEL.getCode();
-	}
-	
+
+
+	/**
+	 * @param target 비교할 대상
+	 * @return boolean
+	 *
+	 *  비교할 대상과 동일한지 확인
+	 */
 	public boolean isEqual(StatusCodeType target) {
 		if(this.code.equals(target.getCode())) {
 			return true;
